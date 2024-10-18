@@ -4,14 +4,13 @@
   "version": "0.0.1",
   "type": "module",
   "files": ["dist"],
-  "main": "./dist/vue-component-npm-example.umd.cjs",
+  "main": "./dist/vue-component-npm-example.js",
   "module": "./dist/vue-component-npm-example.js",
   "types": "./dist/main.d.ts",
   "exports": {
     ".": {
       "types": "./dist/main.d.ts",
-      "import": "./dist/vue-component-npm-example.js",
-      "require": "./dist/vue-component-npm-example.umd.js"
+      "import": "./dist/vue-component-npm-example.js"
     },
     "./dist/style.css": "./dist/style.css"
   },
