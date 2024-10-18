@@ -8,17 +8,12 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'lib/main.ts'),
-      name: 'VueComponentNpmExample',
-      fileName: 'vue-component-npm-example',
+      fileName: 'my-components',
       formats: ['es']
     },
     rollupOptions: {
-      external: ['vue'],
-      output: {
-        globals: {
-          vue: 'Vue'
-        }
-      }
+      // Библиотека, которую мы хотим использовать в качестве внешней зависимости
+      external: ['vue']
     }
   }
 })
