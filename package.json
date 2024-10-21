@@ -1,23 +1,23 @@
 {
   "name": "my-components",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "type": "module",
-  "files": ["dist"],
-  "main": "./dist/vue-component-npm-example.js",
-  "module": "./dist/vue-component-npm-example.js",
-  "types": "./dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/my-components.js",
+  "module": "./dist/my-components.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/main.d.ts",
-      "import": "./dist/vue-component-npm-example.js"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/my-components.js"
     },
     "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "vite build && vue-tsc --emitDeclarationOnly"
   },
   "dependencies": {
     "vue": "^3.5.10"

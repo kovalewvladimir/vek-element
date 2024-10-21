@@ -7,10 +7,13 @@ export default defineConfig({
 
   build: {
     lib: {
-      entry: resolve(__dirname, 'lib/main.ts'),
+      entry: resolve(__dirname, 'lib/index.ts'),
       fileName: 'my-components',
       formats: ['es']
     },
+    
+    sourcemap: true,
+
     rollupOptions: {
       // Библиотека, которую мы хотим использовать в качестве внешней зависимости
       external: ['vue']

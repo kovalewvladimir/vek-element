@@ -3,6 +3,6 @@ import { VueComponentNpmExample } from 'my-components';
 </script>
 
 <template>
-  <VueComponentNpmExample msg="123"></VueComponentNpmExample>
+  <VueComponentNpmExample msg="123"/>
 </template>
 
