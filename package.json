@@ -17,15 +17,18 @@
     "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
-    "build": "vite build && vue-tsc --emitDeclarationOnly"
+    "dev": "vite",
+    "build": "vite build && vue-tsc -p tsconfig.build-lib.json --emitDeclarationOnly"
   },
   "dependencies": {
     "vue": "^3.5.10"
   },
   "devDependencies": {
-    "@types/node": "^22.7.6",
+    "@types/node": "^22.7.7",
     "@vitejs/plugin-vue": "^5.1.4",
-    "typescript": "^5.5.3",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.0",
+    "typescript": "^5.6.3",
     "vite": "^5.4.8",
     "vue-tsc": "^2.1.6"
   }

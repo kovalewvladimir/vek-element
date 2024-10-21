@@ -12,14 +12,8 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
-    "outDir": "dist",
-    "declaration": true,
-
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"],
-      "my-components": ["src/lib/index.ts"]
-    },
+    "outDir": "dist/types",
+    "declaration": true
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.d.ts"],
+  "include": ["src/lib/**/*.ts", "src/lib/**/*.d.ts", "src/lib/**/*.tsx", "src/lib/**/*.vue"]
 }
