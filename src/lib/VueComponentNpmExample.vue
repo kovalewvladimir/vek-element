@@ -20,8 +20,3 @@ const increment = () => {
   </div>
 </template>
 
-<style scoped>
-h1 {
-  color: #7e22ce;
-}
-</style>
