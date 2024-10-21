@@ -5,6 +5,8 @@
     "source.fixAll.eslint": "explicit"
   },
 
+  "vue.complete.casing.tags": "kebab",
+
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

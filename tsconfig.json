@@ -20,6 +20,7 @@
       "@/*": ["src/*"],
       "my-components": ["src/lib/index.ts"]
     },
+    "types": ["vite/client", "element-plus/global"]
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.d.ts"],
 }
