@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { VueComponentNpmExample } from 'my-components';
+import { ElaAutocompleteRemote } from 'element-plus-aa';
 </script>
 
 <template>
-  <VueComponentNpmExample msg="123"/>
+  <ela-autocomplete-remote v-model="value"/>
 </template>
 

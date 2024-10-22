@@ -18,7 +18,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "my-components": ["src/lib/index.ts"]
+      "~/*": ["src/lib/*"],
+      "element-plus-aa": ["src/lib/index.ts"]
     },
     "types": ["vite/client", "element-plus/global"]
   },

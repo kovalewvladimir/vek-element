@@ -1,2 +1,3 @@
-import VueComponentNpmExample from './VueComponentNpmExample.vue'
-export { VueComponentNpmExample }
+import {ElaAutocompleteRemote} from '~/components/autocomplete-remote'
+
+export { ElaAutocompleteRemote }

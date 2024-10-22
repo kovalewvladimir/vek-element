@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/lib/index.ts"),
-      fileName: "my-components",
+      fileName: "index",
       formats: ["es"],
     },
 
@@ -38,8 +38,9 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: "@", replacement: resolve(__dirname, "./src") },
+      { find: "~", replacement: resolve(__dirname, "./src/lib") },
       {
-        find: "my-components",
+        find: "element-plus-aa",
         replacement: resolve(__dirname, "./src/lib/index.ts"),
       },
     ],

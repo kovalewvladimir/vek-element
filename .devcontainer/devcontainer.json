@@ -1,11 +1,11 @@
 {
-	"name": "my-components",
+	"name": "element-plus-aa",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
 	"runArgs": [
 		"-p=8999:8999",
-		"--name=components-frontend"
+		"--name=element-plus-aa"
 	],
 	"customizations": {
 		"vscode": {
