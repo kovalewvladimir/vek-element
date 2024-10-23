@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ElAutocomplete } from "element-plus";
+import { ElAutocomplete, ElSkeleton, ElSkeletonItem } from "element-plus";
 import { ref } from "vue";
 
 import { useLoading } from '~/hooks/useLoading';

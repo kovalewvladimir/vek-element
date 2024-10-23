@@ -4,6 +4,11 @@ import { resolve } from "path";
 import ElementPlus from 'unplugin-element-plus/vite';
 
 export default defineConfig({
+  plugins: [
+    Vue(),
+    ElementPlus({})
+  ],
+
   server: {
     host: "0.0.0.0",
     port: 8999,
@@ -30,18 +35,13 @@ export default defineConfig({
     },
   },
 
-  plugins: [
-    Vue(),
-    ElementPlus({})
-  ],
-
   resolve: {
     alias: [
       { find: "@", replacement: resolve(__dirname, "./src") },
       { find: "~", replacement: resolve(__dirname, "./src/lib") },
       {
         find: "element-plus-aa",
-        replacement: resolve(__dirname, "./src/lib/index.ts"),
+        replacement: resolve(__dirname, "./src/lib"),
       },
     ],
   },

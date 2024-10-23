@@ -19,7 +19,8 @@
     "paths": {
       "@/*": ["src/*"],
       "~/*": ["src/lib/*"],
-      "element-plus-aa": ["src/lib/index.ts"]
+      "element-plus-aa": ["src/lib/index.ts"],
+      "element-plus-aa/*": ["src/lib/*"]
     },
     "types": ["vite/client", "element-plus/global"]
   },

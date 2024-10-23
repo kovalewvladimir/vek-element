@@ -13,6 +13,10 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./utils": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
