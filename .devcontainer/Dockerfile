@@ -1,4 +1,7 @@
-FROM node:20
+FROM node:22
+
+# Пакет npm-check-updates позволяет проверять и обновлять зависимости пакетов npm.
+RUN npm install -g npm-check-updates
 
 # vite-plugin-checker editor
 ENV LAUNCH_EDITOR=code
