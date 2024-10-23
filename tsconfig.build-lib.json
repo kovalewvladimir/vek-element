@@ -17,8 +17,13 @@
 
     "baseUrl": "./",
     "paths": {
-      "~/*": ["src/lib/*"],
-    },
+      "~/*": ["src/lib/*"]
+    }
   },
-  "include": ["src/lib/**/*.ts", "src/lib/**/*.d.ts", "src/lib/**/*.tsx", "src/lib/**/*.vue"]
+  "include": [
+    "src/lib/**/*.ts",
+    "src/lib/**/*.d.ts",
+    "src/lib/**/*.tsx",
+    "src/lib/**/*.vue"
+  ]
 }
