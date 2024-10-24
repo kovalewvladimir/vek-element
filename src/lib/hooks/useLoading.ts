@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { ElaNotificationShow } from '~/components/notification'
 
 type ErrorClass = new (...args: any[]) => Error
-const _skippedErrors: ErrorClass[] = []
+let _skippedErrors: ErrorClass[] = []
 
 /**
  * Конфигурация уведомлений
