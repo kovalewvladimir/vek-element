@@ -47,7 +47,7 @@ const { loading, loadingWrapper } = useLoading()
 const inputRef = ref<InstanceType<typeof ElAutocomplete>>()
 const options = ref<ReadonlyArray<any>>([])
 
-loadingWrapper(async () => {
+void loadingWrapper(async () => {
   const { data } = await getLoadingOptions()
 
   options.value = data

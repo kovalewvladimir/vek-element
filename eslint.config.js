@@ -30,11 +30,16 @@ export default [
     }
   },
 
+  // Vue + TypeScript
+  // https://github.com/vuejs/eslint-config-typescript
   ...pluginVue.configs['flat/essential'],
-  ...vueTsEslintConfig(),
-
+  // Включите другие правила, которые вам нужны.
   {
-    name: 'typescript-eslint',
+    rules: {}
+  },
+  ...vueTsEslintConfig({ extends: ['recommendedTypeChecked'] }),
+  // Отключите рекомендуемые правила, которые вам не нужны.
+  {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off'
     }
