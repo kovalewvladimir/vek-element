@@ -1,3 +1,4 @@
+import unocss from '@unocss/eslint-config/flat'
 import vueTsEslintConfig from '@vue/eslint-config-typescript'
 import importPlugin from 'eslint-plugin-import'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
@@ -18,7 +19,6 @@ export default [
     name: 'import-sort',
     plugins: {
       'simple-import-sort': simpleImportSort,
-
       import: importPlugin
     },
     rules: {
@@ -27,6 +27,13 @@ export default [
       'import/first': 'error',
       'import/newline-after-import': 'error',
       'import/no-duplicates': 'error'
+    }
+  },
+
+  {
+    ...unocss,
+    rules: {
+      'unocss/enforce-class-compile': 'error'
     }
   },
 

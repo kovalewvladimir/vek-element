@@ -1,5 +1,6 @@
 import Vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
+import UnoCSS from 'unocss/vite'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { defineConfig } from 'vite'
 import Checker from 'vite-plugin-checker'
@@ -7,7 +8,10 @@ import Checker from 'vite-plugin-checker'
 export default defineConfig({
   plugins: [
     Vue(),
+
     ElementPlus({}),
+    UnoCSS(),
+
     Checker({
       vueTsc: true,
       eslint: {

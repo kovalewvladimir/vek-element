@@ -19,6 +19,7 @@
 
   "include": [
     "vite.config.*",
+    "uno.config.*",
     "vitest.config.*",
     "cypress.config.*",
     "nightwatch.conf.*",
