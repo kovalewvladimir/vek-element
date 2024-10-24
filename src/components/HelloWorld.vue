@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ElaAutocompleteRemote } from 'element-plus-aa'
 import { ElCard } from 'element-plus'
-import { ref } from 'vue'
+import { ElaAutocompleteRemote } from 'element-plus-aa'
 import { asyncSleep } from 'element-plus-aa/utils'
+import { ref } from 'vue'
 
 const value = ref<string>('')
 
