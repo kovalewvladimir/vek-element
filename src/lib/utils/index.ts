@@ -1,3 +1,3 @@
-import { asyncSleep } from "~/utils/sleep";
+import { asyncSleep } from '~/utils/sleep'
 
-export {asyncSleep}
+export { asyncSleep }

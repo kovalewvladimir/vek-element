@@ -1,88 +1,85 @@
 <script setup lang="ts">
-import { ElAutocomplete, ElSkeleton, ElSkeletonItem } from "element-plus";
-import { ref } from "vue";
+import { ElAutocomplete, ElSkeleton, ElSkeletonItem } from 'element-plus'
+import { ref } from 'vue'
 
-import { useLoading } from '~/hooks/useLoading';
+import { useLoading } from '~/hooks/useLoading'
 
 const {
   getLoadingOptions,
-  valueKey = "value",
-  placeholder = "",
+  valueKey = 'value',
+  placeholder = '',
   maxReturnComplete = 50,
-  waitSearch = 500,
+  waitSearch = 500
 } = defineProps<{
   /**
    * TODO: Описание
    */
-  getLoadingOptions: () => Promise<{data: ReadonlyArray<any>}>;
+  getLoadingOptions: () => Promise<{ data: ReadonlyArray<any> }>
   /**
    * Ключ значения
-   * 
+   *
    * default "value"
    */
-  valueKey?: string;
+  valueKey?: string
   /**
    * placeholder
    *
    * default ""
    */
-  placeholder?: string;
+  placeholder?: string
   /**
    * Максимальное количество возвращаемых значений
    *
    * default 50
    */
-  maxReturnComplete?: number;
+  maxReturnComplete?: number
   /**
    * Задержка перед поиском
    *
    * default 500
    */
-  waitSearch?: number;
-}>();
+  waitSearch?: number
+}>()
 
-const value = defineModel<string>({ required: true });
+const value = defineModel<string>({ required: true })
 
-const {loading, loadingWrapper} = useLoading();
-const inputRef = ref<InstanceType<typeof ElAutocomplete>>();
-const options = ref<ReadonlyArray<any>>([]);
+const { loading, loadingWrapper } = useLoading()
+const inputRef = ref<InstanceType<typeof ElAutocomplete>>()
+const options = ref<ReadonlyArray<any>>([])
 
 loadingWrapper(async () => {
-  const { data } = await getLoadingOptions();
+  const { data } = await getLoadingOptions()
 
-  options.value = data;
-})();
+  options.value = data
+})()
 
 const querySearch = (query: string, cb: any) => {
-  const result: Array<any> = [];
+  const result: Array<any> = []
 
   if (query) {
-    query = query.toLowerCase();
-    let i = 0;
+    query = query.toLowerCase()
+    let i = 0
     for (const option of options.value) {
       if (option[valueKey].toLowerCase().indexOf(query) !== -1) {
-        result.push(option);
-        if (++i === maxReturnComplete) break;
+        result.push(option)
+        if (++i === maxReturnComplete) break
       }
     }
   } else {
-    result.push(...options.value.slice(0, maxReturnComplete));
+    result.push(...options.value.slice(0, maxReturnComplete))
   }
 
-  cb(result);
-};
+  cb(result)
+}
 
 const nextFocusInput = () => {
-  inputRef.value?.blur();
-};
+  inputRef.value?.blur()
+}
 
 const isValid = (): boolean => {
-  return (
-    options.value.find((option) => option[valueKey] === value.value) !==
-    undefined
-  );
-};
-defineExpose({ isValid });
+  return options.value.find((option) => option[valueKey] === value.value) !== undefined
+}
+defineExpose({ isValid })
 </script>
 
 <template>
