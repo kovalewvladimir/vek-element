@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { ElAutocomplete, ElSkeleton, ElSkeletonItem } from 'element-plus'
-import { ref } from 'vue'
+import {
+  ElAutocomplete,
+  ElSkeleton,
+  ElSkeletonItem,
+  useGlobalComponentSettings
+} from 'element-plus'
+import { computed, onMounted, ref, toValue, useTemplateRef } from 'vue'
 
 import { useLoading } from '~/hooks/useLoading'
 
@@ -44,14 +49,17 @@ const {
 const value = defineModel<string>({ required: true })
 
 const { loading, loadingWrapper } = useLoading()
-const inputRef = ref<InstanceType<typeof ElAutocomplete>>()
+const { size: globalSize } = useGlobalComponentSettings('autocomplete')
+
+const inputRef = useTemplateRef<InstanceType<typeof ElAutocomplete>>('inputRef')
 const options = ref<ReadonlyArray<any>>([])
 
-void loadingWrapper(async () => {
-  const { data } = await getLoadingOptions()
-
-  options.value = data
-})()
+onMounted(
+  loadingWrapper(async () => {
+    const { data } = await getLoadingOptions()
+    options.value = data
+  })
+)
 
 const querySearch = (query: string, cb: any) => {
   const result: Array<any> = []
@@ -76,6 +84,18 @@ const nextFocusInput = () => {
   inputRef.value?.blur()
 }
 
+const skeletonSize = computed(() => {
+  switch (toValue(globalSize)) {
+    case 'small':
+      return { height: 'var(--el-component-size-small)' }
+    case 'large':
+      return { height: 'var(--el-component-size-large)' }
+    case 'default':
+    default:
+      return { height: 'var(--el-component-size)' }
+  }
+})
+
 const isValid = (): boolean => {
   return options.value.find((option) => option[valueKey] === value.value) !== undefined
 }
@@ -83,9 +103,9 @@ defineExpose({ isValid })
 </script>
 
 <template>
-  <el-skeleton :loading="loading" animated style="height: 24px">
+  <el-skeleton :loading="loading" animated :style="skeletonSize">
     <template #template>
-      <el-skeleton-item style="height: 24px" />
+      <el-skeleton-item :style="skeletonSize" />
     </template>
     <template #default>
       <el-autocomplete
@@ -97,7 +117,6 @@ defineExpose({ isValid })
         clearable
         :debounce="waitSearch"
         :placeholder="placeholder"
-        style="width: 100%"
         @select="nextFocusInput"
       />
     </template>
