@@ -2,9 +2,20 @@ import Vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { defineConfig } from 'vite'
+import Checker from 'vite-plugin-checker'
 
 export default defineConfig({
-  plugins: [Vue(), ElementPlus({})],
+  plugins: [
+    Vue(),
+    ElementPlus({}),
+    Checker({
+      vueTsc: true,
+      eslint: {
+        useFlatConfig: true,
+        lintCommand: 'eslint "./**"'
+      }
+    })
+  ],
 
   server: {
     host: '0.0.0.0',
