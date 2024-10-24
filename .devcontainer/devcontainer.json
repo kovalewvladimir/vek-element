@@ -1,37 +1,34 @@
 {
-	"name": "element-plus-aa",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	"runArgs": [
-		"-p=8999:8999",
-		"--name=element-plus-aa"
-	],
-	"customizations": {
-		"vscode": {
-			"settings": {},
-			"extensions": [
-				// проверка кода скрипта
-				"dbaeumer.vscode-eslint",
-				// форматирование кода
-				"esbenp.prettier-vscode",
-				// форматирование CSS
-				"stylelint.vscode-stylelint",
-				// подсветка файла .env
-				"mikestead.dotenv",
-				// необходим для разработки vue
-				"vue.volar",
+  "name": "element-plus-aa",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": ["-p=8999:8999", "--name=element-plus-aa"],
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        // проверка кода скрипта
+        "dbaeumer.vscode-eslint",
+        // форматирование кода
+        "esbenp.prettier-vscode",
+        // форматирование CSS
+        "stylelint.vscode-stylelint",
+        // подсветка файла .env
+        "mikestead.dotenv",
+        // необходим для разработки vue
+        "vue.volar",
 
-				// для UnoCSS
-				"antfu.unocss",
+        // для UnoCSS
+        "antfu.unocss",
 
-				// Словари для проверки орфографии
-				"streetsidesoftware.code-spell-checker",
-				"streetsidesoftware.code-spell-checker-russian",
+        // Словари для проверки орфографии
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-russian",
 
-				// git
-				"donjayamanne.githistory"
-			]
-		}
-	}
+        // git
+        "donjayamanne.githistory"
+      ]
+    }
+  }
 }

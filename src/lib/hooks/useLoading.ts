@@ -10,7 +10,7 @@ const _skippedErrors: ErrorClass[] = []
  * @param skippedErrors - массив классов ошибок, которые не будут показываться в уведомлениях
  */
 const ElaNotificationConfig = (skippedErrors: ErrorClass[]) => {
-  skippedErrors = skippedErrors
+  _skippedErrors = skippedErrors
 }
 
 /**
@@ -26,11 +26,7 @@ const useLoading = () => {
       try {
         await cb(...args)
       } catch (error) {
-        if (
-          !_skippedErrors.some((v) => {
-            error instanceof v
-          })
-        ) {
+        if (!_skippedErrors.some((v) => error instanceof v)) {
           ElaNotificationShow('Ошибка', (error as Error).message, 'error')
         }
       } finally {
@@ -45,4 +41,4 @@ const useLoading = () => {
   }
 }
 
-export { ElaNotificationConfig,useLoading }
+export { ElaNotificationConfig, useLoading }

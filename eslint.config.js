@@ -31,5 +31,12 @@ export default [
   },
 
   ...pluginVue.configs['flat/essential'],
-  ...vueTsEslintConfig()
+  ...vueTsEslintConfig(),
+
+  {
+    name: 'typescript-eslint',
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off'
+    }
+  }
 ]
