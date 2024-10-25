@@ -39,15 +39,19 @@ export default [
 
   // Vue + TypeScript
   // https://github.com/vuejs/eslint-config-typescript
-  ...pluginVue.configs['flat/essential'],
+  ...pluginVue.configs['flat/recommended'],
   // Включите другие правила, которые вам нужны.
   {
-    rules: {}
+    rules: {
+      'vue/no-undef-components': 'error'
+    }
   },
   ...vueTsEslintConfig({ extends: ['recommendedTypeChecked'] }),
   // Отключите рекомендуемые правила, которые вам не нужны.
   {
     rules: {
+      'vue/singleline-html-element-content-newline': 'off',
+
       '@typescript-eslint/no-explicit-any': 'off'
     }
   }
