@@ -1,11 +1,36 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "target": "es2022",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "Bundler",
+
+    "noEmit": true,
+
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "~/*": ["src/lib/*"],
+      "element-plus-aa": ["src/lib/index.ts"],
+      "element-plus-aa/*": ["src/lib/*"]
     },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ]
+    "types": ["node", "vite/client", "element-plus/global"]
+  },
+
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+
+    "vite.config.*",
+    "uno.config.*",
+    "vitest.config.*",
+    "cypress.config.*",
+    "nightwatch.conf.*",
+    "playwright.config.*"
+  ],
+  "exclude": ["src/**/__tests__/*"]
 }
