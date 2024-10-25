@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ElCard } from 'element-plus'
-import { ElaAutocompleteRemote } from 'element-plus-aa'
+import { ElButton, ElCard } from 'element-plus'
+import { ElaAutocompleteRemote, ElaModalDialog, ElaModalDialogInstance } from 'element-plus-aa'
 import { asyncSleep } from 'element-plus-aa/utils'
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 
-const value = ref<string>('')
+const autocompleteValue = ref<string>('')
 
 const getOptions = async () => {
   await asyncSleep(3000)
@@ -16,10 +16,28 @@ const getOptions = async () => {
     ]
   }
 }
+
+const dialogRef = useTemplateRef<ElaModalDialogInstance>('dialogRef')
 </script>
 
 <template>
-  <el-card header="ela-autocomplete-remote" style="width: 300px">
-    <ela-autocomplete-remote v-model="value" :get-loading-options="getOptions" />
-  </el-card>
+  <div class=":uno: w-300px">
+    <el-card header="ela-autocomplete-remote">
+      <ela-autocomplete-remote
+        v-model="autocompleteValue"
+        :get-loading-options="getOptions"
+      />
+    </el-card>
+    <el-card>
+      <el-button @click="() => dialogRef?.open()">Open modal dialog</el-button>
+      <ela-modal-dialog ref="dialogRef">
+        <template #default>
+          <h1>Test ela-modal-dialog</h1>
+        </template>
+        <template #footer>
+          <el-button @click="() => dialogRef?.close()">Close</el-button>
+        </template>
+      </ela-modal-dialog>
+    </el-card>
+  </div>
 </template>

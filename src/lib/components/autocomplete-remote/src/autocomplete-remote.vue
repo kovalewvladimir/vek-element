@@ -103,7 +103,11 @@ defineExpose({ isValid })
 </script>
 
 <template>
-  <el-skeleton :loading="loading" animated :style="skeletonSize">
+  <el-skeleton
+    :loading="loading"
+    animated
+    :style="skeletonSize"
+  >
     <template #template>
       <el-skeleton-item :style="skeletonSize" />
     </template>

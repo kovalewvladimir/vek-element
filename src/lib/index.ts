@@ -1,5 +1,10 @@
 import 'virtual:uno.css'
 
-import { ElaAutocompleteRemote } from '~/components/autocomplete-remote'
+import {
+  ElaAutocompleteRemote,
+  ElaAutocompleteRemoteInstance
+} from '~/components/autocomplete-remote'
+import { ElaModalDialog, ElaModalDialogInstance } from '~/components/modal-dialog'
 
-export { ElaAutocompleteRemote }
+export { ElaAutocompleteRemote, ElaModalDialog }
+export type { ElaAutocompleteRemoteInstance, ElaModalDialogInstance }
