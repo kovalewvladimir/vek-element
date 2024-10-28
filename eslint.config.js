@@ -1,5 +1,6 @@
 import unocss from '@unocss/eslint-config/flat'
 import vueTsEslintConfig from '@vue/eslint-config-typescript'
+import skipFormattingConfig from 'eslint-config-prettier'
 import importPlugin from 'eslint-plugin-import'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import pluginVue from 'eslint-plugin-vue'
@@ -54,5 +55,7 @@ export default [
 
       '@typescript-eslint/no-explicit-any': 'off'
     }
-  }
+  },
+  // Отключает все правила, которые не нужны или могут конфликтовать с Prettier .
+  skipFormattingConfig
 ]
