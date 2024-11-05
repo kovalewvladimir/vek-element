@@ -1,3 +1,5 @@
-import ElaIconSvg from '~/components/icon-svg/src/icon-svg.vue'
+import ElaIconSvgDynamic from '~/components/icon-svg/src/icon-svg-dynamic.vue'
+import ElaIconSvgSlot from '~/components/icon-svg/src/icon-svg-slot.vue'
+import EpCloseIcon from '~/components/icon-svg/src/svgs/ep-close.vue'
 
-export { ElaIconSvg }
+export { ElaIconSvgDynamic, ElaIconSvgSlot, EpCloseIcon }

@@ -1,3 +1,4 @@
+import { isNull } from '~/utils/is'
 import { asyncSleep } from '~/utils/sleep'
 
-export { asyncSleep }
+export { asyncSleep, isNull }

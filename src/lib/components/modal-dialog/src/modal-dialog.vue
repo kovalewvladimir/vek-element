@@ -2,8 +2,7 @@
 import { ElDialog } from 'element-plus'
 import { nextTick, ref } from 'vue'
 
-import { ElaIconSvg } from '~/components/icon-svg'
-import { EpCloseSvg } from '~/svgs'
+import { ElaIconSvgSlot, EpCloseIcon } from '~/components/icon-svg'
 
 const {
   dialogTitle = 'Dialog',
@@ -89,15 +88,15 @@ defineExpose({ open, close })
             </slot>
           </div>
           <div class=":uno: flex flex-grow-1 flex-justify-end">
-            <ela-icon-svg
+            <ela-icon-svg-slot
               color="var(--el-color-info)"
               hover-color="var(--el-color-primary)"
               class=":uno: cursor-pointer"
               :size="24"
               @click="close()"
             >
-              <ep-close-svg />
-            </ela-icon-svg>
+              <ep-close-icon />
+            </ela-icon-svg-slot>
           </div>
         </div>
       </template>

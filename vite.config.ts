@@ -4,6 +4,9 @@ import UnoCSS from 'unocss/vite'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { defineConfig } from 'vite'
 import Checker from 'vite-plugin-checker'
+import SvgLoader from 'vite-svg-loader'
+
+console.log(__dirname)
 
 export default defineConfig({
   plugins: [
@@ -11,6 +14,8 @@ export default defineConfig({
 
     ElementPlus({}),
     UnoCSS(),
+
+    SvgLoader(),
 
     Checker({
       vueTsc: true,
