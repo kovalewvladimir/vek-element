@@ -7,13 +7,13 @@ import {
   ElaModalDialog,
   ElaModalDialogInstance
 } from 'element-plus-aa'
-// import { asyncSleep } from 'element-plus-aa/utils'
+import { asyncSleep } from 'element-plus-aa/utils'
 import { ref, useTemplateRef } from 'vue'
 
 const autocompleteValue = ref<string>('')
 
 const getOptions = async () => {
-  // await asyncSleep(3000);
+  await asyncSleep(3000)
   return {
     data: [
       { value: 'Test1', label: 'Test1' },
