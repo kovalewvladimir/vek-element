@@ -9,6 +9,7 @@
     "dev": "npm run dev -w=element-plus-aa-example",
     "publish": "npm publish -w=element-plus-aa",
     "lint": "eslint .",
+    "type-check": "vue-tsc --noEmit -p ./apps/example/tsconfig.json",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -21,7 +22,6 @@
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "husky": "9.1.6",
-    "lint-staged": "15.2.10",
     "prettier": "3.3.3",
     "typescript": "5.6.3",
     "unocss": "0.63.6",
