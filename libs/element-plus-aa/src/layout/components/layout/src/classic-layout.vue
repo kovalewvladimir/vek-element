@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
+import { useLayoutConfigStore } from '../../../stores'
 import { TheLogo } from '../../logo'
 import { TheMenu } from '../../menu'
+
+const config = useLayoutConfigStore()
+
+const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 </script>
 
 <template>
@@ -29,7 +36,7 @@ import { TheMenu } from '../../menu'
   height: 100vh;
 
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: v-bind(widthLeft) 1fr;
   grid-template-rows: 50px 35px 1fr;
   gap: 0px 0px;
   grid-auto-flow: row;
@@ -37,6 +44,8 @@ import { TheMenu } from '../../menu'
     'menu-left header'
     'menu-left tags'
     'menu-left main';
+
+  transition: grid-template-columns 0.5s ease; /* Добавляем переход */
 }
 
 .menu-left {

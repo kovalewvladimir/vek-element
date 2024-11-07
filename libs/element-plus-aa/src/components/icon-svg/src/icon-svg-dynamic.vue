@@ -11,10 +11,10 @@ const {
   /**
    * Имя иконки
    *
-   * Для работы компонента необходимо подключить vite плагин vite-svg-loader
-   * (https://www.npmjs.com/package/vite-svg-loader)
-   *
-   * После подключения плагина, иконки должны быть в папке /assets/svgs
+   * Для работы компонента необходимо:
+   *  1. подключить vite плагин vite-svg-loader
+   *     https://www.npmjs.com/package/vite-svg-loader
+   *  2. иконки должны быть в папке /assets/svgs
    */
   name: string
   /**

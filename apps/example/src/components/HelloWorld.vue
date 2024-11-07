@@ -5,10 +5,13 @@ import {
   ElaIconSvgDynamic,
   ElaLayout,
   ElaModalDialog,
-  ElaModalDialogInstance
+  ElaModalDialogInstance,
+  useLayoutConfigStore
 } from 'element-plus-aa'
 import { asyncSleep } from 'element-plus-aa/utils'
 import { ref, useTemplateRef } from 'vue'
+
+const configLayout = useLayoutConfigStore()
 
 const autocompleteValue = ref<string>('')
 
@@ -57,6 +60,12 @@ const dialogRef = useTemplateRef<ElaModalDialogInstance>('dialogRef')
             <el-button @click="() => dialogRef?.close()">Close</el-button>
           </template>
         </ela-modal-dialog>
+      </el-card>
+
+      <el-card>
+        <el-button @click="configLayout.menu.collapse = !configLayout.menu.collapse"
+          >collapse - {{ configLayout.menu.collapse }}</el-button
+        >
       </el-card>
     </el-card>
   </ela-layout>

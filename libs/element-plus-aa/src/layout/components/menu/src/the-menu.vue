@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { ElMenu, ElMenuItem, ElSubMenu } from 'element-plus'
+import { ElMenu } from 'element-plus'
+
+import { useLayoutConfigStore } from '../../../stores/layoutConfigStore'
+import TheMenuItem from './the-menu-item.vue'
+
+const config = useLayoutConfigStore()
 </script>
 
 <template>
-  <img src="" />
-  <el-menu collapse>
-    <el-menu-item index="1">Option 1</el-menu-item>
-    <el-menu-item index="2">Option 1</el-menu-item>
-    <el-sub-menu index="3">
-      <template #title>Option 3</template>
-      <el-menu-item index="3-1">Option 3-1</el-menu-item>
-      <el-menu-item index="3-2">Option 3-2</el-menu-item>
-      <el-menu-item index="3-3">Option 3-3</el-menu-item>
-    </el-sub-menu>
+  <el-menu :collapse="config.menu.collapse">
+    <the-menu-item
+      v-for="(item, index) in config.menu.items"
+      :key="index"
+      :root-index="index.toString()"
+      :menu-item="item"
+    />
   </el-menu>
 </template>
+
+<style scoped>
+.el-menu {
+  border-right: none;
+}
+</style>
