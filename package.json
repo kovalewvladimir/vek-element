@@ -10,7 +10,7 @@
     "publish": "npm publish -w=element-plus-aa",
     "lint": "eslint .",
     "type-check": "vue-tsc --noEmit -p ./apps/example/tsconfig.json",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "22.7.9",
