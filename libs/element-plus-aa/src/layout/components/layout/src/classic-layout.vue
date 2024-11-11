@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useLayoutConfigStore } from '../../../stores'
 import { TheLogo } from '../../logo'
 import { TheMenu } from '../../menu'
+import { TheTags } from '../../tags'
 
 const config = useLayoutConfigStore()
 
@@ -18,7 +19,9 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
       <the-menu />
     </div>
     <div class="header" />
-    <div class="tags" />
+    <div class="tags">
+      <the-tags />
+    </div>
     <div class="main">
       <slot />
     </div>

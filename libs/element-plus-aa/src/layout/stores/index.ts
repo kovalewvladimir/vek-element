@@ -1,9 +1,19 @@
+import { App } from 'vue'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+
+import type { IAppRouteRecordRaw } from '../../routers/types'
 import { useLayoutConfigStore } from './layoutConfigStore'
-import type { MenuItem } from './types'
+import { useNavigationStore } from './navigateStore'
 
 const layoutConfigStore = useLayoutConfigStore()
 
-interface ConfigLayout {
+interface IConfigStore {
+  layout?: IConfigLayout
+  app: App
+  routes: IAppRouteRecordRaw[]
+}
+
+interface IConfigLayout {
   /**
    * Заголовок
    */
@@ -12,16 +22,22 @@ interface ConfigLayout {
    * Логотип (svg)
    */
   logo?: string
-  /**
-   * Меню
-   */
-  menu?: MenuItem[]
 }
 
-const createLayoutStore = (config: ConfigLayout) => {
-  if (config.title) layoutConfigStore.logo.title = config.title
-  if (config.logo) layoutConfigStore.logo.svg = config.logo
-  if (config.menu) layoutConfigStore.menu.items = config.menu
+const createEla = (config: IConfigStore) => {
+  if (config.layout?.title) layoutConfigStore.logo.setTitle(config.layout?.title)
+  if (config.layout?.logo) layoutConfigStore.logo.setSvg(config.layout?.logo)
+
+  const router = createRouter({
+    history: createWebHistory(),
+    routes: config.routes as RouteRecordRaw[]
+  })
+
+  const navigationStore = useNavigationStore()
+  navigationStore.setRouter(router)
+  navigationStore.setMenuItems(config.routes)
+
+  config.app.use(router)
 }
 
-export { createLayoutStore, useLayoutConfigStore }
+export { createEla, useLayoutConfigStore, useNavigationStore }

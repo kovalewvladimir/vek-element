@@ -1,4 +1,4 @@
-import { createLayoutStore } from 'element-plus-aa'
+import { createEla, IAppRouteRecordRaw } from 'element-plus-aa'
 import { createApp } from 'vue'
 
 import App from '@/App.vue'
@@ -9,21 +9,54 @@ if (import.meta.env.PROD) {
 
 const app = createApp(App)
 
-createLayoutStore({
-  title: 'TEST123',
-  logo: 'el-logo',
-  menu: [
-    { name: 'Home', meta: { title: 'Home', icon: 'el-icon-menu' } },
-    { name: 'About', meta: { title: 'About', icon: 'el-icon-menu' } },
-    {
-      name: 'Contact',
-      meta: { title: 'Contact', icon: 'el-icon-menu' },
-      children: [
-        { name: 'Contact1', meta: { title: 'Contact1', icon: 'el-icon-menu' } },
-        { name: 'Contact2', meta: { title: 'Contact2', icon: 'el-icon-menu' } }
-      ]
-    }
-  ]
+const routes: IAppRouteRecordRaw[] = [
+  {
+    name: 'main',
+    path: '/',
+    meta: { title: 'main', icon: 'el-icon-menu' },
+    component: () => import('@/components/the-test01.vue')
+  },
+  {
+    name: 'test-path',
+    path: '/test',
+    meta: { title: 'test-path', icon: 'el-icon-menu' },
+    component: () => import('@/components/the-test03.vue')
+  },
+  {
+    name: 'test-path-input',
+    path: '/test/:id',
+    meta: { title: 'test-path-input', icon: 'el-icon-menu', hidden: true },
+    component: () => import('@/components/the-test03-input.vue')
+  },
+  {
+    name: 'test1',
+    path: '/test1',
+    meta: { title: 'test1', icon: 'el-icon-menu' },
+    children: [
+      {
+        name: 'test1-1',
+        path: '1',
+        meta: { title: 'test1-1', icon: 'el-icon-menu' },
+        children: [
+          {
+            name: 'test1-1-1',
+            path: '1',
+            meta: { title: 'test1-1-1', icon: 'el-icon-menu' },
+            component: () => import('@/components/the-test02.vue')
+          }
+        ]
+      }
+    ]
+  }
+]
+
+createEla({
+  layout: {
+    title: 'TEST123',
+    logo: 'el-logo'
+  },
+  app: app,
+  routes: routes
 })
 
 app.mount('#app')

@@ -1,7 +1,5 @@
 import { Reactive, reactive } from 'vue'
 
-import type { MenuItem } from './types'
-
 class Logo {
   private _title: string
   private _svg: string | null
@@ -16,7 +14,7 @@ class Logo {
   get svg() {
     return this._svg
   }
-  set svg(svg: string | null) {
+  setSvg(svg: string | null) {
     this._svg = svg
   }
 
@@ -27,31 +25,22 @@ class Logo {
   get title() {
     return this._title
   }
-  set title(title: string) {
+  setTitle(title: string) {
     this._title = title
   }
 }
 
 class Menu {
-  private _items: MenuItem[]
   private _collapse: boolean
 
   constructor() {
-    this._items = []
     this._collapse = false
-  }
-
-  get items() {
-    return this._items
-  }
-  set items(items: MenuItem[]) {
-    this._items = items
   }
 
   get collapse() {
     return this._collapse
   }
-  set collapse(collapsed: boolean) {
+  setCollapse(collapsed: boolean) {
     this._collapse = collapsed
   }
 }
@@ -74,9 +63,5 @@ class LayoutConfigStore {
 }
 
 const layoutConfigStore = new LayoutConfigStore()
-
-const useLayoutConfigStore = () => {
-  return layoutConfigStore
-}
-
+const useLayoutConfigStore = () => layoutConfigStore
 export { useLayoutConfigStore }

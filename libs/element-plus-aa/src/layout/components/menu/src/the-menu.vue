@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import { ElMenu } from 'element-plus'
+import { toValue } from 'vue'
 
 import { useLayoutConfigStore } from '../../../stores/layoutConfigStore'
+import { useNavigationStore } from '../../../stores/navigateStore'
 import TheMenuItem from './the-menu-item.vue'
 
 const config = useLayoutConfigStore()
+const navigationStore = useNavigationStore()
 </script>
 
 <template>
-  <el-menu :collapse="config.menu.collapse">
+  <el-menu
+    :collapse="config.menu.collapse"
+    :default-active="toValue(navigationStore.menuActive)"
+  >
     <the-menu-item
-      v-for="(item, index) in config.menu.items"
+      v-for="(item, index) in navigationStore.menuItems"
       :key="index"
-      :root-index="index.toString()"
       :menu-item="item"
     />
   </el-menu>

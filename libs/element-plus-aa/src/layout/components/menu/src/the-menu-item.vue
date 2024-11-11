@@ -1,35 +1,46 @@
 <script setup lang="ts">
 import { ElMenuItem, ElSubMenu } from 'element-plus'
+import { useRouter } from 'vue-router'
 
 import { ElaIconSvgDynamic } from '../../../../components/icon-svg'
-import type { MenuItem } from '../../../stores/types'
+import type { IMenuItem } from '../../../stores/types'
 
-const { menuItem, rootIndex } = defineProps<{
-  rootIndex: string
-  menuItem: MenuItem
+const { menuItem } = defineProps<{
+  menuItem: IMenuItem
 }>()
+
+const router = useRouter()
+
+const menuItemClk = async () => {
+  if (!menuItem.url) return
+  await router.push(menuItem.url)
+}
 </script>
 
 <template>
-  <template v-if="menuItem.children">
-    <el-sub-menu :index="rootIndex">
-      <template #title>
+  <template v-if="!menuItem.meta.hidden">
+    <template v-if="menuItem.children">
+      <el-sub-menu :index="menuItem.name">
+        <template #title>
+          <ela-icon-svg-dynamic :name="menuItem.meta.icon" />
+          <span>{{ menuItem.meta.title }}</span>
+        </template>
+        <the-menu-item
+          v-for="(item, index) in menuItem.children"
+          :key="index"
+          :menu-item="item"
+        />
+      </el-sub-menu>
+    </template>
+
+    <template v-else>
+      <el-menu-item
+        :index="menuItem.name"
+        @click="menuItemClk"
+      >
         <ela-icon-svg-dynamic :name="menuItem.meta.icon" />
         <span>{{ menuItem.meta.title }}</span>
-      </template>
-      <the-menu-item
-        v-for="(item, index) in menuItem.children"
-        :key="index"
-        :root-index="`${rootIndex}-${index}`"
-        :menu-item="item"
-      />
-    </el-sub-menu>
-  </template>
-
-  <template v-else>
-    <el-menu-item :index="rootIndex">
-      <ela-icon-svg-dynamic :name="menuItem.meta.icon" />
-      <span>{{ menuItem.meta.title }}</span>
-    </el-menu-item>
+      </el-menu-item>
+    </template>
   </template>
 </template>

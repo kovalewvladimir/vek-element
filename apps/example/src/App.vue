@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from '@/components/HelloWorld.vue'
+import { ElaLayout } from 'element-plus-aa'
 </script>
 
 <template>
-  <HelloWorld msg="Vite + Vue" />
+  <ela-layout />
 </template>
