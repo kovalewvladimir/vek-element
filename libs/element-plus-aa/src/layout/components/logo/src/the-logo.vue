@@ -8,10 +8,11 @@ const config = useLayoutConfigStore()
 
 <template>
   <template v-if="config.logo.visible">
-    <div class=":uno: h-full flex items-center">
+    <div class=":uno: h-full color-white flex items-center">
       <icon-svg-dynamic
         v-if="!isNull(config.logo.svg)"
         :name="config.logo.svg"
+        :size="64"
       />
 
       <div>{{ config.logo.title }}</div>

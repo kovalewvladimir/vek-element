@@ -1,4 +1,5 @@
 import 'virtual:uno.css'
+import './styles/var.css'
 
 export * from './components/autocomplete-remote'
 export * from './components/icon-svg'

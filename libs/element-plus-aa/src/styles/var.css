@@ -1,0 +1,16 @@
+:root {
+  /* 
+   * Меню 
+   */
+  --menu-color: #bfcbd9;
+  --menu-bg-color: #001529;
+
+  --menu-active-color: #fff;
+  --menu-active-bg-color: var(--el-color-primary);
+
+  --menu-hover-color: #fff;
+  --menu-hover-bg-color: #001e3b;
+
+  --submenu-bg-color: #0f2438;
+  --submenu-hover-bg-color: #14304a;
+}

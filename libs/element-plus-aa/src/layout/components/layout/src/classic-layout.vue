@@ -14,10 +14,10 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 <template>
   <!-- eslint-disable unocss/enforce-class-compile -->
   <div class="layoutContainer">
-    <div class="header-left">
+    <div class="logo">
       <the-logo />
     </div>
-    <div class="menu-left">
+    <div class="menu">
       <the-menu />
     </div>
     <div class="header" />
@@ -46,19 +46,24 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
   gap: 0px 0px;
   grid-auto-flow: row;
   grid-template-areas:
-    'header-left header'
-    'menu-left   tags'
-    'menu-left   main';
+    'logo header'
+    'menu tags'
+    'menu main';
 
-  transition: grid-template-columns 0.5s ease; /* Добавляем переход */
+  /* Добавляем переход */
+  transition: grid-template-columns 0.3s ease;
 }
 
-.header-left {
-  grid-area: header-left;
+.logo {
+  grid-area: logo;
+
+  background-color: var(--menu-bg-color);
 }
 
-.menu-left {
-  grid-area: menu-left;
+.menu {
+  grid-area: menu;
+
+  background-color: var(--menu-bg-color);
 }
 
 .header {

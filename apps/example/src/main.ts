@@ -45,6 +45,38 @@ const routes: IAppRouteRecordRaw[] = [
             component: () => import('@/components/the-test02.vue')
           }
         ]
+      },
+      {
+        name: 'test1-2',
+        path: '2',
+        meta: { title: 'test1-2', icon: 'el-icon-menu' },
+        children: [
+          {
+            name: 'test1-2-1',
+            path: '1',
+            meta: { title: 'test1-2-1', icon: 'el-icon-menu' },
+            children: [
+              {
+                name: 'test1-2-1-1',
+                path: '1',
+                meta: { title: 'test1-2-1-1', icon: 'el-icon-menu' },
+                component: () => import('@/components/the-test02.vue')
+              }
+            ]
+          },
+          {
+            name: 'test1-2-2',
+            path: '2',
+            meta: { title: 'test1-2-2', icon: 'el-icon-menu' },
+            component: () => import('@/components/the-test02.vue')
+          },
+          {
+            name: 'test1-2-3',
+            path: '3',
+            meta: { title: 'test1-2-3', icon: 'el-icon-menu' },
+            component: () => import('@/components/the-test02.vue')
+          }
+        ]
       }
     ]
   }
