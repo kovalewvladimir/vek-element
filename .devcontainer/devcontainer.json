@@ -22,6 +22,9 @@
         // для UnoCSS
         "antfu.unocss",
 
+        // для работы с CSS переменными
+        "vunguyentuan.vscode-css-variables",
+
         // Словари для проверки орфографии
         "streetsidesoftware.code-spell-checker",
         "streetsidesoftware.code-spell-checker-russian",
