@@ -38,13 +38,12 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 
   display: grid;
   grid-template-columns: v-bind(widthLeft) 1fr;
-  grid-template-rows: 50px 35px 1fr 1fr;
+  grid-template-rows: 50px 35px 1fr;
   gap: 0px 0px;
   grid-auto-flow: row;
   grid-template-areas:
     'logo header'
-    'menu tags'
-    'menu main'
+    'logo tags'
     'menu main';
 
   /* Добавляем переход */
@@ -60,6 +59,8 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 .menu {
   grid-area: menu;
 
+  overflow: auto;
+
   background-color: var(--menu-bg-color);
 }
 
@@ -69,6 +70,8 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 
 .tags {
   grid-area: tags;
+
+  overflow: auto;
 
   position: relative;
 }
@@ -90,6 +93,8 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 
 .main {
   grid-area: main;
+
+  overflow: auto;
 
   padding: 10px;
 }

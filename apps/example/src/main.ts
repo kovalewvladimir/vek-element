@@ -20,7 +20,20 @@ const routes: IAppRouteRecordRaw[] = [
     name: 'TheScroll',
     path: '/scroll',
     meta: { title: 'Scroll', icon: 'el-icon-menu' },
-    component: () => import('@/views/the-scroll.vue')
+    children: [
+      {
+        name: 'TheScroll1',
+        path: '1',
+        meta: { title: 'Scroll 1', icon: 'el-icon-menu' },
+        component: () => import('@/views/scrolls/the-scroll-1.vue')
+      },
+      {
+        name: 'TheScroll2',
+        path: '2',
+        meta: { title: 'Scroll 2', icon: 'el-icon-menu' },
+        component: () => import('@/views/scrolls/the-scroll-2.vue')
+      }
+    ]
   },
 
   {
