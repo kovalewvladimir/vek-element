@@ -31,10 +31,6 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 </template>
 
 <style scoped>
-:global(body) {
-  margin: 0;
-}
-
 .layoutContainer {
   min-width: 800px;
 
@@ -42,12 +38,13 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 
   display: grid;
   grid-template-columns: v-bind(widthLeft) 1fr;
-  grid-template-rows: 50px 35px 1fr;
+  grid-template-rows: 50px 35px 1fr 1fr;
   gap: 0px 0px;
   grid-auto-flow: row;
   grid-template-areas:
     'logo header'
     'menu tags'
+    'menu main'
     'menu main';
 
   /* Добавляем переход */
@@ -72,15 +69,28 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 
 .tags {
   grid-area: tags;
+
+  position: relative;
+}
+
+.tags::before {
+  --border: 1px solid var(--el-border-color);
+
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  pointer-events: none; /* Чтобы граница не блокировала взаимодействие с контентом */
+  box-sizing: border-box;
 }
 
 .main {
   grid-area: main;
-  padding: 10px;
-}
 
-/* For presentation only, no need to copy the code below */
-.layoutContainer > * {
-  border: 1px solid red;
+  padding: 10px;
 }
 </style>

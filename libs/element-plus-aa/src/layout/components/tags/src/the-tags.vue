@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { ElButton } from 'element-plus'
-import { useRouter } from 'vue-router'
-
 import { useNavigationStore } from '../../../stores/navigateStore'
+import TagButton from './tag-button.vue'
 
 const navigationStore = useNavigationStore()
-const router = useRouter()
 </script>
 
 <template>
-  <el-button
-    v-for="(tag, index) in navigationStore.tags"
-    :key="index"
-    text
-    @click="router.push(tag.path)"
-    >{{ tag.title }}</el-button
-  >
+  <div class=":uno: h-full flex items-center">
+    <div class=":uno: flex-1 pr-10px pl-10px">
+      <div class=":uno: flex">
+        <tag-button
+          v-for="(tag, index) in navigationStore.tagItems"
+          :key="index"
+          :tag="tag"
+        />
+      </div>
+    </div>
+  </div>
 </template>

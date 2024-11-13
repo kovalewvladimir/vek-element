@@ -11,75 +11,69 @@ const app = createApp(App)
 
 const routes: IAppRouteRecordRaw[] = [
   {
-    name: 'main',
+    name: 'TheMain',
     path: '/',
-    meta: { title: 'main', icon: 'el-icon-menu' },
-    component: () => import('@/components/the-test01.vue')
+    meta: { title: 'Главная', icon: 'el-icon-menu' },
+    component: () => import('@/views/the-main.vue')
   },
   {
-    name: 'test-path',
-    path: '/test',
-    meta: { title: 'test-path', icon: 'el-icon-menu' },
-    component: () => import('@/components/the-test03.vue')
+    name: 'TheScroll',
+    path: '/scroll',
+    meta: { title: 'Scroll', icon: 'el-icon-menu' },
+    component: () => import('@/views/the-scroll.vue')
   },
+
   {
-    name: 'test-path-input',
-    path: '/test/:id',
-    meta: { title: 'test-path-input', icon: 'el-icon-menu', hidden: true },
-    component: () => import('@/components/the-test03-input.vue')
-  },
-  {
-    name: 'test1',
-    path: '/test1',
-    meta: { title: 'test1', icon: 'el-icon-menu' },
+    name: 'TheParams',
+    path: '/params',
+    meta: { title: 'Params', icon: 'el-icon-menu' },
     children: [
       {
-        name: 'test1-1',
-        path: '1',
-        meta: { title: 'test1-1', icon: 'el-icon-menu' },
-        children: [
-          {
-            name: 'test1-1-1',
-            path: '1',
-            meta: { title: 'test1-1-1', icon: 'el-icon-menu' },
-            component: () => import('@/components/the-test02.vue')
-          }
-        ]
+        name: 'TheParamsInput',
+        path: ':id',
+        meta: { title: 'Input', icon: 'el-icon-menu', hidden: true },
+        component: () => import('@/views/params/the-params-input.vue')
       },
       {
-        name: 'test1-2',
-        path: '2',
-        meta: { title: 'test1-2', icon: 'el-icon-menu' },
+        name: 'TheParamsComponent',
+        path: '',
+        meta: { title: 'Component', icon: 'el-icon-menu' },
+        component: () => import('@/views/params/the-params.vue')
+      }
+    ]
+  },
+  {
+    name: 'SubMenu',
+    path: '/sub-menu',
+    meta: { title: 'Sub Menu', icon: 'el-icon-menu' },
+    children: [
+      {
+        name: 'SubMenu1',
+        path: '1',
+        meta: { title: 'Sub Menu 1', icon: 'el-icon-menu' },
         children: [
           {
-            name: 'test1-2-1',
+            name: 'SubMenu1-1',
             path: '1',
-            meta: { title: 'test1-2-1', icon: 'el-icon-menu' },
-            children: [
-              {
-                name: 'test1-2-1-1',
-                path: '1',
-                meta: { title: 'test1-2-1-1', icon: 'el-icon-menu' },
-                component: () => import('@/components/the-test02.vue')
-              }
-            ]
+            meta: { title: 'Sub Menu 1-1', icon: 'el-icon-menu' },
+            component: () => import('@/views/the-main.vue')
           },
           {
-            name: 'test1-2-2',
+            name: 'SubMenu1-2',
             path: '2',
-            meta: { title: 'test1-2-2', icon: 'el-icon-menu' },
-            component: () => import('@/components/the-test02.vue')
-          },
-          {
-            name: 'test1-2-3',
-            path: '3',
-            meta: { title: 'test1-2-3', icon: 'el-icon-menu' },
-            component: () => import('@/components/the-test02.vue')
+            meta: { title: 'Sub Menu 1-2', icon: 'el-icon-menu' },
+            component: () => import('@/views/the-main.vue')
           }
         ]
       }
     ]
-  }
+  },
+
+  ...Array.from({ length: 50 }).map((_, i) => ({
+    name: `Empty${i}`,
+    path: `/empty${i}`,
+    meta: { title: `Empty${i}` }
+  }))
 ]
 
 createEla({

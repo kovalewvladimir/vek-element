@@ -1,5 +1,5 @@
 import { Reactive, reactive, unref, watch } from 'vue'
-import { Router } from 'vue-router'
+import { RouteLocationNormalizedLoadedGeneric, Router } from 'vue-router'
 
 import { IAppRouteRecordRaw } from '../../routers/types'
 import { IMenuItem } from './types'
@@ -39,23 +39,30 @@ interface IMenu {
   items: IMenuItem[]
 }
 
+interface ITag {
+  items: ITagItem[]
+}
+
 interface ITagItem {
   title: string
   path: string
+  route: RouteLocationNormalizedLoadedGeneric
 }
 
 class NavigationStore {
   private _router?: Router
 
   private _menu: Reactive<IMenu>
-  private _tags: Reactive<ITagItem[]>
+  private _tag: Reactive<ITag>
 
   constructor() {
     this._menu = reactive({
       active: '',
       items: []
     })
-    this._tags = reactive([])
+    this._tag = reactive({
+      items: []
+    })
   }
 
   get menuActive() {
@@ -79,42 +86,54 @@ class NavigationStore {
 
     // Синхронизация меню с текущим роутом
     watch(router.currentRoute, async () => {
-      await this.syncMenuWithCurrentRoute()
-      await this.registerCurrentRouteTags()
+      await this.router.isReady()
+
+      this.syncMenuWithCurrentRoute()
+      this.registerCurrentRouteTags()
     })
 
     this._router = router
   }
 
-  get tags(): readonly ITagItem[] {
-    return this._tags
+  get tagItems(): readonly ITagItem[] {
+    return this._tag.items
   }
 
   /**
-   * Регистрация тегов текущего роута
+   * Регистрация вкладки текущего роута
    * */
-  async registerCurrentRouteTags() {
-    await this.router.isReady()
+  registerCurrentRouteTags() {
     const currentRoute = unref(this.router.currentRoute)
     const paramsId = currentRoute.params.id as string | undefined
 
-    const title = (currentRoute.meta.title as string) + (paramsId ? ` - ${paramsId}` : '')
+    const title = currentRoute.meta.title + (paramsId ? ` - ${paramsId}` : '')
     const path = currentRoute.fullPath
 
-    if (this._tags.some((item) => item.path === path)) return
-    this._tags.push({ title, path })
+    if (this._tag.items.some((item) => item.path === path)) return
+    this._tag.items.push({ title, path, route: currentRoute })
   }
 
   /**
    * Синхронизация меню с текущим роутом
    * */
-  async syncMenuWithCurrentRoute() {
-    await this.router.isReady()
+  syncMenuWithCurrentRoute() {
     const initName = this.router.currentRoute.value.name as string
     this._menu.active = initName
+  }
+
+  /**
+   * Закрытие вкладки
+   * */
+  async closeTag(tag: ITagItem) {
+    const index = this._tag.items.findIndex((item) => item.path === tag.path)
+    this._tag.items.splice(index, 1)
+
+    const nextPath = this._tag.items[this._tag.items.length - 1]?.path || '/'
+    await this.router.push(nextPath)
   }
 }
 
 const navigationStore = new NavigationStore()
 const useNavigationStore = () => navigationStore
 export { useNavigationStore }
+export type { IMenuItem, ITagItem }

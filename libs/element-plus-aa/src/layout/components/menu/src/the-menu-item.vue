@@ -22,7 +22,10 @@ const menuItemClk = async () => {
     <template v-if="menuItem.children">
       <el-sub-menu :index="menuItem.name">
         <template #title>
-          <ela-icon-svg-dynamic :name="menuItem.meta.icon" />
+          <ela-icon-svg-dynamic
+            v-if="menuItem.meta.icon"
+            :name="menuItem.meta.icon"
+          />
           <span>{{ menuItem.meta.title }}</span>
         </template>
         <the-menu-item
@@ -38,7 +41,10 @@ const menuItemClk = async () => {
         :index="menuItem.name"
         @click="menuItemClk"
       >
-        <ela-icon-svg-dynamic :name="menuItem.meta.icon" />
+        <ela-icon-svg-dynamic
+          v-if="menuItem.meta.icon"
+          :name="menuItem.meta.icon"
+        />
         <span>{{ menuItem.meta.title }}</span>
       </el-menu-item>
     </template>

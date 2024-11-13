@@ -29,14 +29,14 @@ defineEmits(['click'])
 
 <template>
   <!-- eslint-disable unocss/enforce-class-compile-->
-  <ElIcon
+  <el-icon
     :class="{ 'icon-sgv': isHoverColor }"
     :color="color"
     :size="size"
-    @click="$emit('click')"
+    @click="$emit('click', $event)"
   >
     <slot />
-  </ElIcon>
+  </el-icon>
   <!-- eslint-enable unocss/enforce-class-compile-->
 </template>
 

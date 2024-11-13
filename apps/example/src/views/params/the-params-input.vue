@@ -3,9 +3,9 @@ import { ElCard, ElInput } from 'element-plus'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-const inputTest = ref('')
-
 const route = useRoute()
+
+const inputTest = ref(route.params.id as string)
 </script>
 
 <template>

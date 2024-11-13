@@ -3,7 +3,7 @@ interface IMenuItem {
   url?: string
   meta: {
     title: string
-    icon: string
+    icon?: string
     hidden?: boolean
   }
   children?: IMenuItem[]
