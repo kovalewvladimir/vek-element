@@ -1,4 +1,8 @@
-import { createEla, IAppRouteRecordRaw } from 'element-plus-aa'
+import {
+  createEla,
+  createWrapperComponentRouterParams,
+  type IAppRouteRecordRaw
+} from 'element-plus-aa'
 import { createApp } from 'vue'
 
 import App from '@/App.vue'
@@ -11,7 +15,7 @@ const app = createApp(App)
 
 const routes: IAppRouteRecordRaw[] = [
   {
-    name: 'TheMain',
+    name: 'the-main',
     path: '/',
     meta: { title: 'Главная', icon: 'el-icon-menu' },
     component: () => import('@/views/the-main.vue')
@@ -22,13 +26,13 @@ const routes: IAppRouteRecordRaw[] = [
     meta: { title: 'Scroll', icon: 'el-icon-menu' },
     children: [
       {
-        name: 'TheScroll1',
+        name: 'the-scroll-1',
         path: '1',
         meta: { title: 'Scroll 1', icon: 'el-icon-menu' },
         component: () => import('@/views/scrolls/the-scroll-1.vue')
       },
       {
-        name: 'TheScroll2',
+        name: 'the-scroll-2',
         path: '2',
         meta: { title: 'Scroll 2', icon: 'el-icon-menu' },
         component: () => import('@/views/scrolls/the-scroll-2.vue')
@@ -42,16 +46,39 @@ const routes: IAppRouteRecordRaw[] = [
     meta: { title: 'Params', icon: 'el-icon-menu' },
     children: [
       {
-        name: 'TheParamsInput',
-        path: ':id',
+        name: 'the-params-input',
+        path: 'original/:id',
         meta: { title: 'Input', icon: 'el-icon-menu', hidden: true },
-        component: () => import('@/views/params/the-params-input.vue')
+        component: createWrapperComponentRouterParams(
+          'the-params-input',
+          () => import('@/views/params/the-params-input.vue')
+        )
+        // component: () => import('@/views/params/the-params-input.vue')
       },
       {
-        name: 'TheParamsComponent',
-        path: '',
-        meta: { title: 'Component', icon: 'el-icon-menu' },
+        name: 'the-params',
+        path: 'original',
+        meta: { title: 'Params', icon: 'el-icon-menu' },
         component: () => import('@/views/params/the-params.vue')
+      },
+
+      /// //////////////////////////////////////////////////////////
+
+      {
+        name: 'the-params-input1',
+        path: 'two/:id',
+        meta: { title: 'Input1', icon: 'el-icon-menu', hidden: true },
+        component: createWrapperComponentRouterParams(
+          'the-params-input1',
+          () => import('@/views/params/the-params-input.vue')
+        )
+        // component: () => import('@/views/params/the-params-input.vue')
+      },
+      {
+        name: 'the-params1',
+        path: 'two',
+        meta: { title: 'Params1', icon: 'el-icon-menu' },
+        component: () => import('@/views/params/the-params1.vue')
       }
     ]
   },

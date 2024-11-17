@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ElButton } from 'element-plus'
+</script>
 
 <template>
   <div class=":uno: h-full p-10px">
@@ -9,8 +11,10 @@
       <div
         v-for="item in 15"
         :key="item"
-        class=":uno: h-100px bg-red-3 m-10px"
-      />
+        class=":uno: h-100px bg-red-3 m-10px flex items-center justify-center"
+      >
+        <el-button>Button</el-button>
+      </div>
     </div>
   </div>
 </template>

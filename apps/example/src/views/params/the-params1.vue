@@ -18,8 +18,8 @@ const configLayout = useLayoutConfigStore()
       <router-link
         v-for="i in 10"
         :key="i"
-        :to="`/params/original/${i}`"
-        ><el-button text>test{{ i }}</el-button></router-link
+        :to="`/params/two/${i}`"
+        ><el-button text>{{ `/params/two/${i}` }}</el-button></router-link
       >
     </el-card>
   </el-card>
