@@ -26,6 +26,7 @@ const closeClk = async () => {
     class="button"
     :class="{ active: isActive }"
     @click="tagClk"
+    @click.middle="closeClk"
   >
     <ela-icon-svg-dynamic
       v-if="tag.route.meta.icon"
