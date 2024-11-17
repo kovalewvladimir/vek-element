@@ -32,4 +32,4 @@ declare module 'vue-router' {
   interface RouteMeta extends IRouteMetaCustom {}
 }
 
-export type { IAppRouteRecordRaw }
+export type { IAppRouteRecordRaw, IRouteMetaCustom }

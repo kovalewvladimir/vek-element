@@ -1,7 +1,7 @@
 import { Reactive, reactive, unref, watch } from 'vue'
-import { RouteLocationNormalizedLoadedGeneric, Router } from 'vue-router'
+import { Router } from 'vue-router'
 
-import { IAppRouteRecordRaw } from '../../routers/types'
+import type { IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
 import { IMenuItem } from './types'
 
 const convertRouteToMenuItem = (
@@ -46,7 +46,10 @@ interface ITag {
 interface ITagItem {
   title: string
   path: string
-  route: RouteLocationNormalizedLoadedGeneric
+  route: {
+    name: string
+    meta: IRouteMetaCustom
+  }
 }
 
 class NavigationStore {
@@ -110,7 +113,11 @@ class NavigationStore {
     const path = currentRoute.fullPath
 
     if (this._tag.items.some((item) => item.path === path)) return
-    this._tag.items.push({ title, path, route: currentRoute })
+    this._tag.items.push({
+      title,
+      path,
+      route: { name: currentRoute.name as string, meta: currentRoute.meta }
+    })
   }
 
   /**
