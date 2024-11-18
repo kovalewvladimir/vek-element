@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "npm run dev -w=element-plus-aa-example",
-    "build": "npm run build -w=element-plus-aa",
+    "preview": "npm run preview -w=element-plus-aa-example",
     "publish": "npm publish -w=element-plus-aa",
     "lint": "eslint .",
     "type-check": "vue-tsc --noEmit -p ./apps/example/tsconfig.json",

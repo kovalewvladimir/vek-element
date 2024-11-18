@@ -1,9 +1,3 @@
-import { defineConfig, transformerCompileClass } from 'unocss'
+import { defineConfig } from 'unocss'
 
-export default defineConfig({
-  transformers: [
-    transformerCompileClass({
-      classPrefix: 'ela-'
-    })
-  ]
-})
+export default defineConfig({})

@@ -1,30 +1,27 @@
 {
   "name": "element-plus-aa",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "type": "module",
   "files": [
-    "dist",
     "src"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "development": "./src/index.ts",
-      "import": "./dist/index.js"
+      "import": "./src/index.ts"
     },
     "./utils": {
       "types": "./src/utils/index.ts",
       "development": "./src/utils/index.ts",
-      "import": "./dist/utils.js"
-    },
-    "./style.css": "./dist/style.css"
+      "import": "./src/utils/index.ts"
+    }
   },
   "scripts": {
-    "build": "vite build",
-    "prepack": "npm run build && node scripts/clean-package-json.js"
+    "prepack": "node scripts/clean-package-json.js"
   },
   "peerDependencies": {
     "element-plus": "^2.8.6",

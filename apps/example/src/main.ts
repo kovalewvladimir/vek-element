@@ -1,3 +1,5 @@
+import 'virtual:uno.css'
+
 import {
   createEla,
   createWrapperComponentRouterParams,
@@ -6,10 +8,6 @@ import {
 import { createApp } from 'vue'
 
 import App from '@/App.vue'
-
-if (import.meta.env.PROD) {
-  void import('element-plus-aa/style.css')
-}
 
 const app = createApp(App)
 

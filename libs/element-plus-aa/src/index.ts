@@ -1,4 +1,3 @@
-import 'virtual:uno.css'
 import './styles/var.css'
 import './styles/reset.css'
 
