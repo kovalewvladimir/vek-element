@@ -12,7 +12,7 @@ import { useNavigationStore } from '../layout'
  * @param loader - функция загрузки компонента
  * @returns обертка для компонента
  */
-export const createWrapperComponentRouterParams = (
+const createWrapperComponentRouterParams = (
   name: string,
   loader: () => Promise<{ default: Component }>
 ) => {
@@ -87,3 +87,5 @@ export const createWrapperComponentRouterParams = (
     }
   })
 }
+
+export { createWrapperComponentRouterParams }

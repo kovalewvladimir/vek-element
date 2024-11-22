@@ -1,2 +1,2 @@
-export type { IAppRouteRecordRaw } from './types'
-export { createWrapperComponentRouterParams } from './wrapperComponent'
+export type * from './types'
+export * from './wrapperComponent'

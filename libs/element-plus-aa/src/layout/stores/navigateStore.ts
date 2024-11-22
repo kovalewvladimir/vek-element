@@ -2,7 +2,17 @@ import { Reactive, reactive, unref, watch } from 'vue'
 import { Router } from 'vue-router'
 
 import type { IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
-import { IMenuItem } from './types'
+
+interface IMenuItem {
+  name: string
+  url?: string
+  meta: {
+    title: string
+    icon?: string
+    hidden?: boolean
+  }
+  children?: IMenuItem[]
+}
 
 const convertRouteToMenuItem = (
   routes: IAppRouteRecordRaw[],
