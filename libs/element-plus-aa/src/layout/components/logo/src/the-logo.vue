@@ -15,7 +15,7 @@ const config = useLayoutConfigStore()
         :size="64"
       />
 
-      <div>{{ config.logo.title }}</div>
+      <div v-if="!config.menu.collapse">{{ config.logo.title }}</div>
     </div>
   </template>
 </template>
