@@ -1,14 +1,4 @@
-import {
-  Component,
-  computed,
-  defineAsyncComponent,
-  defineComponent,
-  h,
-  KeepAlive,
-  markRaw,
-  ref,
-  watch
-} from 'vue'
+import { Component, computed, defineComponent, h, KeepAlive, markRaw, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useNavigationStore } from '../layout'
@@ -24,9 +14,12 @@ import { useNavigationStore } from '../layout'
  */
 export const createWrapperComponentRouterParams = (
   name: string,
-  loader: () => Promise<Component>
+  loader: () => Promise<{ default: Component }>
 ) => {
-  const createComponent = () => markRaw(defineAsyncComponent(loader))
+  const createComponent = async () => {
+    const component = await loader()
+    return component.default ? markRaw(component.default) : markRaw(component)
+  }
 
   return defineComponent({
     name: name,
@@ -44,17 +37,16 @@ export const createWrapperComponentRouterParams = (
       // Подписка на изменения в навигации
       // Если в навигации появился новый пункт с текущим именем
       // то создаем компонент и добавляем его в список
-      watch(navigationStore.tagItems, () => {
-        navigationStore.tagItems
-          .filter((item) => item.route.name === name)
-          .forEach((item) => {
-            if (!components.value[item.path]) {
-              components.value[item.path] = {
-                visible: true,
-                component: createComponent()
-              }
+      watch(navigationStore.tagItems, async () => {
+        const tagItems = navigationStore.tagItems.filter((item) => item.route.name === name)
+        for (const item of tagItems) {
+          if (!components.value[item.path]) {
+            components.value[item.path] = {
+              visible: true,
+              component: await createComponent()
             }
-          })
+          }
+        }
 
         Object.keys(components.value)
           .filter((path) => !navigationStore.tagItems.some((item) => item.path === path))

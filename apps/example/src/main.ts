@@ -44,11 +44,11 @@ const routes: IAppRouteRecordRaw[] = [
     meta: { title: 'Params', icon: 'el-icon-menu' },
     children: [
       {
-        name: 'the-params-input',
+        name: 'the-params-input-wrapped',
         path: 'original/:id',
         meta: { title: 'Input', icon: 'el-icon-menu', hidden: true },
         component: createWrapperComponentRouterParams(
-          'the-params-input',
+          'the-params-input-wrapped',
           () => import('@/views/params/the-params-input.vue')
         )
         // component: () => import('@/views/params/the-params-input.vue')
@@ -63,11 +63,11 @@ const routes: IAppRouteRecordRaw[] = [
       /// //////////////////////////////////////////////////////////
 
       {
-        name: 'the-params-input1',
+        name: 'the-params-input-wrapped1',
         path: 'two/:id',
         meta: { title: 'Input1', icon: 'el-icon-menu', hidden: true },
         component: createWrapperComponentRouterParams(
-          'the-params-input1',
+          'the-params-input-wrapped1',
           () => import('@/views/params/the-params-input.vue')
         )
         // component: () => import('@/views/params/the-params-input.vue')
