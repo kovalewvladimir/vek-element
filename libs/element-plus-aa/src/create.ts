@@ -124,6 +124,8 @@ const createEla = (config: IConfig) => {
   const layoutConfigStore = useLayoutConfigStore()
   const navigationStore = useNavigationStore()
 
+  document.title = config.layout?.title ?? 'DEMO'
+
   if (config.layout?.title) layoutConfigStore.logo.setTitle(config.layout?.title)
   if (config.layout?.logo) layoutConfigStore.logo.setSvg(config.layout?.logo)
 
