@@ -14,7 +14,6 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 </script>
 
 <template>
-  <!-- eslint-disable unocss/enforce-class-compile -->
   <div class="layoutContainer">
     <div class="logo">
       <the-logo />

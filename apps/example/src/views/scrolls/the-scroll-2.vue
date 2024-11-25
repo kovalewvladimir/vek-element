@@ -9,7 +9,7 @@ const tableData = Array.from({ length: 500 }, (_, index) => ({
 </script>
 
 <template>
-  <div class=":uno: flex flex-col h-full">
+  <div class="flex flex-col h-full">
     <div class="">
       <h1>Header</h1>
     </div>

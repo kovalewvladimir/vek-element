@@ -21,7 +21,6 @@ const closeClk = async () => {
 </script>
 
 <template>
-  <!-- eslint-disable unocss/enforce-class-compile -->
   <div
     class="button"
     :class="{ active: isActive }"

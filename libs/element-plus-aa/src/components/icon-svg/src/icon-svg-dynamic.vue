@@ -48,7 +48,6 @@ defineEmits(['click'])
 </script>
 
 <template>
-  <!-- eslint-disable unocss/enforce-class-compile-->
   <el-icon
     :class="{ 'icon-sgv': isHoverColor }"
     :color="color"
@@ -57,7 +56,6 @@ defineEmits(['click'])
   >
     <component :is="AsyncComponent" />
   </el-icon>
-  <!-- eslint-enable unocss/enforce-class-compile-->
 </template>
 
 <style scoped>

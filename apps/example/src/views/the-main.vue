@@ -30,12 +30,12 @@ const dialogRef = useTemplateRef<ElaModalDialogInstance>('dialogRef')
 
 <template>
   <el-card
-    class=":uno: w-full h-full"
+    class="w-full h-full"
     header="Компоненты"
   >
     <el-card
       header="ela-autocomplete-remote"
-      class=":uno: h-full"
+      class="h-full"
     >
       <ela-autocomplete-remote
         v-model="autocompleteValue"

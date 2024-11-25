@@ -81,17 +81,17 @@ defineExpose({ open, close })
       @close="handlerClose"
     >
       <template #header>
-        <div class=":uno: flex items-center">
+        <div class="flex items-center">
           <div>
             <slot name="title">
               {{ dialogTitle }}
             </slot>
           </div>
-          <div class=":uno: flex flex-grow-1 flex-justify-end">
+          <div class="flex flex-grow-1 flex-justify-end">
             <ela-icon-svg-slot
               color="var(--el-color-info)"
               hover-color="var(--el-color-primary)"
-              class=":uno: cursor-pointer"
+              class="cursor-pointer"
               :size="24"
               @click="close()"
             >

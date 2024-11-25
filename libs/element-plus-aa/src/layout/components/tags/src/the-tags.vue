@@ -18,12 +18,12 @@ const wheelEvent = (e: WheelEvent) => {
 <template>
   <el-scrollbar
     ref="scrollRef"
-    class=":uno: pr-10px pl-10px"
+    class="pr-10px pl-10px"
     view-style="height: 100%;"
     @wheel="wheelEvent"
   >
-    <div class=":uno: h-full flex items-center">
-      <div class=":uno: flex">
+    <div class="h-full flex items-center">
+      <div class="flex">
         <tag-button
           v-for="(tag, index) in navigationStore.tagItems"
           :key="index"

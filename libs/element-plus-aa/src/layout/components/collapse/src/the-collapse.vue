@@ -11,7 +11,7 @@ const configLayout = useLayoutConfigStore()
 
 <template>
   <div
-    class=":uno: flex items-center h-full pl-10px pr-10px"
+    class="flex items-center h-full pl-10px pr-10px"
     @click="configLayout.menu.setCollapse(!configLayout.menu.collapse)"
   >
     <ela-icon-svg-slot :size="18">

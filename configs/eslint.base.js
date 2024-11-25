@@ -34,9 +34,7 @@ export default [
   {
     name: 'unocss',
     ...unocss,
-    rules: {
-      'unocss/enforce-class-compile': 'error'
-    }
+    rules: {}
   },
 
   // Vue + TypeScript

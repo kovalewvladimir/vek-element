@@ -8,7 +8,7 @@ const configLayout = useLayoutConfigStore()
 
 <template>
   <el-card
-    class=":uno: w-full h-full"
+    class="w-full h-full"
     header="Компоненты"
   >
     <el-card>
