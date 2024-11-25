@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Watch Eslint and TypeScript",
+      "type": "shell",
+      "command": "echo 'Opening two terminals...'",
+      "problemMatcher": [],
+      "dependsOn": ["Eslint watch", "TypeScript watch"]
+    },
+    {
+      "label": "Eslint watch",
+      "type": "shell",
+      "command": "chokidar '**/*.vue' '**/*.ts' -i node_modules -c 'clear & npx eslint --cache'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "TypeScript watch",
+      "type": "shell",
+      "command": "npx vue-tsc --noEmit -p ./apps/example/tsconfig.json --watch",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      }
+    }
+  ]
+}
