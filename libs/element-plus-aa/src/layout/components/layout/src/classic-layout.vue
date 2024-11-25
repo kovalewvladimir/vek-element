@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import { useLayoutConfigStore } from '../../../stores'
+import { TheBreadcrumb } from '../../breadcrumb'
 import { TheCollapse } from '../../collapse'
 import { TheLogo } from '../../logo'
 import { TheMenu } from '../../menu'
@@ -24,6 +25,7 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
     <div class="header">
       <div class="h-full flex items-center">
         <the-collapse />
+        <the-breadcrumb />
       </div>
     </div>
     <div class="tags">
