@@ -3,6 +3,8 @@ import { useRouter } from 'vue-router'
 
 import { useNavigationStore } from '../layout'
 
+type AsyncLoadComponent = () => Promise<{ default: Component }>
+
 /**
  * Создание обертки для компонента с возможностью кеширования
  * Нужен для того чтобы не пересоздавать компонент при переходе
@@ -12,10 +14,7 @@ import { useNavigationStore } from '../layout'
  * @param loader - функция загрузки компонента
  * @returns обертка для компонента
  */
-const createWrapperComponentRouterParams = (
-  name: string,
-  loader: () => Promise<{ default: Component }>
-) => {
+const createWrapperComponentRouterParams = (name: string, loader: AsyncLoadComponent) => {
   const createComponent = async () => {
     const component = await loader()
     return component.default ? markRaw(component.default) : markRaw(component)
@@ -30,7 +29,7 @@ const createWrapperComponentRouterParams = (
       const components = ref<Record<string, { visible: boolean; component: Component }>>({})
 
       // Проверка на то что текущий роут это сам компонент
-      const isSelf = computed(() => {
+      const activeRoutePath = computed(() => {
         return router.currentRoute.value.name === name ? router.currentRoute.value.fullPath : null
       })
 
@@ -57,18 +56,18 @@ const createWrapperComponentRouterParams = (
 
       // Подписка на изменения в текущем роуте
       // Если текущий роут это сам компонент, то показываем его
-      watch(isSelf, () => {
+      watch(activeRoutePath, () => {
         for (const key in components.value) {
           components.value[key].visible = false
         }
 
-        if (isSelf.value) {
-          if (components.value.hasOwnProperty(isSelf.value))
-            components.value[isSelf.value].visible = true
+        if (activeRoutePath.value) {
+          if (components.value.hasOwnProperty(activeRoutePath.value))
+            components.value[activeRoutePath.value].visible = true
         }
       })
 
-      return { isSelf, components }
+      return { isSelf: activeRoutePath, components }
     },
     render() {
       const renderComponent = []
@@ -88,4 +87,26 @@ const createWrapperComponentRouterParams = (
   })
 }
 
-export { createWrapperComponentRouterParams }
+/**
+ * Генерация уникального имени компонента
+ * @param name - имя компонента, должно совпадать с именем роута
+ * @param loader - функция загрузки компонента
+ * @returns функция создания компонента
+ */
+const generateUniqueNameComponent = (name: string, loader: AsyncLoadComponent) => {
+  const createComponent = async () => {
+    const component = await loader()
+
+    // TODO: Меняю приватное свойство __name компонента на уникальное
+    //       Наверное это не очень хорошо, но пока не нашел другого способа
+    // @ts-expect-error: Меняем имя компонента на уникальное
+    component.default.__name = name
+
+    return markRaw(component.default)
+  }
+
+  return createComponent
+}
+
+export { createWrapperComponentRouterParams, generateUniqueNameComponent }
+export type { AsyncLoadComponent }

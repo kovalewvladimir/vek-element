@@ -19,7 +19,7 @@ function logCachedComponents() {
 const includeKeepAlive = computed(() => {
   const setComponentNames = new Set<string>()
   navigationStore.tagItems.forEach((item) => {
-    setComponentNames.add(item.route.name)
+    if (item.route.meta.cache) setComponentNames.add(item.route.name)
   })
   return Array.from(setComponentNames)
 })

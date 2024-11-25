@@ -5,13 +5,29 @@ import type { IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
 
 interface IMenuItem {
   name: string
-  url?: string
-  meta: {
-    title: string
-    icon?: string
-    hidden?: boolean
-  }
+  fullPath?: string
+  title: string
+  icon?: string
+  hidden?: boolean
   children?: IMenuItem[]
+}
+
+interface IMenu {
+  active: string
+  items: IMenuItem[]
+}
+
+interface ITag {
+  items: ITagItem[]
+}
+
+interface ITagItem {
+  title: string
+  path: string
+  route: {
+    name: string
+    meta: IRouteMetaCustom
+  }
 }
 
 const convertRouteToMenuItem = (
@@ -32,34 +48,14 @@ const convertRouteToMenuItem = (
     // Создание элемента меню
     const menuItem: IMenuItem = {
       name: route.name,
-      url: route.component ? fullPath : undefined,
-      meta: {
-        title: route.meta.title,
-        icon: route.meta.icon,
-        hidden: route.meta.hidden
-      },
+      fullPath: route.component ? fullPath : undefined,
+      title: route.meta.title,
+      icon: route.meta.icon,
+      hidden: route.meta.hidden,
       children: route.children ? convertRouteToMenuItem(route.children, fullPath) : undefined
     }
     return menuItem
   })
-}
-
-interface IMenu {
-  active: string
-  items: IMenuItem[]
-}
-
-interface ITag {
-  items: ITagItem[]
-}
-
-interface ITagItem {
-  title: string
-  path: string
-  route: {
-    name: string
-    meta: IRouteMetaCustom
-  }
 }
 
 class NavigationStore {

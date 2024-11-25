@@ -4,25 +4,33 @@ import { RouteRecordRaw } from 'vue-router'
 interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
   /** Имя для меню */
   title: string
+
   /** Иконка для меню */
   icon?: string
+
   /** Скрыть в меню */
   hidden?: boolean
+
+  /** Кэшировать компонент */
+  cache: boolean
 }
 
 interface IAppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta' | 'children'> {
-  /**
-   * Имя компонента.
-   * Должен совпадать с именем компонента.
-   * Иначе не будет работать кэширование компонента.
-   * */
+  /** Имя роута
+   *
+   * Должно быть уникальным
+   */
   name: string
+
   /** Путь */
   path: string
+
   /** Мета данные */
   meta: IRouteMetaCustom
+
   /** Компонент для отображения */
   component?: Component
+
   /** Дочерние элементы */
   children?: IAppRouteRecordRaw[]
 }
