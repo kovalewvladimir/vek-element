@@ -138,11 +138,15 @@ class NavigationStore {
    * Закрытие вкладки
    * */
   async closeTag(tag: ITagItem) {
+    // Закрытие текущей вкладки
     const index = this._tag.items.findIndex((item) => item.path === tag.path)
     this._tag.items.splice(index, 1)
 
-    const nextPath = this._tag.items[this._tag.items.length - 1]?.path || '/'
-    await this.router.push(nextPath)
+    // Переход на следующую вкладку, если закрыта текущая
+    if (tag.path === this.router.currentRoute.value.fullPath) {
+      const nextPath = this._tag.items[this._tag.items.length - 1]?.path || '/'
+      await this.router.push(nextPath)
+    }
   }
 }
 
