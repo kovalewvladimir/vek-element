@@ -49,4 +49,13 @@ const menuItemClk = async () => {
       </el-menu-item>
     </template>
   </template>
+  <template v-else>
+    <template v-if="menuItem.children">
+      <the-menu-item
+        v-for="(item, index) in menuItem.children"
+        :key="index"
+        :menu-item="item"
+      />
+    </template>
+  </template>
 </template>

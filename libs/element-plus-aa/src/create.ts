@@ -37,13 +37,29 @@ interface INavigation {
   /** Путь */
   path: string
 
+  /** Редирект */
+  redirect?: string
+
   /** Имя для меню */
   title: string
 
   /** Иконка для меню */
   icon?: string
 
-  /** Скрыть в меню */
+  /**
+   * Показывать в хлебных крошках (breadcrumb)
+   *
+   * default - true
+   */
+  breadcrumb?: boolean
+
+  /**
+   * Скрыть в меню
+   *
+   * Если есть дочерние элементы, то они будут показаны
+   *
+   * default - false
+   * */
   hidden?: boolean
 
   /**
@@ -62,10 +78,17 @@ interface INavigation {
    * Если путь содержит параметры, то компонент будет обернут в компонент в котором реализовано кэширование
    * см createWrapperComponentRouterParams
    * */
-  component?: AsyncLoadComponent
+  component?: AsyncLoadComponent | Component
 
   /** Дочерние элементы */
   children?: INavigation[]
+}
+
+/** Проверка на асинхронную загрузку компонента */
+const isAsyncLoadComponent = (
+  component: AsyncLoadComponent | Component
+): component is AsyncLoadComponent => {
+  return typeof component === 'function'
 }
 
 const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw[] => {
@@ -77,12 +100,16 @@ const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw
     const newName = `${name}-${randomString()}`
 
     // Проверка на дубликаты имен
+    // Нужно для ролевой модели тк имя будет ключом для доступа
     if (seenNames.has(name)) {
       throw new Error(`Duplicate navigation name detected: ${name}`)
     }
     seenNames.add(name)
     // Проверка на дубликаты компонентов
-    if (nav.component) {
+    // Нужно для кэширования компонентов,
+    // если компоненты повторяются и у них разные параметры кэширования,
+    // то это может привести к непредсказуемому поведению.
+    if (nav.component && isAsyncLoadComponent(nav.component)) {
       const _component = nav.component.toString()
       if (seenComponent.has(_component)) {
         throw new Error(`Duplicate navigation component detected: ${_component}`)
@@ -90,12 +117,15 @@ const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw
       seenComponent.add(_component)
     }
     // Проверка на динамический путь без кэширования
+    // Компоненты с динамическими путями должны быть кэшированы
+    // тк в createWrapperComponentRouterParams не реализована логика отключения кэширования
     if (nav.path.includes(':') && nav.cache === false) {
       throw new Error(`Component with dynamic path should be cached: ${name}`)
     }
 
-    let component: Component | undefined = undefined
-    if (nav.component) {
+    // Обертка компонента для параметризованных путей и уникальных имен роутов
+    let component: Component | undefined = nav.component
+    if (nav.component && isAsyncLoadComponent(nav.component)) {
       if (nav.path.includes(':')) {
         component = createWrapperComponentRouterParams(newName, nav.component)
       } else {
@@ -106,10 +136,12 @@ const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw
     return {
       name: newName,
       path: nav.path,
+      redirect: nav.redirect,
       meta: {
         title: nav.title,
         icon: nav.icon,
-        hidden: nav.hidden,
+        breadcrumb: nav.breadcrumb ?? true,
+        hidden: nav.hidden ?? false,
         cache: nav.cache ?? true
       },
       component: component,

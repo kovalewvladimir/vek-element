@@ -9,7 +9,10 @@ interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
   icon?: string
 
   /** Скрыть в меню */
-  hidden?: boolean
+  hidden: boolean
+
+  /** Показывать в хлебных крошках (breadcrumb) */
+  breadcrumb: boolean
 
   /** Кэшировать компонент */
   cache: boolean

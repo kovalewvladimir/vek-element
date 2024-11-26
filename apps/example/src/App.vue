@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ElaLayout } from 'element-plus-aa'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <ela-layout />
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
 </template>

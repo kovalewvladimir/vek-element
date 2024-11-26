@@ -1,10 +1,11 @@
-import { type INavigation } from 'element-plus-aa'
+import { ElaLayout, type INavigation } from 'element-plus-aa'
 
 const navigation: INavigation = {
   name: 'SubMenu',
   path: '/sub-menu',
   title: 'Sub Menu',
   icon: 'el-icon-menu',
+  component: ElaLayout,
   children: [
     {
       name: 'SubMenu1',

@@ -1,14 +1,17 @@
-import { type INavigation } from 'element-plus-aa'
+import { ElaLayout, type INavigation } from 'element-plus-aa'
 
 const navigation: INavigation = {
   name: 'TheParams',
   path: '/params',
   title: 'Params',
   icon: 'el-icon-menu',
+  component: ElaLayout,
+  hidden: true,
+
   children: [
     {
       name: 'the-params-input',
-      path: 'original/:id',
+      path: 'original/:id(\\d+)',
       title: 'Input',
       icon: 'el-icon-menu',
       hidden: true,

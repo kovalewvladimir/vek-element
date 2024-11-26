@@ -1,10 +1,11 @@
-import { type INavigation } from 'element-plus-aa'
+import { ElaLayout, type INavigation } from 'element-plus-aa'
 
 const navigation: INavigation = {
   name: 'TheScroll',
   path: '/scroll',
   title: 'Scroll',
   icon: 'el-icon-menu',
+  component: ElaLayout,
   children: [
     {
       name: 'the-scroll-1',
