@@ -2,7 +2,7 @@
 import { ElScrollbar } from 'element-plus'
 import { useTemplateRef } from 'vue'
 
-import { useNavigationStore } from '../../../stores/navigateStore'
+import { useNavigationStore } from '../../../stores/navigate'
 import TagButton from './tag-button.vue'
 
 const navigationStore = useNavigationStore()

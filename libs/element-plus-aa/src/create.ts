@@ -1,178 +1,70 @@
-import { App, Component } from 'vue'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { App } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
-import { useLayoutConfigStore, useNavigationStore } from './layout'
 import {
-  AsyncLoadComponent,
-  createWrapperComponentRouterParams,
-  generateUniqueNameComponent
-} from './routers'
-import type { IAppRouteRecordRaw } from './routers/types'
-import { randomString } from './utils/random'
+  INavigation,
+  initializeUserStore,
+  IUserInfo,
+  useLayoutConfigStore,
+  useNavigationStore
+} from './layout'
+import { getInitialRouter } from './routers'
+import { permissionBeforeEach } from './routers/hooks'
+import type { ILoginRoute } from './routers/types'
 
 interface IConfig {
-  layout?: IConfigLayout
-  app: App
-  navigation: INavigation[]
-}
+  /** Конфигурация layout */
+  layout?: {
+    /** Заголовок */
+    title?: string
 
-interface IConfigLayout {
-  /**
-   * Заголовок
-   */
-  title?: string
-  /**
-   * Логотип (svg)
-   */
-  logo?: string
-}
-
-interface INavigation {
-  /** Имя
-   *
-   *  Должно быть уникальным
-   */
-  name: string
-
-  /** Путь */
-  path: string
-
-  /** Редирект */
-  redirect?: string
-
-  /** Имя для меню */
-  title: string
-
-  /** Иконка для меню */
-  icon?: string
-
-  /**
-   * Показывать в хлебных крошках (breadcrumb)
-   *
-   * default - true
-   */
-  breadcrumb?: boolean
-
-  /**
-   * Скрыть в меню
-   *
-   * Если есть дочерние элементы, то они будут показаны
-   *
-   * default - false
-   * */
-  hidden?: boolean
-
-  /**
-   * Кэшировать компонент
-   * Компоненты с параметризованными путями кэшируются всегда
-   *
-   * default - true
-   * */
-  cache?: boolean
-
-  /**
-   * Компонент для отображения
-   *
-   * Компоненты не должны повторяться
-   *
-   * Если путь содержит параметры, то компонент будет обернут в компонент в котором реализовано кэширование
-   * см createWrapperComponentRouterParams
-   * */
-  component?: AsyncLoadComponent | Component
-
-  /** Дочерние элементы */
-  children?: INavigation[]
-}
-
-/** Проверка на асинхронную загрузку компонента */
-const isAsyncLoadComponent = (
-  component: AsyncLoadComponent | Component
-): component is AsyncLoadComponent => {
-  return typeof component === 'function'
-}
-
-const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw[] => {
-  const seenNames = new Set<string>()
-  const seenComponent = new Set<string>()
-
-  const convert = (nav: INavigation): IAppRouteRecordRaw => {
-    const name = nav.name
-    const newName = `${name}-${randomString()}`
-
-    // Проверка на дубликаты имен
-    // Нужно для ролевой модели тк имя будет ключом для доступа
-    if (seenNames.has(name)) {
-      throw new Error(`Duplicate navigation name detected: ${name}`)
-    }
-    seenNames.add(name)
-    // Проверка на дубликаты компонентов
-    // Нужно для кэширования компонентов,
-    // если компоненты повторяются и у них разные параметры кэширования,
-    // то это может привести к непредсказуемому поведению.
-    if (nav.component && isAsyncLoadComponent(nav.component)) {
-      const _component = nav.component.toString()
-      if (seenComponent.has(_component)) {
-        throw new Error(`Duplicate navigation component detected: ${_component}`)
-      }
-      seenComponent.add(_component)
-    }
-    // Проверка на динамический путь без кэширования
-    // Компоненты с динамическими путями должны быть кэшированы
-    // тк в createWrapperComponentRouterParams не реализована логика отключения кэширования
-    if (nav.path.includes(':') && nav.cache === false) {
-      throw new Error(`Component with dynamic path should be cached: ${name}`)
-    }
-
-    // Обертка компонента для параметризованных путей и уникальных имен роутов
-    let component: Component | undefined = nav.component
-    if (nav.component && isAsyncLoadComponent(nav.component)) {
-      if (nav.path.includes(':')) {
-        component = createWrapperComponentRouterParams(newName, nav.component)
-      } else {
-        component = generateUniqueNameComponent(newName, nav.component)
-      }
-    }
-
-    return {
-      name: newName,
-      path: nav.path,
-      redirect: nav.redirect,
-      meta: {
-        title: nav.title,
-        icon: nav.icon,
-        breadcrumb: nav.breadcrumb ?? true,
-        hidden: nav.hidden ?? false,
-        cache: nav.cache ?? true
-      },
-      component: component,
-      children: nav.children ? nav.children.map(convert) : undefined
-    }
+    /** Логотип (svg) */
+    logo?: string
   }
 
-  return navigation.map(convert)
+  /** Vue приложение */
+  vueApp: App
+
+  /** Рутовый редирект на страницу */
+  rootRedirect: string
+
+  /** TODO: Подумать */
+  auth: {
+    /** Получение данных о пользователя */
+    getUser: () => Promise<IUserInfo>
+
+    /** Страница логина */
+    login: ILoginRoute
+  }
+
+  /** Навигация */
+  navigation: INavigation[]
 }
 
 const createEla = (config: IConfig) => {
   const layoutConfigStore = useLayoutConfigStore()
   const navigationStore = useNavigationStore()
 
-  document.title = config.layout?.title ?? 'DEMO'
-
+  // Установка заголовка и логотипа
   if (config.layout?.title) layoutConfigStore.logo.setTitle(config.layout?.title)
   if (config.layout?.logo) layoutConfigStore.logo.setSvg(config.layout?.logo)
+  document.title = layoutConfigStore.logo.title
 
-  const routes = convertNavigationToRoute(config.navigation)
-
+  // Установка роутера
   const router = createRouter({
     history: createWebHistory(),
-    routes: routes as RouteRecordRaw[]
+    routes: getInitialRouter(config.rootRedirect, config.auth.login)
   })
+  router.beforeEach(permissionBeforeEach(config.auth.login.path))
+  config.vueApp.use(router)
 
+  // Инициализация UserStore
+  initializeUserStore(config.auth.getUser)
+
+  // Установка меню
+  // TODO: сделать метод для установки меню
   navigationStore.setRouter(router)
-  navigationStore.setMenuItems(routes)
-
-  config.app.use(router)
+  navigationStore.setAllNavigation(config.navigation)
 }
 
 export { createEla }
-export type { INavigation }

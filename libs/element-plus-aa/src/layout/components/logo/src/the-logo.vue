@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import IconSvgDynamic from '../../../../components/icon-svg/src/icon-svg-dynamic.vue'
 import { isNull } from '../../../../utils'
-import { useLayoutConfigStore } from '../../../stores/layoutConfigStore'
+import { useLayoutConfigStore } from '../../../stores/layoutConfig'
 
 const config = useLayoutConfigStore()
 </script>

@@ -2,8 +2,8 @@
 import { ElMenu, ElScrollbar } from 'element-plus'
 import { toValue } from 'vue'
 
-import { useLayoutConfigStore } from '../../../stores/layoutConfigStore'
-import { useNavigationStore } from '../../../stores/navigateStore'
+import { useLayoutConfigStore } from '../../../stores/layoutConfig'
+import { useNavigationStore } from '../../../stores/navigate'
 import TheMenuItem from './the-menu-item.vue'
 
 const config = useLayoutConfigStore()

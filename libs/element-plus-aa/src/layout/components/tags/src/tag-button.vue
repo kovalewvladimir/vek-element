@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { ElaIconSvgDynamic, ElaIconSvgSlot, EpCloseIcon } from '../../../../components/icon-svg'
-import { type ITagItem, useNavigationStore } from '../../../stores/navigateStore'
+import { type ITagItem, useNavigationStore } from '../../../stores/navigate'
 
 const { tag } = defineProps<{ tag: ITagItem }>()
 

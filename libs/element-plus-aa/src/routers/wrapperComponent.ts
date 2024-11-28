@@ -2,8 +2,7 @@ import { Component, computed, defineComponent, h, KeepAlive, markRaw, ref, watch
 import { useRouter } from 'vue-router'
 
 import { useNavigationStore } from '../layout'
-
-type AsyncLoadComponent = () => Promise<{ default: Component }>
+import type { AsyncLoadComponent } from './types'
 
 /**
  * Создание обертки для компонента с возможностью кеширования
