@@ -1,6 +1,7 @@
 import { ElaLayout, type INavigation } from 'element-plus-aa'
 
 const navigation: INavigation = {
+  isRoot: true,
   name: 'dashboard',
   component: ElaLayout,
   title: '',

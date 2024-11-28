@@ -68,7 +68,7 @@ interface INavigation {
    * Если есть дочерние элементы, то они будут показаны
    *
    * default - false
-   * */
+   */
   hidden?: boolean
 
   /**
@@ -76,8 +76,24 @@ interface INavigation {
    * Компоненты с параметризованными путями кэшируются всегда
    *
    * default - true
-   * */
+   */
   cache?: boolean
+
+  /**
+   * Главная страница
+   *
+   * с / будет редирект на эту страницу
+   *
+   * Должен быть только один
+   * */
+  isRoot?: boolean
+
+  /**
+   * Страница логина
+   *
+   * Должен быть только один
+   * */
+  isLogin?: boolean
 
   /**
    * Компонент для отображения
@@ -86,7 +102,7 @@ interface INavigation {
    *
    * Если путь содержит параметры, то компонент будет обернут в компонент в котором реализовано кэширование
    * см createWrapperComponentRouterParams
-   * */
+   */
   component?: AsyncLoadComponent | Component
 
   /** Дочерние элементы */

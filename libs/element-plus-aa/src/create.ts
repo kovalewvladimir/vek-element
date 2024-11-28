@@ -8,7 +8,7 @@ import {
   useLayoutConfigStore,
   useNavigationStore
 } from './layout'
-import { getInitialRouter } from './routers'
+import { getInitialRouter, isAsyncLoadComponent } from './routers'
 import { permissionBeforeEach } from './routers/hooks'
 import type { ILoginRoute } from './routers/types'
 
@@ -25,22 +25,60 @@ interface IConfig {
   /** Vue приложение */
   vueApp: App
 
-  /** Рутовый редирект на страницу */
-  rootRedirect: string
-
   /** TODO: Подумать */
   auth: {
     /** Получение данных о пользователя */
     getUser: () => Promise<IUserInfo>
-
-    /** Страница логина */
-    login: ILoginRoute
   }
 
   /** Навигация */
   navigation: INavigation[]
 }
 
+/**
+ * Поиск путей root и login
+ */
+const findPaths = (
+  navigation: INavigation[],
+  basePath: string = '/'
+): { rootPath: string; login: ILoginRoute } => {
+  let rootPath: string | undefined
+  let login: ILoginRoute | undefined
+
+  const searchPaths = (navigation: INavigation[], basePath: string) => {
+    for (const route of navigation) {
+      const fullPath = `${basePath}/${route.path}`.replace(/\/+/g, '/')
+
+      if (route.isRoot) {
+        if (rootPath) throw new Error('Multiple root paths found')
+        rootPath = fullPath
+      }
+
+      if (route.isLogin) {
+        if (login) throw new Error('Multiple login paths found')
+        if (!route.component) throw new Error('Login path component not found')
+        if (!isAsyncLoadComponent(route.component)) throw new Error('Login component is not async')
+        login = {
+          loader: route.component,
+          path: fullPath
+        }
+      }
+
+      if (route.children) searchPaths(route.children, fullPath)
+    }
+  }
+
+  searchPaths(navigation, basePath)
+
+  if (!rootPath) throw new Error('Root path not found')
+  if (!login) throw new Error('Login path not found')
+
+  return { rootPath, login }
+}
+
+/**
+ * Создание приложения ELA
+ */
 const createEla = (config: IConfig) => {
   const layoutConfigStore = useLayoutConfigStore()
   const navigationStore = useNavigationStore()
@@ -51,11 +89,12 @@ const createEla = (config: IConfig) => {
   document.title = layoutConfigStore.logo.title
 
   // Установка роутера
+  const paths = findPaths(config.navigation)
   const router = createRouter({
     history: createWebHistory(),
-    routes: getInitialRouter(config.rootRedirect, config.auth.login)
+    routes: getInitialRouter(paths.rootPath, paths.login)
   })
-  router.beforeEach(permissionBeforeEach(config.auth.login.path))
+  router.beforeEach(permissionBeforeEach(paths.login.path))
   config.vueApp.use(router)
 
   // Инициализация UserStore
