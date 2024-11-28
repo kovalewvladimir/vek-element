@@ -243,6 +243,7 @@ class NavigationStore {
   }
 
   generateMenu() {
+    // TODO: Очистка роутов тк login дублируется
     // this.router.clearRoutes()
 
     const routes = convertNavigationToRoute(this.navigation)
