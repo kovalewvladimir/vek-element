@@ -1,13 +1,9 @@
 import { Component, Reactive, reactive, unref, watch } from 'vue'
 import { Router, RouteRecordRaw } from 'vue-router'
 
-import {
-  createWrapperComponentRouterParams,
-  generateUniqueNameComponent,
-  isAsyncLoadComponent
-} from '../../routers'
+import { createWrapperComponentRouterParams, generateUniqueNameComponent } from '../../routers'
 import type { AsyncLoadComponent, IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
-import { randomString } from '../../utils/random'
+import { isAsyncLoadComponent, randomString } from '../../utils'
 
 interface IMenuItem {
   name: string

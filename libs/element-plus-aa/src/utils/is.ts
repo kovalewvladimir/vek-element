@@ -1,3 +1,7 @@
+import { Component } from 'vue'
+
+import { AsyncLoadComponent } from '../routers'
+
 /**
  * Проверяет, является ли значение null.
  *
@@ -16,4 +20,16 @@ export function isNull(value: unknown): value is null {
  */
 export function isUndefined(value: unknown): value is undefined {
   return value === undefined
+}
+
+/**
+ * Проверка на асинхронную загрузку компонента
+ *
+ * @param component - Компонент для проверки
+ * @returns Возвращает true, если компонент является асинхронной загрузкой, иначе false
+ */
+export const isAsyncLoadComponent = (
+  component: AsyncLoadComponent | Component
+): component is AsyncLoadComponent => {
+  return typeof component === 'function'
 }

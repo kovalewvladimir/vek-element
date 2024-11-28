@@ -8,9 +8,10 @@ import {
   useLayoutConfigStore,
   useNavigationStore
 } from './layout'
-import { getInitialRouter, isAsyncLoadComponent } from './routers'
+import { getInitialRouter } from './routers'
 import { permissionBeforeEach } from './routers/hooks'
 import type { ILoginRoute } from './routers/types'
+import { isAsyncLoadComponent } from './utils'
 
 interface IConfig {
   /** Конфигурация layout */

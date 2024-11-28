@@ -2,7 +2,6 @@ import { RouteRecordRaw } from 'vue-router'
 
 import { ILoginRoute } from './types'
 
-export * from './helpers'
 export type * from './types'
 export * from './wrapperComponent'
 
