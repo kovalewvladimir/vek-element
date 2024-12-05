@@ -1,5 +1,13 @@
 import { Reactive, reactive } from 'vue'
 
+interface IInitialLayout {
+  /** Заголовок */
+  title: string
+
+  /** Логотип (svg) */
+  logo?: string
+}
+
 class Logo {
   private _title: string
   private _svg: string | null
@@ -63,5 +71,14 @@ class LayoutConfigStore {
 }
 
 const layoutConfigStore = new LayoutConfigStore()
+
+const initializeLayoutConfigStore = (layout: IInitialLayout) => {
+  if (layout?.title) layoutConfigStore.logo.setTitle(layout?.title)
+  if (layout?.logo) layoutConfigStore.logo.setSvg(layout?.logo)
+  document.title = layoutConfigStore.logo.title
+}
+
 const useLayoutConfigStore = () => layoutConfigStore
-export { useLayoutConfigStore }
+
+export { initializeLayoutConfigStore, useLayoutConfigStore }
+export type { IInitialLayout }

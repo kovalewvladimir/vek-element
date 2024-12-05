@@ -35,7 +35,7 @@ const initializeUserStore = (getUser: () => Promise<IUserInfo>) => {
   userStore = new UserStore(getUser)
 }
 
-const useUserStore = () => {
+const useUserStore = (): IUserStore => {
   if (isNull(userStore)) {
     throw new Error('UserStore is not initialized')
   }

@@ -3,7 +3,7 @@ import { Router, RouteRecordRaw } from 'vue-router'
 
 import { createWrapperComponentRouterParams, generateUniqueNameComponent } from '../../routers'
 import type { AsyncLoadComponent, IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
-import { isAsyncLoadComponent, randomString } from '../../utils'
+import { isAsyncLoadComponent, isNull, randomString } from '../../utils'
 
 interface IMenuItem {
   name: string
@@ -195,10 +195,10 @@ const convertRouteToMenuItem = (
 }
 
 class NavigationStore {
-  private _router?: Router
+  private _router: Router
 
   private _isWatch = false
-  private _allNavigation: INavigation[] | null = null
+  private _allNavigation: INavigation[]
 
   private _menu: Reactive<IMenu> = reactive({
     active: '',
@@ -207,6 +207,11 @@ class NavigationStore {
   private _tag: Reactive<ITag> = reactive({
     items: []
   })
+
+  constructor(router: Router, navigation: INavigation[]) {
+    this._router = router
+    this._allNavigation = navigation
+  }
 
   /**
    * Инициализация слежения за роутером
@@ -217,8 +222,8 @@ class NavigationStore {
     this._isWatch = true
 
     // Синхронизация меню с текущим роутом
-    watch(this.router.currentRoute, async () => {
-      await this.router.isReady()
+    watch(this._router.currentRoute, async () => {
+      await this._router.isReady()
 
       this.syncMenuWithCurrentRoute()
       this.registerCurrentRouteTags()
@@ -233,32 +238,14 @@ class NavigationStore {
     return this._menu.items
   }
 
-  get navigation(): INavigation[] {
-    if (!this._allNavigation) throw new Error('useNavigationStore: Navigation is not initialized')
-    return this._allNavigation
-  }
-
-  setAllNavigation(navigation: INavigation[]) {
-    this._allNavigation = navigation
-  }
-
   generateMenu() {
     // TODO: Очистка роутов тк login дублируется
     // this.router.clearRoutes()
 
-    const routes = convertNavigationToRoute(this.navigation)
-    routes.forEach((route) => this.router.addRoute(route as RouteRecordRaw))
+    const routes = convertNavigationToRoute(this._allNavigation)
+    routes.forEach((route) => this._router.addRoute(route as RouteRecordRaw))
     this._menu.items = convertRouteToMenuItem(routes)
     this._initializeRouteWatcher()
-  }
-
-  get router(): Router {
-    if (!this._router) throw new Error('useNavigationStore: Router is not initialized')
-    return this._router
-  }
-  setRouter(router: Router) {
-    if (this._router) return
-    this._router = router
   }
 
   get tagItems(): readonly ITagItem[] {
@@ -269,7 +256,7 @@ class NavigationStore {
    * Регистрация вкладки текущего роута
    * */
   registerCurrentRouteTags() {
-    const currentRoute = unref(this.router.currentRoute)
+    const currentRoute = unref(this._router.currentRoute)
     const paramsId = currentRoute.params.id as string | undefined
 
     const title = currentRoute.meta.title + (paramsId ? ` - ${paramsId}` : '')
@@ -287,7 +274,7 @@ class NavigationStore {
    * Синхронизация меню с текущим роутом
    * */
   syncMenuWithCurrentRoute() {
-    const initName = this.router.currentRoute.value.name as string
+    const initName = this._router.currentRoute.value.name as string
     this._menu.active = initName
   }
 
@@ -300,14 +287,28 @@ class NavigationStore {
     this._tag.items.splice(index, 1)
 
     // Переход на следующую вкладку, если закрыта текущая
-    if (tag.path === this.router.currentRoute.value.fullPath) {
+    if (tag.path === this._router.currentRoute.value.fullPath) {
       const nextPath = this._tag.items[this._tag.items.length - 1]?.path || '/'
-      await this.router.push(nextPath)
+      await this._router.push(nextPath)
     }
   }
 }
 
-const navigationStore = new NavigationStore()
-const useNavigationStore = () => navigationStore
-export { useNavigationStore }
+let navigationStore: NavigationStore | null = null
+
+const initializeNavigationStore = (router: Router, navigation: INavigation[]) => {
+  if (!isNull(navigationStore)) {
+    throw new Error('NavigationStore is already initialized')
+  }
+  navigationStore = new NavigationStore(router, navigation)
+}
+
+const useNavigationStore = (): NavigationStore => {
+  if (!navigationStore) {
+    throw new Error('NavigationStore is not initialized')
+  }
+  return navigationStore
+}
+
+export { initializeNavigationStore, useNavigationStore }
 export type { IMenuItem, INavigation, ITagItem }
