@@ -1,73 +1,96 @@
+import { h } from 'vue'
 import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-router'
 
 import { INavigation } from '../layout'
-import { isAsyncLoadComponent } from '../utils'
+import { isAsyncLoadComponent, isNull } from '../utils'
 import { permissionBeforeEach } from './hooks'
-import { ILoginRoute } from './types'
 
-const getInitialRouter = (rootRedirect: string, login: ILoginRoute): RouteRecordRaw[] => [
-  {
-    name: 'root',
-    path: '/',
-    redirect: rootRedirect
-  },
-  {
-    name: 'login',
-    path: login.path,
-    component: login.loader
-  }
-]
-
-/**
- * Поиск путей root и login
- */
-const findPaths = (
-  navigation: INavigation[],
+const findNavigation = (
+  navigationItems: INavigation[],
+  predicate: (route: INavigation) => boolean | undefined,
   basePath: string = '/'
-): { rootPath: string; login: ILoginRoute } => {
-  let rootPath: string | undefined
-  let login: ILoginRoute | undefined
+): INavigation => {
+  let foundNavigation: INavigation | null = null
 
-  const searchPaths = (navigation: INavigation[], basePath: string) => {
-    for (const route of navigation) {
-      const fullPath = `${basePath}/${route.path}`.replace(/\/+/g, '/')
+  const searchNavigation = (navigationSearchItems: INavigation[], basePath: string): void => {
+    for (const navigation of navigationSearchItems) {
+      const fullPath = `${basePath}/${navigation.path}`.replace(/\/+/g, '/')
 
-      if (route.isRoot) {
-        if (rootPath) throw new Error('Multiple root paths found')
-        rootPath = fullPath
-      }
-
-      if (route.isLogin) {
-        if (login) throw new Error('Multiple login paths found')
-        if (!route.component) throw new Error('Login path component not found')
-        if (!isAsyncLoadComponent(route.component)) throw new Error('Login component is not async')
-        login = {
-          loader: route.component,
-          path: fullPath
+      if (predicate(navigation)) {
+        if (foundNavigation) {
+          throw new Error('Found multiple navigation paths')
         }
+        foundNavigation = { ...navigation, path: fullPath }
       }
 
-      if (route.children) searchPaths(route.children, fullPath)
+      if (navigation.children) {
+        searchNavigation(navigation.children, fullPath)
+      }
     }
   }
 
-  searchPaths(navigation, basePath)
+  searchNavigation(navigationItems, basePath)
 
-  if (!rootPath) throw new Error('Root path not found')
-  if (!login) throw new Error('Login path not found')
+  if (isNull(foundNavigation)) throw new Error('Navigation path not found')
 
-  return { rootPath, login }
+  return foundNavigation
+}
+
+const getLoginRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
+  const loginRoute = findNavigation(navigation, (n) => n.isLogin, basePath)
+  if (!loginRoute.component) throw new Error('Login path component not found')
+  if (!isAsyncLoadComponent(loginRoute.component)) throw new Error('Login component is not async')
+
+  return {
+    name: 'login',
+    path: loginRoute.path,
+    component: loginRoute.component
+  }
+}
+
+const getRootRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
+  const rootRoute = findNavigation(navigation, (n) => n.isRoot, basePath)
+
+  return {
+    name: 'root',
+    path: '/',
+    redirect: rootRoute.path
+  }
+}
+
+const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
+  try {
+    const notFoundRoute = findNavigation(navigation, (n) => n.isNotFound, basePath)
+    if (!notFoundRoute.component) throw new Error('Not found path component not found')
+    if (!isAsyncLoadComponent(notFoundRoute.component))
+      throw new Error('Not found component is not async')
+
+    return {
+      name: 'NotFound',
+      path: '/:pathMatch(.*)*',
+      component: notFoundRoute.component
+    }
+  } catch (e) {
+    console.warn(e)
+    return {
+      name: 'NotFound',
+      path: '/:pathMatch(.*)*',
+      component: { name: 'NotFound', render: () => h('h1', 'Not found') }
+    }
+  }
 }
 
 const initializeRouter = (navigation: INavigation[]): Router => {
-  const paths = findPaths(navigation)
+  const rootRouter = getRootRouter(navigation)
+  const loginRouter = getLoginRouter(navigation)
+
   const router = createRouter({
     history: createWebHistory(),
-    routes: getInitialRouter(paths.rootPath, paths.login)
+    routes: [rootRouter, loginRouter]
   })
-  router.beforeEach(permissionBeforeEach(paths.login.path))
+  router.beforeEach(permissionBeforeEach(loginRouter.path))
 
   return router
 }
 
-export { getInitialRouter, initializeRouter }
+export { getLoginRouter, getNotFound, getRootRouter, initializeRouter }

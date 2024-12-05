@@ -20,7 +20,11 @@ const getTestUser = async () => {
     patronymic: 'Test',
     avatar: 'https://i.pravatar.cc/300',
     roles: {
-      RW: 'RW'
+      dashboard: 'RW',
+      'the-dashboard': 'RW',
+      TheParams: 'RW',
+      'the-params': 'RW',
+      'the-params-input': 'RW'
     }
   }
 

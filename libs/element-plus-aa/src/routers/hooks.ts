@@ -6,8 +6,6 @@ const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefi
   const whiteList = [loginPath]
 
   return async (to, _from, next) => {
-    console.log('permissionBeforeEach')
-
     // Белый лист
     if (whiteList.includes(to.path)) {
       next()
@@ -28,7 +26,10 @@ const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefi
     // Генерация меню
     const navigationStore = useNavigationStore()
     if (navigationStore.menuItems.length === 0) {
-      navigationStore.generateMenu()
+      if (userStore.user == null) {
+        throw new Error('User is not loaded')
+      }
+      navigationStore.generateMenu(userStore.user.roles)
       // тк только что сгенерировали меню, то нужно повторно перейти на текущий роут
       next({ ...to, replace: true })
       return

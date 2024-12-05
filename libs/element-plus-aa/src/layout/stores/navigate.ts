@@ -1,9 +1,15 @@
 import { Component, Reactive, reactive, unref, watch } from 'vue'
 import { Router, RouteRecordRaw } from 'vue-router'
 
-import { createWrapperComponentRouterParams, generateUniqueNameComponent } from '../../routers'
+import {
+  createWrapperComponentRouterParams,
+  generateUniqueNameComponent,
+  getNotFound,
+  getRootRouter
+} from '../../routers'
 import type { AsyncLoadComponent, IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
 import { isAsyncLoadComponent, isNull, randomString } from '../../utils'
+import type { Roles } from './user'
 
 interface IMenuItem {
   name: string
@@ -92,6 +98,13 @@ interface INavigation {
   isLogin?: boolean
 
   /**
+   * Страница 404
+   *
+   * Должен быть только один
+   * */
+  isNotFound?: boolean
+
+  /**
    * Компонент для отображения
    *
    * Компоненты не должны повторяться
@@ -105,11 +118,16 @@ interface INavigation {
   children?: INavigation[]
 }
 
-const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw[] => {
+const convertNavigationToRoute = (
+  navigation: INavigation[],
+  roles: Roles
+): IAppRouteRecordRaw[] => {
   const seenNames = new Set<string>()
   const seenComponent = new Set<string>()
 
-  const convert = (nav: INavigation): IAppRouteRecordRaw => {
+  const rolesKeys = Object.keys(roles)
+
+  const convert = (nav: INavigation): IAppRouteRecordRaw | null => {
     const name = nav.name
     const newName = `${name}-${randomString()}`
 
@@ -119,6 +137,7 @@ const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw
       throw new Error(`Duplicate navigation name detected: ${name}`)
     }
     seenNames.add(name)
+
     // Проверка на дубликаты компонентов
     // Нужно для кэширования компонентов,
     // если компоненты повторяются и у них разные параметры кэширования,
@@ -130,12 +149,16 @@ const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw
       }
       seenComponent.add(_component)
     }
+
     // Проверка на динамический путь без кэширования
     // Компоненты с динамическими путями должны быть кэшированы
     // тк в createWrapperComponentRouterParams не реализована логика отключения кэширования
     if (nav.path.includes(':') && nav.cache === false) {
       throw new Error(`Component with dynamic path should be cached: ${name}`)
     }
+
+    // Проверка на доступность пункта меню по ролям
+    if (!rolesKeys.includes(name)) return null
 
     // Обертка компонента для параметризованных путей и уникальных имен роутов
     let component: Component | undefined = nav.component
@@ -159,11 +182,11 @@ const convertNavigationToRoute = (navigation: INavigation[]): IAppRouteRecordRaw
         cache: nav.cache ?? true
       },
       component: component,
-      children: nav.children ? nav.children.map(convert) : undefined
+      children: nav.children ? nav.children.map(convert).filter((v) => !isNull(v)) : undefined
     }
   }
 
-  return navigation.map(convert)
+  return navigation.map(convert).filter((v) => !isNull(v))
 }
 
 const convertRouteToMenuItem = (
@@ -239,12 +262,16 @@ class NavigationStore {
     return this._menu.items
   }
 
-  generateMenu() {
-    // TODO: Очистка роутов тк login дублируется
-    // this.router.clearRoutes()
+  generateMenu(roles: Roles) {
+    this._router.clearRoutes()
 
-    const routes = convertNavigationToRoute(this._navigationItems)
+    const routes = convertNavigationToRoute(this._navigationItems, roles)
+    if (routes.length === 0) {
+      throw new Error('useNavigationStore: Navigation items is empty')
+    }
+    this._router.addRoute(getRootRouter(this._navigationItems))
     routes.forEach((route) => this._router.addRoute(route as RouteRecordRaw))
+    this._router.addRoute(getNotFound(this._navigationItems))
     this._menu.items = convertRouteToMenuItem(routes)
     this._initializeRouteWatcher()
   }

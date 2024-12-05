@@ -3,14 +3,6 @@ import { RouteRecordRaw } from 'vue-router'
 
 type AsyncLoadComponent = () => Promise<{ default: Component }>
 
-interface ILoginRoute {
-  /** Компонент для отображения */
-  loader: AsyncLoadComponent
-
-  /** Путь до страницы логина */
-  path: string
-}
-
 interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
   /** Имя для меню */
   title: string
@@ -53,4 +45,4 @@ declare module 'vue-router' {
   interface RouteMeta extends IRouteMetaCustom {}
 }
 
-export type { AsyncLoadComponent, IAppRouteRecordRaw, ILoginRoute, IRouteMetaCustom }
+export type { AsyncLoadComponent, IAppRouteRecordRaw, IRouteMetaCustom }

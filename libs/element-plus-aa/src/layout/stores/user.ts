@@ -1,5 +1,8 @@
 import { isNull } from '../../utils'
 
+type Role = 'RW' | 'RO'
+type Roles = { [key: string]: Role }
+
 interface IUserInfo {
   id: number
   username: string
@@ -7,7 +10,7 @@ interface IUserInfo {
   surname: string
   patronymic: string
   avatar: string
-  roles: { [key: string]: 'RW' | 'RO' }
+  roles: Roles
 }
 
 interface IUserStore {
@@ -43,4 +46,4 @@ const useUserStore = (): IUserStore => {
 }
 
 export { initializeUserStore, useUserStore }
-export type { IUserInfo }
+export type { IUserInfo, Roles }
