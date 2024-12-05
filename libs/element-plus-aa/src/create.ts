@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import { Component, createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import {
@@ -14,6 +14,15 @@ import type { ILoginRoute } from './routers/types'
 import { isAsyncLoadComponent } from './utils'
 
 interface IConfig {
+  /** Конфигурация корневого компонента */
+  root: {
+    /** Компонент */
+    component: Component
+
+    /** Селектор контейнера */
+    container: string
+  }
+
   /** Конфигурация layout */
   layout?: {
     /** Заголовок */
@@ -22,9 +31,6 @@ interface IConfig {
     /** Логотип (svg) */
     logo?: string
   }
-
-  /** Vue приложение */
-  vueApp: App
 
   /** TODO: Подумать */
   auth: {
@@ -81,6 +87,8 @@ const findPaths = (
  * Создание приложения ELA
  */
 const createEla = (config: IConfig) => {
+  const app = createApp(config.root.component)
+
   const layoutConfigStore = useLayoutConfigStore()
   const navigationStore = useNavigationStore()
 
@@ -96,7 +104,7 @@ const createEla = (config: IConfig) => {
     routes: getInitialRouter(paths.rootPath, paths.login)
   })
   router.beforeEach(permissionBeforeEach(paths.login.path))
-  config.vueApp.use(router)
+  app.use(router)
 
   // Инициализация UserStore
   initializeUserStore(config.auth.getUser)
@@ -105,6 +113,8 @@ const createEla = (config: IConfig) => {
   // TODO: сделать метод для установки меню
   navigationStore.setRouter(router)
   navigationStore.setAllNavigation(config.navigation)
+
+  app.mount('#app')
 }
 
 export { createEla }

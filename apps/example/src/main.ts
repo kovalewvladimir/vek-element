@@ -2,18 +2,16 @@ import 'virtual:uno.css'
 
 import { createEla, IUserInfo } from 'element-plus-aa'
 import { asyncSleep } from 'element-plus-aa/utils'
-import { createApp } from 'vue'
 
 import App from '@/App.vue'
 
 import { navigation } from './navigation'
 
-const app = createApp(App)
-
 const getTestUser = async () => {
   console.warn('getUser')
 
-  await asyncSleep(1000)
+  await asyncSleep(1500)
+
   const user: IUserInfo = {
     id: 1,
     username: 'test',
@@ -30,15 +28,16 @@ const getTestUser = async () => {
 }
 
 createEla({
+  root: {
+    component: App,
+    container: '#app'
+  },
   layout: {
     title: 'TEST123',
     logo: 'el-logo'
   },
-  vueApp: app,
   auth: {
     getUser: getTestUser
   },
   navigation: navigation
 })
-
-app.mount('#app')
