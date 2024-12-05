@@ -12,6 +12,9 @@
     "lint": "eslint .",
     "type-check": "vue-tsc --noEmit -p ./apps/example/tsconfig.json",
     "check": "npm run lint && npm run type-check",
+    "ncu": "ncu -ws --dep prod,peer,dev",
+    "ncu:u": "ncu -ws --dep prod,peer,dev -u",
+    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "prepare": "husky"
   },
   "devDependencies": {
