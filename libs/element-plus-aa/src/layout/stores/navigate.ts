@@ -197,8 +197,8 @@ const convertRouteToMenuItem = (
 class NavigationStore {
   private _router: Router
 
-  private _isWatch = false
-  private _allNavigation: INavigation[]
+  private _isRouteWatchActive = false
+  private _navigationItems: INavigation[]
 
   private _menu: Reactive<IMenu> = reactive({
     active: '',
@@ -210,7 +210,7 @@ class NavigationStore {
 
   constructor(router: Router, navigation: INavigation[]) {
     this._router = router
-    this._allNavigation = navigation
+    this._navigationItems = navigation
   }
 
   /**
@@ -218,8 +218,9 @@ class NavigationStore {
    * */
   _initializeRouteWatcher() {
     // Защита от повторной инициализации
-    if (this._isWatch) throw new Error('useNavigationStore: Route watcher already initialized')
-    this._isWatch = true
+    if (this._isRouteWatchActive)
+      throw new Error('useNavigationStore: Route watcher already initialized')
+    this._isRouteWatchActive = true
 
     // Синхронизация меню с текущим роутом
     watch(this._router.currentRoute, async () => {
@@ -242,7 +243,7 @@ class NavigationStore {
     // TODO: Очистка роутов тк login дублируется
     // this.router.clearRoutes()
 
-    const routes = convertNavigationToRoute(this._allNavigation)
+    const routes = convertNavigationToRoute(this._navigationItems)
     routes.forEach((route) => this._router.addRoute(route as RouteRecordRaw))
     this._menu.items = convertRouteToMenuItem(routes)
     this._initializeRouteWatcher()
