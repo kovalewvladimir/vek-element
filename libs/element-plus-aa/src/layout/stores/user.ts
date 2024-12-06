@@ -46,4 +46,4 @@ const useUserStore = (): IUserStore => {
 }
 
 export { initializeUserStore, useUserStore }
-export type { IUserInfo, Roles }
+export type { IUserInfo, Role, Roles }
