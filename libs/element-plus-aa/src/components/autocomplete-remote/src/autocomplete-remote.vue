@@ -7,7 +7,7 @@ import {
 } from 'element-plus'
 import { computed, onMounted, ref, toValue, useTemplateRef } from 'vue'
 
-import { useLoading } from '../../../hooks/useLoading'
+import { useLoading } from '../../../hooks'
 
 const {
   getLoadingOptions,

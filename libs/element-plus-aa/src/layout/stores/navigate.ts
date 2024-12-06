@@ -175,6 +175,7 @@ const convertNavigationToRoute = (
       path: nav.path,
       redirect: nav.redirect,
       meta: {
+        name: name,
         title: nav.title,
         icon: nav.icon,
         breadcrumb: nav.breadcrumb ?? true,

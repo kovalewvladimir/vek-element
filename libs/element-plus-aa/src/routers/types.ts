@@ -4,6 +4,9 @@ import { RouteRecordRaw } from 'vue-router'
 type AsyncLoadComponent = () => Promise<{ default: Component }>
 
 interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
+  /** Исходное имя роута */
+  name: string
+
   /** Имя для меню */
   title: string
 
