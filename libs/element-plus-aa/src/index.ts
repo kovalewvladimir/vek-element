@@ -1,5 +1,6 @@
 import './styles/var.css'
 import './styles/reset.css'
+import './styles/index.css'
 
 export * from './components/autocomplete-remote'
 export * from './components/icon-svg'
