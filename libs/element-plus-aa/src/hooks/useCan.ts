@@ -12,6 +12,9 @@ export const useCan = (): {
 
   /** Проверка на роль */
   is: (role: string) => boolean
+
+  /** Роли доступные на странице */
+  roles?: Record<string, { description: string }>
 } => {
   const route = useRoute()
   const userStore = useUserStore()
@@ -24,7 +27,13 @@ export const useCan = (): {
 
   const currentRole: string = roles[routeName]
 
+  const rolesRoute = route.meta.roles
+
   const is = (role: string): boolean => {
+    if (!['RW', 'RO'].includes(role)) {
+      if (!rolesRoute) throw new Error('useCan: rolesRoute is undefined')
+      if (!rolesRoute[role]) throw new Error(`useCan: role ${role} not found in rolesRoute`)
+    }
     return currentRole === role
   }
 
@@ -32,7 +41,7 @@ export const useCan = (): {
 
   const isRO = is('RO')
 
-  return { isRW, isRO, is }
+  return { isRW, isRO, is, roles: rolesRoute }
 }
 
 //

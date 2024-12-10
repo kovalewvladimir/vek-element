@@ -21,6 +21,9 @@ interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
 
   /** Кэшировать компонент */
   cache: boolean
+
+  /** Дополнительные роли */
+  roles?: Record<string, { description: string }>
 }
 
 interface IAppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta' | 'children'> {

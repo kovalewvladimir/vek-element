@@ -114,10 +114,23 @@ interface INavigation {
    */
   component?: AsyncLoadComponent | Component
 
+  /**
+   * Дополнительные роли доступа
+   *
+   * Ключ - имя роли
+   * Значение - описание роли
+   *
+   * Роли по умолчанию:
+   *  - RW - чтение и запись
+   *  - RO - только чтение
+   */
+  roles?: Record<string, { description: string }>
+
   /** Дочерние элементы */
   children?: INavigation[]
 }
 
+/** Преобразование навигации в роуты */
 const convertNavigationToRoute = (
   navigation: INavigation[],
   roles: Roles
@@ -180,7 +193,8 @@ const convertNavigationToRoute = (
         icon: nav.icon,
         breadcrumb: nav.breadcrumb ?? true,
         hidden: nav.hidden ?? false,
-        cache: nav.cache ?? true
+        cache: nav.cache ?? true,
+        roles: nav.roles
       },
       component: component,
       children: nav.children ? nav.children.map(convert).filter((v) => !isNull(v)) : undefined
@@ -190,6 +204,7 @@ const convertNavigationToRoute = (
   return navigation.map(convert).filter((v) => !isNull(v))
 }
 
+/** Преобразование роутов в элементы меню */
 const convertRouteToMenuItem = (
   routes: IAppRouteRecordRaw[],
   basePath: string = '/'

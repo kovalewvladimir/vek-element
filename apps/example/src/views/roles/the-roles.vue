@@ -7,6 +7,11 @@ const can = useCan()
 <template>
   <h1>The Roles</h1>
 
+  <div>{{ can.roles }}</div>
+
+  <br />
+
   <div>isCanRW: {{ can.isRW }}</div>
   <div>isCanRO: {{ can.isRO }}</div>
+  <div>isCanTestRole: {{ can.is('TestRole') }}</div>
 </template>

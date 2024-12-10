@@ -14,7 +14,13 @@ const navigation: INavigation = {
       path: '',
       title: 'Roles',
       icon: 'el-icon-menu',
-      component: () => import('@/views/roles/the-roles.vue')
+      component: () => import('@/views/roles/the-roles.vue'),
+
+      roles: {
+        TestRole: {
+          description: 'Тестовая роль'
+        }
+      }
     }
   ]
 }
