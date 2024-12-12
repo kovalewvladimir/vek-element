@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "npm run build -w=@vek-element/vite-svg && npm run dev -w=element-plus-aa-example",
     "preview": "npm run preview -w=element-plus-aa-example",
+    "version:ui": "npm version patch -w=element-plus-aa",
+    "version:svg": "npm version patch -w=@vek-element/vite-svg",
     "publish:ui": "npm publish -w=element-plus-aa",
     "publish:svg": "npm publish -w=@vek-element/vite-svg --access public",
     "lint": "eslint .",
