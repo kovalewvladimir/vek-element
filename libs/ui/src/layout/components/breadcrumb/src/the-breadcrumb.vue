@@ -18,12 +18,15 @@ const matchedRoutes = computed(() => route.matched.filter((item) => item.meta.br
       v-for="item in matchedRoutes"
       :key="item.path"
     >
-      <vu-icon-svg-dynamic
-        v-if="item.meta.icon"
-        :name="item.meta.icon"
-        :size="12"
-      />
-      <span>{{ item.meta.title }}</span>
+      <div class="flex justify-center">
+        <vu-icon-svg-dynamic
+          v-if="item.meta.icon"
+          :name="item.meta.icon"
+          :size="14"
+          class="mr-3px"
+        />
+        <span>{{ item.meta.title }}</span>
+      </div>
     </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
