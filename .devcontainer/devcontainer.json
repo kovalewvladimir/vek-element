@@ -1,9 +1,9 @@
 {
-  "name": "element-plus-aa",
+  "name": "vek-element",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "runArgs": ["-p=8999:8999", "--name=element-plus-aa"],
+  "runArgs": ["-p=8999:8999", "--name=vek-element"],
   "customizations": {
     "vscode": {
       "settings": {},

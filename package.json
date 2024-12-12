@@ -1,16 +1,16 @@
 {
-  "name": "element-plus-aa-workspaces",
+  "name": "vek-element-workspaces",
   "type": "module",
   "workspaces": [
     "apps/**/*",
     "libs/**/*"
   ],
   "scripts": {
-    "dev": "npm run build -w=@vek-element/vite-svg && npm run dev -w=element-plus-aa-example",
-    "preview": "npm run preview -w=element-plus-aa-example",
-    "version:ui": "npm version patch -w=element-plus-aa",
+    "dev": "npm run build -w=@vek-element/vite-svg && npm run dev -w=vek-element-example",
+    "preview": "npm run preview -w=vek-element-example",
+    "version:ui": "npm version patch -w=@vek-element/ui",
     "version:svg": "npm version patch -w=@vek-element/vite-svg",
-    "publish:ui": "npm publish -w=element-plus-aa",
+    "publish:ui": "npm publish -w=@vek-element/ui --access public",
     "publish:svg": "npm publish -w=@vek-element/vite-svg --access public",
     "lint": "eslint .",
     "type-check": "vue-tsc --noEmit -p ./apps/example/tsconfig.json",

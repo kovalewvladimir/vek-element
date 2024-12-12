@@ -1,4 +1,4 @@
-import { type INavigation } from 'element-plus-aa'
+import { type INavigation } from '@vek-element/ui'
 
 import dashboardNavigation from './dashboard'
 import emptyNavigation from './empty'

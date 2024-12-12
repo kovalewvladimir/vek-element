@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useLayoutConfigStore } from '@vek-element/ui'
 import { ElButton, ElCard } from 'element-plus'
-import { useLayoutConfigStore } from 'element-plus-aa'
 import { RouterLink } from 'vue-router'
 
 const configLayout = useLayoutConfigStore()

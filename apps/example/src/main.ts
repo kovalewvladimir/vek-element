@@ -1,8 +1,8 @@
 import 'virtual:uno.css'
 import 'virtual:svg-icons-register'
 
-import { createEla, INavigation, IUserInfo, Role } from 'element-plus-aa'
-import { asyncSleep } from 'element-plus-aa/utils'
+import { createUI, INavigation, IUserInfo, Role } from '@vek-element/ui'
+import { asyncSleep } from '@vek-element/ui/utils'
 
 import App from '@/App.vue'
 
@@ -40,7 +40,7 @@ const getTestUser = async () => {
   return user
 }
 
-createEla({
+createUI({
   root: {
     component: App,
     container: '#app'

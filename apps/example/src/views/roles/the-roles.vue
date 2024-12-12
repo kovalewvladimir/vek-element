@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCan } from 'element-plus-aa'
+import { useCan } from '@vek-element/ui'
 
 const can = useCan()
 </script>

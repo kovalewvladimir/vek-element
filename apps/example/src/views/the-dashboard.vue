@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ElButton, ElCard } from 'element-plus'
 import {
-  ElaAutocompleteRemote,
-  ElaIconSvgDynamic,
-  ElaModalDialog,
-  ElaModalDialogInstance,
-  useLayoutConfigStore
-} from 'element-plus-aa'
-import { asyncSleep } from 'element-plus-aa/utils'
+  useLayoutConfigStore,
+  VuAutocompleteRemote,
+  VuIconSvgDynamic,
+  VuModalDialog,
+  VuModalDialogInstance
+} from '@vek-element/ui'
+import { asyncSleep } from '@vek-element/ui/utils'
+import { ElButton, ElCard } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
 
 const configLayout = useLayoutConfigStore()
@@ -25,7 +25,7 @@ const getOptions = async () => {
   }
 }
 
-const dialogRef = useTemplateRef<ElaModalDialogInstance>('dialogRef')
+const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
 </script>
 
 <template>
@@ -34,15 +34,15 @@ const dialogRef = useTemplateRef<ElaModalDialogInstance>('dialogRef')
     header="Компоненты"
   >
     <el-card
-      header="ela-autocomplete-remote"
+      header="vu-autocomplete-remote"
       class="h-full"
     >
-      <ela-autocomplete-remote
+      <vu-autocomplete-remote
         v-model="autocompleteValue"
         :get-loading-options="getOptions"
       />
 
-      <ela-icon-svg-dynamic
+      <vu-icon-svg-dynamic
         name="ep--close"
         hover-color="green"
         color="red"
@@ -50,14 +50,14 @@ const dialogRef = useTemplateRef<ElaModalDialogInstance>('dialogRef')
     </el-card>
     <el-card>
       <el-button @click="() => dialogRef?.open()">Open modal dialog</el-button>
-      <ela-modal-dialog ref="dialogRef">
+      <vu-modal-dialog ref="dialogRef">
         <template #default>
-          <h1>Test ela-modal-dialog</h1>
+          <h1>Test vu-modal-dialog</h1>
         </template>
         <template #footer>
           <el-button @click="() => dialogRef?.close()">Close</el-button>
         </template>
-      </ela-modal-dialog>
+      </vu-modal-dialog>
     </el-card>
 
     <el-card>

@@ -1,9 +1,9 @@
-import { ElaLayout, type INavigation } from 'element-plus-aa'
+import { type INavigation, VuLayout } from '@vek-element/ui'
 
 const navigation: INavigation = {
   isRoot: true,
   name: 'dashboard',
-  component: ElaLayout,
+  component: VuLayout,
   title: '',
   path: '/dashboard',
   breadcrumb: false,

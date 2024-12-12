@@ -1,11 +1,11 @@
-import { ElaLayout, type INavigation } from 'element-plus-aa'
+import { type INavigation, VuLayout } from '@vek-element/ui'
 
 const navigation: INavigation = {
   name: 'TheParams',
   path: '/params',
   title: 'Params',
   icon: 'el-icon-menu',
-  component: ElaLayout,
+  component: VuLayout,
   hidden: true,
 
   children: [

@@ -1,5 +1,5 @@
 {
-  "name": "element-plus-aa-example",
+  "name": "vek-element-example",
   "private": true,
   "version": "0.0.9",
   "type": "module",
@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@vek-element/vite-svg": "file:../.../libs/plugins/vite/svg",
+    "@vek-element/ui": "file:../.../libs/ui",
     "element-plus": "2.9.0",
-    "element-plus-aa": "file:../.../libs/element-plus-aa",
     "vue": "3.5.13",
     "vue-router": "4.5.0"
   }

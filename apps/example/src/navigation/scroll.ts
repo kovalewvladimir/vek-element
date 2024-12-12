@@ -1,11 +1,11 @@
-import { ElaLayout, type INavigation } from 'element-plus-aa'
+import { type INavigation, VuLayout } from '@vek-element/ui'
 
 const navigation: INavigation = {
   name: 'TheScroll',
   path: '/scroll',
   title: 'Scroll',
   icon: 'el-icon-menu',
-  component: ElaLayout,
+  component: VuLayout,
   children: [
     {
       name: 'the-scroll-1',

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ElaRootLayout } from 'element-plus-aa'
+import { VuRootLayout } from '@vek-element/ui'
 </script>
 
 <template>
-  <ela-root-layout />
+  <vu-root-layout />
 </template>
