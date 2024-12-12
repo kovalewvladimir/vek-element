@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "prepack": "node ../../../scripts/clean-package-json.js ../libs/plugins/vite/svg"
+    "prepack": "npm run build && node ../../../../scripts/clean-package-json.js ../libs/plugins/vite/svg/package.json"
   },
   "files": [
     "src",
