@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElIcon } from 'element-plus'
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 
 const {
   name,
@@ -11,10 +11,8 @@ const {
   /**
    * Имя иконки
    *
-   * Для работы компонента необходимо:
-   *  1. подключить vite плагин vite-svg-loader
-   *     https://www.npmjs.com/package/vite-svg-loader
-   *  2. иконки должны быть в папке /assets/svgs
+   * Для работы компонента необходимо подключить vite плагин @vek-element/vite-svg
+   * https://www.npmjs.com/package/@vek-element/vite-svg
    */
   name: string
   /**
@@ -34,15 +32,7 @@ const {
 
 const isHoverColor = computed(() => hoverColor !== undefined)
 
-const AsyncComponent = defineAsyncComponent({
-  loader: async () => {
-    try {
-      return await import(`@/assets/svgs/${name}.svg?component`)
-    } catch {
-      console.error(`[ela-icon-svg-dynamic]: icon /assets/svgs/${name}.svg not found`)
-    }
-  }
-})
+const symbolId = computed<string>(() => `#icon-${name}`)
 
 defineEmits(['click'])
 </script>
@@ -54,7 +44,9 @@ defineEmits(['click'])
     :size="size"
     @click="$emit('click', $event)"
   >
-    <component :is="AsyncComponent" />
+    <svg aria-hidden="true">
+      <use :href="symbolId" />
+    </svg>
   </el-icon>
 </template>
 

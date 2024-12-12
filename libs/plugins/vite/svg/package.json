@@ -1,0 +1,26 @@
+{
+  "name": "@vek-element/vite-svg",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@types/xml2js": "0.4.14",
+    "xml2js": "0.6.2"
+  }
+}

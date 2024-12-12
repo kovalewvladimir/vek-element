@@ -1,4 +1,5 @@
 import 'virtual:uno.css'
+import 'virtual:svg-icons-register'
 
 import { createEla, INavigation, IUserInfo, Role } from 'element-plus-aa'
 import { asyncSleep } from 'element-plus-aa/utils'
