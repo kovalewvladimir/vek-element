@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "prepack": "node scripts/clean-package-json.js"
+    "prepack": "node ../../scripts/clean-package-json.js ../libs/element-plus-aa/package.json"
   },
   "peerDependencies": {
     "element-plus": "^2.9.0",

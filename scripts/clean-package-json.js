@@ -5,7 +5,12 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const packageJsonPath = path.resolve(__dirname, '../package.json')
+if (process.argv.length !== 3) {
+  console.error('Usage: node clean-package-json.js <path-to-package.json>')
+  process.exit(1)
+}
+
+const packageJsonPath = path.resolve(__dirname, process.argv[2])
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 
 const fieldsToRemove = [
