@@ -81,14 +81,25 @@ const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRe
     return {
       name: 'NotFound',
       path: '/:pathMatch(.*)*',
-      component: notFoundRoute.component
+      component: notFoundRoute.component,
+      // @ts-expect-error Нужен для изменения заголовка страницы
+      meta: {
+        title: notFoundRoute.title
+      }
     }
   } catch (e) {
     console.warn(e)
     return {
       name: 'NotFound',
       path: '/:pathMatch(.*)*',
-      component: { name: 'NotFound', render: () => h('h1', 'Not found') }
+      component: {
+        name: 'NotFound',
+        render: () => [h('h1', 'Not found'), h('a', { href: '/' }, 'Home')]
+      },
+      // @ts-expect-error Нужен для изменения заголовка страницы
+      meta: {
+        title: 'Not found'
+      }
     }
   }
 }
