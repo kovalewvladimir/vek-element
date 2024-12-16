@@ -4,6 +4,7 @@ import { Router, RouteRecordRaw } from 'vue-router'
 import {
   createWrapperComponentRouterParams,
   generateUniqueNameComponent,
+  getLoginRouter,
   getNotFound,
   getRootRouter
 } from '../../routers'
@@ -235,6 +236,11 @@ const convertRouteToMenuItem = (
 
 class NavigationStore {
   private _router: Router
+  private _routerBase: {
+    login: RouteRecordRaw
+    root: RouteRecordRaw
+    notFound: RouteRecordRaw
+  }
 
   private _isRouteWatchActive = false
   private _navigationItems: INavigation[]
@@ -250,56 +256,33 @@ class NavigationStore {
   constructor(router: Router, navigation: INavigation[]) {
     this._router = router
     this._navigationItems = navigation
+
+    this._routerBase = {
+      login: getLoginRouter(this._navigationItems),
+      root: getRootRouter(this._navigationItems),
+      notFound: getNotFound(this._navigationItems)
+    }
   }
 
-  /**
-   * Инициализация слежения за роутером
-   * */
+  /** Инициализация слежения за роутером */
   _initializeRouteWatcher() {
     // Защита от повторной инициализации
-    if (this._isRouteWatchActive)
-      throw new Error('useNavigationStore: Route watcher already initialized')
+    if (this._isRouteWatchActive) return
     this._isRouteWatchActive = true
 
     // Синхронизация меню с текущим роутом
     watch(this._router.currentRoute, async () => {
       await this._router.isReady()
 
-      this.syncMenuWithCurrentRoute()
-      this.registerCurrentRouteTags()
+      document.title = this._router.currentRoute.value.meta.title
+
+      this._syncMenuWithCurrentRoute()
+      this._registerCurrentRouteTags()
     })
   }
 
-  get menuActive() {
-    return this._menu.active
-  }
-
-  get menuItems(): readonly IMenuItem[] {
-    return this._menu.items
-  }
-
-  generateMenu(roles: Roles) {
-    this._router.clearRoutes()
-
-    const routes = convertNavigationToRoute(this._navigationItems, roles)
-    if (routes.length === 0) {
-      throw new Error('useNavigationStore: Navigation items is empty')
-    }
-    this._router.addRoute(getRootRouter(this._navigationItems))
-    routes.forEach((route) => this._router.addRoute(route as RouteRecordRaw))
-    this._router.addRoute(getNotFound(this._navigationItems))
-    this._menu.items = convertRouteToMenuItem(routes)
-    this._initializeRouteWatcher()
-  }
-
-  get tagItems(): readonly ITagItem[] {
-    return this._tag.items
-  }
-
-  /**
-   * Регистрация вкладки текущего роута
-   * */
-  registerCurrentRouteTags() {
+  /** Регистрация вкладки текущего роута */
+  _registerCurrentRouteTags() {
     const currentRoute = unref(this._router.currentRoute)
     const paramsId = currentRoute.params.id as string | undefined
 
@@ -314,17 +297,48 @@ class NavigationStore {
     })
   }
 
-  /**
-   * Синхронизация меню с текущим роутом
-   * */
-  syncMenuWithCurrentRoute() {
+  /** Синхронизация меню с текущим роутом */
+  _syncMenuWithCurrentRoute() {
     const initName = this._router.currentRoute.value.name as string
     this._menu.active = initName
   }
 
-  /**
-   * Закрытие вкладки
-   * */
+  /** Базовый роутер */
+  get routerBase() {
+    return this._routerBase
+  }
+
+  /** Активный пункт меню */
+  get menuActive() {
+    return this._menu.active
+  }
+
+  /** Элементы меню */
+  get menuItems(): readonly IMenuItem[] {
+    return this._menu.items
+  }
+
+  /** Вкладки */
+  get tagItems(): readonly ITagItem[] {
+    return this._tag.items
+  }
+
+  /** Инициализация меню */
+  generateMenu(roles: Roles) {
+    this._router.clearRoutes()
+
+    const routes = convertNavigationToRoute(this._navigationItems, roles)
+    if (routes.length === 0) {
+      throw new Error('useNavigationStore: Navigation items is empty')
+    }
+    this._router.addRoute(this._routerBase.root)
+    routes.forEach((route) => this._router.addRoute(route as RouteRecordRaw))
+    this._router.addRoute(this._routerBase.notFound)
+    this._menu.items = convertRouteToMenuItem(routes)
+    this._initializeRouteWatcher()
+  }
+
+  /** Закрытие вкладки */
   async closeTag(tag: ITagItem) {
     // Закрытие текущей вкладки
     const index = this._tag.items.findIndex((item) => item.path === tag.path)
@@ -335,6 +349,17 @@ class NavigationStore {
       const nextPath = this._tag.items[this._tag.items.length - 1]?.path || '/'
       await this._router.push(nextPath)
     }
+  }
+
+  /** Очистка вкладок */
+  clearTags = () => {
+    this._tag.items = []
+  }
+
+  /** Очистка меню */
+  clearMenu = () => {
+    this._menu.active = ''
+    this._menu.items = []
   }
 }
 

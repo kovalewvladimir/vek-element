@@ -31,20 +31,30 @@ const findNavigation = (
 
   searchNavigation(navigationItems, basePath)
 
-  if (isNull(foundNavigation)) throw new Error('Navigation path not found')
+  if (isNull(foundNavigation)) {
+    throw new Error('Navigation path not found')
+  }
 
   return foundNavigation
 }
 
 const getLoginRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
   const loginRoute = findNavigation(navigation, (n) => n.isLogin, basePath)
-  if (!loginRoute.component) throw new Error('Login path component not found')
-  if (!isAsyncLoadComponent(loginRoute.component)) throw new Error('Login component is not async')
+  if (!loginRoute.component) {
+    throw new Error('Login path component not found')
+  }
+  if (!isAsyncLoadComponent(loginRoute.component)) {
+    throw new Error('Login component is not async')
+  }
 
   return {
     name: 'login',
     path: loginRoute.path,
-    component: loginRoute.component
+    component: loginRoute.component,
+    // @ts-expect-error Нужен для изменения заголовка страницы
+    meta: {
+      title: loginRoute.title
+    }
   }
 }
 
@@ -61,9 +71,12 @@ const getRootRouter = (navigation: INavigation[], basePath: string = '/'): Route
 const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
   try {
     const notFoundRoute = findNavigation(navigation, (n) => n.isNotFound, basePath)
-    if (!notFoundRoute.component) throw new Error('Not found path component not found')
-    if (!isAsyncLoadComponent(notFoundRoute.component))
+    if (!notFoundRoute.component) {
+      throw new Error('Not found component not found')
+    }
+    if (!isAsyncLoadComponent(notFoundRoute.component)) {
       throw new Error('Not found component is not async')
+    }
 
     return {
       name: 'NotFound',

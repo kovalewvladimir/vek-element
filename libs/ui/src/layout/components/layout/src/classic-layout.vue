@@ -7,6 +7,7 @@ import { TheCollapse } from '../../collapse'
 import { TheLogo } from '../../logo'
 import { TheMenu } from '../../menu'
 import { TheTags } from '../../tags'
+import { UserInfo } from '../../user-info'
 
 const config = useLayoutConfigStore()
 
@@ -22,9 +23,14 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
       <the-menu />
     </div>
     <div class="header">
-      <div class="h-full flex items-center">
-        <the-collapse />
-        <the-breadcrumb />
+      <div class="h-full flex items-center justify-between">
+        <div class="h-full flex items-center">
+          <the-collapse />
+          <the-breadcrumb />
+        </div>
+        <div class="h-full flex items-center">
+          <user-info />
+        </div>
       </div>
     </div>
     <div class="tags">

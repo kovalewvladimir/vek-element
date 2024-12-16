@@ -1,12 +1,12 @@
 import { Component, createApp } from 'vue'
 
 import {
+  type IAuth,
   type IInitialLayout,
   type INavigation,
   initializeLayoutConfigStore,
   initializeNavigationStore,
-  initializeUserStore,
-  type IUserInfo
+  initializeUserStore
 } from './layout'
 import { initializeRouter } from './routers'
 
@@ -23,25 +23,44 @@ interface IConfig {
   /** Конфигурация layout */
   layout: IInitialLayout
 
-  /** TODO: Подумать */
-  auth: {
-    /** Получение данных о пользователя */
-    getUser: () => Promise<IUserInfo>
-  }
+  /**
+   * Конфигурация авторизации
+   *
+   * Нужно реализовать интерфейс IAuth
+   *
+   *
+   * @example
+   *   class Auth implements IAuth {
+   *     private _isLogin = true
+   *
+   *     getUser = async () => {
+   *       if (!this._isLogin)
+   *         throw new Error('User not authorized')
+   *       return userInfo
+   *     }
+   *
+   *     login = () => {
+   *       this._isLogin = true
+   *     }
+   *
+   *     logout = () => {
+   *      this._isLogin = false
+   *     }
+   *  }
+   * */
+  auth: IAuth
 
   /** Навигация */
   navigation: INavigation[]
 }
 
-/**
- * Создание приложения
- */
+/** Создание приложения */
 const createUI = (config: IConfig) => {
   const app = createApp(config.root.component)
 
   const router = initializeRouter(config.navigation)
   initializeLayoutConfigStore(config.layout)
-  initializeUserStore(config.auth.getUser)
+  initializeUserStore(config.auth, config.layout.defaultAvatar)
   initializeNavigationStore(router, config.navigation)
 
   app.use(router)

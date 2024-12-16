@@ -6,6 +6,9 @@ interface IInitialLayout {
 
   /** Логотип (svg) */
   logo?: string
+
+  /** Аватар по умолчанию */
+  defaultAvatar: string
 }
 
 class Logo {
