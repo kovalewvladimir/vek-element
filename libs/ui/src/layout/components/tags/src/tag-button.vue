@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { EpCloseIcon, VuIconSvgDynamic, VuIconSvgSlot } from '../../../../components/icon-svg'
+import { trimEndPath } from '../../../../utils'
 import { type ITagItem, useNavigationStore } from '../../../stores/navigate'
 
 const { tag } = defineProps<{ tag: ITagItem }>()
@@ -10,7 +11,9 @@ const { tag } = defineProps<{ tag: ITagItem }>()
 const router = useRouter()
 const navigationStore = useNavigationStore()
 
-const isActive = computed(() => router.currentRoute.value.path === tag.path)
+const isActive = computed(
+  () => trimEndPath(router.currentRoute.value.path) === trimEndPath(tag.path)
+)
 
 const tagClk = async () => {
   await router.push(tag.path)

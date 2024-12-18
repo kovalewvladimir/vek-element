@@ -2,7 +2,7 @@ import { h } from 'vue'
 import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-router'
 
 import { INavigation } from '../layout'
-import { isAsyncLoadComponent, isNull } from '../utils'
+import { isAsyncLoadComponent, isNull, joinPath } from '../utils'
 import { permissionBeforeEach } from './hooks'
 
 const findNavigation = (
@@ -14,7 +14,7 @@ const findNavigation = (
 
   const searchNavigation = (navigationSearchItems: INavigation[], basePath: string): void => {
     for (const navigation of navigationSearchItems) {
-      const fullPath = `${basePath}/${navigation.path}`.replace(/\/+/g, '/')
+      const fullPath = joinPath(basePath, navigation.path)
 
       if (predicate(navigation)) {
         if (foundNavigation) {

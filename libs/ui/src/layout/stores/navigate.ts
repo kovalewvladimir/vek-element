@@ -9,7 +9,7 @@ import {
   getRootRouter
 } from '../../routers'
 import type { AsyncLoadComponent, IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
-import { isAsyncLoadComponent, isNull, randomString } from '../../utils'
+import { isAsyncLoadComponent, isNull, joinPath, randomString, trimEndPath } from '../../utils'
 import type { Roles } from './user'
 
 interface IMenuItem {
@@ -213,7 +213,7 @@ const convertRouteToMenuItem = (
     seenNames.add(route.name)
 
     // Полный путь
-    const fullPath = `${basePath}/${route.path}`.replace(/\/+/g, '/')
+    const fullPath = joinPath(basePath, route.path)
     // Создание элемента меню
     const menuItem: IMenuItem = {
       name: route.name,
@@ -280,9 +280,9 @@ class NavigationStore {
     const paramsId = currentRoute.params.id as string | undefined
 
     const title = currentRoute.meta.title + (paramsId ? ` - ${paramsId}` : '')
-    const path = currentRoute.fullPath
+    const path = trimEndPath(currentRoute.fullPath)
 
-    if (this._tag.items.some((item) => item.path === path)) return
+    if (this._tag.items.some((item) => trimEndPath(item.path) === path)) return
     this._tag.items.push({
       title,
       path,
