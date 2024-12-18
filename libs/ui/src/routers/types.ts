@@ -13,6 +13,9 @@ interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
   /** Иконка для меню */
   icon?: string
 
+  /** Всегда закреплен в тегах */
+  affix: boolean
+
   /** Скрыть в меню */
   hidden: boolean
 

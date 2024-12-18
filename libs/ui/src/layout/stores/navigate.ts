@@ -33,6 +33,7 @@ interface ITag {
 interface ITagItem {
   title: string
   path: string
+  affix: boolean
   route: {
     name: string
     meta: IRouteMetaCustom
@@ -40,6 +41,17 @@ interface ITagItem {
 }
 
 interface INavigation {
+  /**
+   * Тип страницы
+   *
+   *
+   * Определяет специальное поведение страницы:
+   * - root: главная страница, редирект с /
+   * - login: страница авторизации
+   * - notFound: страница 404
+   */
+  type?: 'root' | 'login' | 'notFound'
+
   /** Имя
    *
    *  Должно быть уникальным
@@ -57,6 +69,9 @@ interface INavigation {
 
   /** Иконка для меню */
   icon?: string
+
+  /** Всегда закреплен в тегах (по умолчанию false) */
+  affix?: boolean
 
   /**
    * Показывать в хлебных крошках (breadcrumb)
@@ -81,17 +96,6 @@ interface INavigation {
    * default - true
    */
   cache?: boolean
-
-  /**
-   * Тип страницы
-   *
-   *
-   * Определяет специальное поведение страницы:
-   * - root: главная страница, редирект с /
-   * - login: страница авторизации
-   * - notFound: страница 404
-   */
-  type?: 'root' | 'login' | 'notFound'
 
   /**
    * Компонент для отображения
@@ -180,6 +184,7 @@ const convertNavigationToRoute = (
         name: name,
         title: nav.title,
         icon: nav.icon,
+        affix: nav.affix ?? false,
         breadcrumb: nav.breadcrumb ?? true,
         hidden: nav.hidden ?? false,
         cache: nav.cache ?? true,
@@ -281,6 +286,7 @@ class NavigationStore {
     this._tag.items.push({
       title,
       path,
+      affix: currentRoute.meta.affix,
       route: { name: currentRoute.name as string, meta: currentRoute.meta }
     })
   }

@@ -14,6 +14,7 @@ const navigation: INavigation = {
       path: '',
       title: 'Главная',
       icon: 'el-icon-menu',
+      affix: true,
       cache: false,
       breadcrumb: false,
       component: () => import('@/views/the-dashboard.vue')

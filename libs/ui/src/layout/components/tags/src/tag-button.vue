@@ -16,6 +16,7 @@ const tagClk = async () => {
   await router.push(tag.path)
 }
 const closeClk = async () => {
+  if (tag.affix) return
   await navigationStore.closeTag(tag)
 }
 </script>
@@ -37,6 +38,7 @@ const closeClk = async () => {
     <span class="title">{{ tag.title }}</span>
 
     <vu-icon-svg-slot
+      v-if="!tag.affix"
       class="button-close"
       :size="14"
       @click.prevent.stop="closeClk"
