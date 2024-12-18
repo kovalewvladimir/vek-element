@@ -8,12 +8,14 @@ import paramsNavigation from './params'
 import rolesNavigation from './roles'
 import scrollNavigation from './scroll'
 import subMenuNavigation from './sub-menu'
+import vuComponentsNavigation from './vuComponents'
 
 const navigation: INavigation[] = [
   loginNavigation,
   notFoundNavigation,
 
   dashboardNavigation,
+  vuComponentsNavigation,
   scrollNavigation,
   rolesNavigation,
   paramsNavigation,
