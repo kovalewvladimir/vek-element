@@ -3,6 +3,7 @@ import './styles/reset.css'
 import './styles/index.css'
 
 export * from './components/autocomplete-remote'
+export * from './components/content-wrap'
 export * from './components/icon-svg'
 export * from './components/modal-dialog'
 export * from './create'

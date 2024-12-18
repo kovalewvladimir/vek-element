@@ -109,5 +109,7 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
   overflow: auto;
 
   padding: 10px;
+
+  background-color: #f5f7f9;
 }
 </style>

@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { VuContentWrap } from '@vek-element/ui'
 import { ElButton } from 'element-plus'
 </script>
 
 <template>
-  <div class="h-full p-10px">
+  <vu-content-wrap>
+    <template #header>
+      <h1 class="text-2xl">The Scroll 1</h1>
+    </template>
     <div
       class="h-full bg-red-2 overflow-hidden overflow-y-auto"
       style="height: 100%; box-sizing: border-box"
@@ -16,5 +20,5 @@ import { ElButton } from 'element-plus'
         <el-button>Button</el-button>
       </div>
     </div>
-  </div>
+  </vu-content-wrap>
 </template>
