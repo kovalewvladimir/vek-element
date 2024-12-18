@@ -1,4 +1,4 @@
-import { Component, createApp } from 'vue'
+import { type Component, createApp } from 'vue'
 
 import {
   type IAuth,

@@ -4,7 +4,7 @@ import {
   VuAutocompleteRemote,
   VuIconSvgDynamic,
   VuModalDialog,
-  VuModalDialogInstance
+  type VuModalDialogInstance
 } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
 import { ElButton, ElCard } from 'element-plus'

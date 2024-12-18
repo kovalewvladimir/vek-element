@@ -1,6 +1,6 @@
-import { Component } from 'vue'
+import { type Component } from 'vue'
 
-import { AsyncLoadComponent } from '../routers'
+import { type AsyncLoadComponent } from '../routers'
 
 /**
  * Проверяет, является ли значение null.

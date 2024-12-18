@@ -1,7 +1,7 @@
 import { h } from 'vue'
-import { createRouter, createWebHistory, Router, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, type Router, type RouteRecordRaw } from 'vue-router'
 
-import { INavigation } from '../layout'
+import { type INavigation } from '../layout'
 import { isAsyncLoadComponent, isNull, joinPath } from '../utils'
 import { permissionBeforeEach } from './hooks'
 

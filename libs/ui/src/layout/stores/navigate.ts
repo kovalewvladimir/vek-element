@@ -1,5 +1,5 @@
-import { Component, Reactive, reactive, unref, watch } from 'vue'
-import { Router, RouteRecordRaw } from 'vue-router'
+import { type Component, type Reactive, reactive, unref, watch } from 'vue'
+import { type Router, type RouteRecordRaw } from 'vue-router'
 
 import {
   createWrapperComponentRouterParams,

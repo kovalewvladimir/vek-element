@@ -1,5 +1,5 @@
-import { Component } from 'vue'
-import { RouteRecordRaw } from 'vue-router'
+import { type Component } from 'vue'
+import { type RouteRecordRaw } from 'vue-router'
 
 type AsyncLoadComponent = () => Promise<{ default: Component }>
 

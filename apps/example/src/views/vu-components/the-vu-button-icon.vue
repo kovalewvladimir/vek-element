@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VuButtonIcon, VuButtonIconType, VuContentWrap } from '@vek-element/ui'
+import { VuButtonIcon, type VuButtonIconType, VuContentWrap } from '@vek-element/ui'
 
 const icons: Array<string> = ['el-icon-menu', 'el-logo', 'ep--close']
 

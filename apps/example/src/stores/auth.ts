@@ -1,4 +1,4 @@
-import { IAuth, INavigation, IUserInfo, Role } from '@vek-element/ui'
+import { type IAuth, type INavigation, type IUserInfo, type Role } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
 
 import { navigation } from '@/navigation'
