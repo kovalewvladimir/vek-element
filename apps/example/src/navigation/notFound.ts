@@ -1,7 +1,7 @@
 import type { INavigation } from '@vek-element/ui'
 
 const navigation: INavigation = {
-  isNotFound: true,
+  type: 'notFound',
   name: 'not-found',
   title: 'not-found',
   path: '/404',

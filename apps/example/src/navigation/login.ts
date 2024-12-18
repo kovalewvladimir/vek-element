@@ -1,7 +1,7 @@
 import type { INavigation } from '@vek-element/ui'
 
 const navigation: INavigation = {
-  isLogin: true,
+  type: 'login',
   name: 'login',
   title: 'login',
   path: '/login',

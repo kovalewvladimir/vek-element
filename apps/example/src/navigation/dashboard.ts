@@ -1,7 +1,7 @@
 import { type INavigation, VuLayout } from '@vek-element/ui'
 
 const navigation: INavigation = {
-  isRoot: true,
+  type: 'root',
   name: 'dashboard',
   component: VuLayout,
   title: '',

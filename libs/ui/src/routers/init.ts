@@ -39,7 +39,7 @@ const findNavigation = (
 }
 
 const getLoginRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
-  const loginRoute = findNavigation(navigation, (n) => n.isLogin, basePath)
+  const loginRoute = findNavigation(navigation, (n) => n.type === 'login', basePath)
   if (!loginRoute.component) {
     throw new Error('Login path component not found')
   }
@@ -59,7 +59,7 @@ const getLoginRouter = (navigation: INavigation[], basePath: string = '/'): Rout
 }
 
 const getRootRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
-  const rootRoute = findNavigation(navigation, (n) => n.isRoot, basePath)
+  const rootRoute = findNavigation(navigation, (n) => n.type === 'root', basePath)
 
   return {
     name: 'root',
@@ -70,7 +70,7 @@ const getRootRouter = (navigation: INavigation[], basePath: string = '/'): Route
 
 const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
   try {
-    const notFoundRoute = findNavigation(navigation, (n) => n.isNotFound, basePath)
+    const notFoundRoute = findNavigation(navigation, (n) => n.type === 'notFound', basePath)
     if (!notFoundRoute.component) {
       throw new Error('Not found component not found')
     }
