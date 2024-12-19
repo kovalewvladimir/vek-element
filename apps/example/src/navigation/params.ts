@@ -11,7 +11,7 @@ const navigation: INavigation = {
   children: [
     {
       name: 'the-params-input',
-      path: 'original/:id(\\d+)',
+      path: String.raw`original/:id(\d+)`,
       title: 'Input',
       icon: 'el-icon-menu',
       hidden: true,

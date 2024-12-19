@@ -7,12 +7,12 @@ const getAllPrivileges = (navigation: INavigation[]): Record<string, Role> => {
   const navObject: Record<string, Role> = {}
 
   const extractNames = (navItems: INavigation[]) => {
-    navItems.forEach((nav) => {
+    for (const nav of navItems) {
       navObject[nav.name] = 'RW'
       if (nav.children) {
         extractNames(nav.children)
       }
-    })
+    }
   }
 
   extractNames(navigation)

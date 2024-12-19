@@ -1,3 +1,1 @@
-import TheLoading from './src/the-loading.vue'
-
-export { TheLoading }
+export { default as TheLoading } from './src/the-loading.vue'

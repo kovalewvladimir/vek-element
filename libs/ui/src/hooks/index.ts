@@ -1,2 +1,2 @@
-export * from './useCan'
-export * from './useLoading'
+export * from './use-can'
+export * from './use-loading'

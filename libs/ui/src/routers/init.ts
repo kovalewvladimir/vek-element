@@ -87,8 +87,8 @@ const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRe
         title: notFoundRoute.title
       }
     }
-  } catch (e) {
-    console.warn(e)
+  } catch (error) {
+    console.warn(error)
     return {
       name: 'NotFound',
       path: '/:pathMatch(.*)*',

@@ -3,11 +3,11 @@ import { type NavigationGuardWithThis } from 'vue-router'
 import { useNavigationStore, useUserStore } from '../layout'
 
 const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefined> => {
-  const whiteList = [loginPath]
+  const whiteList = new Set([loginPath])
 
   return async (to, _from, next) => {
     // Белый лист
-    if (whiteList.includes(to.path)) {
+    if (whiteList.has(to.path)) {
       next()
       return
     }

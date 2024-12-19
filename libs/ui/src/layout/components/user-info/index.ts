@@ -1,3 +1,1 @@
-import UserInfo from './src/user-info.vue'
-
-export { UserInfo }
+export { default as UserInfo } from './src/user-info.vue'

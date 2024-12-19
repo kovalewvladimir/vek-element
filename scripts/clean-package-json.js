@@ -1,6 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 console.log('Cleaning package.json...')
 
@@ -8,12 +8,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 if (process.argv.length !== 3) {
-  console.error('Usage: node clean-package-json.js <path-to-package.json>')
-  process.exit(1)
+  throw new Error('Usage: node clean-package-json.js <path-to-package.json>')
 }
 
 const packageJsonPath = path.resolve(__dirname, process.argv[2])
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath))
 
 const fieldsToRemove = [
   'devDependencies',
@@ -26,9 +25,9 @@ const fieldsToRemove = [
   'browserslist'
 ]
 
-fieldsToRemove.forEach((field) => {
+for (const field of fieldsToRemove) {
   delete packageJson[field]
-})
+}
 
 // Удаление поля development из exports
 if (packageJson.exports) {

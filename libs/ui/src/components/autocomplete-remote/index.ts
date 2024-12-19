@@ -1,6 +1,2 @@
-import VuAutocompleteRemote from './src/autocomplete-remote.vue'
-
-type VuAutocompleteRemoteInstance = InstanceType<typeof VuAutocompleteRemote>
-
-export { VuAutocompleteRemote }
-export type { VuAutocompleteRemoteInstance }
+export { default as VuAutocompleteRemote } from './src/autocomplete-remote.vue'
+export { type VuAutocompleteRemoteInstance } from './src/types'

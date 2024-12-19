@@ -1,3 +1,1 @@
-import TheLogo from './src/the-logo.vue'
-
-export { TheLogo }
+export { default as TheLogo } from './src/the-logo.vue'

@@ -9,14 +9,17 @@ const { clearMenu, clearTags, routerBase } = useNavigationStore()
 
 const handleCommand = (command: string) => {
   switch (command) {
-    case 'logout':
+    case 'logout': {
       loginOut()
       break
-    case 'settings':
+    }
+    case 'settings': {
       userSettings()
       break
-    default:
+    }
+    default: {
       break
+    }
   }
 }
 

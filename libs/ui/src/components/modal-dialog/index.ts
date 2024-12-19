@@ -1,6 +1,2 @@
-import VuModalDialog from './src/modal-dialog.vue'
-
-type VuModalDialogInstance = InstanceType<typeof VuModalDialog>
-
-export { VuModalDialog }
-export type { VuModalDialogInstance }
+export { default as VuModalDialog } from './src/modal-dialog.vue'
+export { type VuModalDialogInstance } from './src/types'

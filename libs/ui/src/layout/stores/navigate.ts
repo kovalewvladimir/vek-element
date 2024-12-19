@@ -2,7 +2,7 @@ import { type Component, type Reactive, reactive, unref, watch } from 'vue'
 import { type Router, type RouteRecordRaw } from 'vue-router'
 
 import {
-  createWrapperComponentRouterParams,
+  createWrapperComponentRouterParameters,
   generateUniqueNameComponent,
   getLoginRouter,
   getNotFound,
@@ -139,7 +139,7 @@ const convertNavigationToRoute = (
 
   const convert = (nav: INavigation): IAppRouteRecordRaw | null => {
     const name = nav.name
-    const newName = `${name}-${randomString()}`
+    const _newName = `${name}-${randomString()}`
 
     // Проверка на дубликаты имен
     // Нужно для ролевой модели тк имя будет ключом для доступа
@@ -173,15 +173,13 @@ const convertNavigationToRoute = (
     // Обертка компонента для параметризованных путей и уникальных имен роутов
     let component: Component | undefined = nav.component
     if (nav.component && isAsyncLoadComponent(nav.component)) {
-      if (nav.path.includes(':')) {
-        component = createWrapperComponentRouterParams(newName, nav.component)
-      } else {
-        component = generateUniqueNameComponent(newName, nav.component)
-      }
+      component = nav.path.includes(':')
+        ? createWrapperComponentRouterParameters(_newName, nav.component)
+        : generateUniqueNameComponent(_newName, nav.component)
     }
 
     return {
-      name: newName,
+      name: _newName,
       path: nav.path,
       redirect: nav.redirect,
       meta: {
@@ -195,11 +193,13 @@ const convertNavigationToRoute = (
         roles: nav.roles
       },
       component: component,
-      children: nav.children ? nav.children.map(convert).filter((v) => !isNull(v)) : undefined
+      children: nav.children
+        ? nav.children.map((element) => convert(element)).filter((v) => !isNull(v))
+        : undefined
     }
   }
 
-  return navigation.map(convert).filter((v) => !isNull(v))
+  return navigation.map((element) => convert(element)).filter((v) => !isNull(v))
 }
 
 /** Преобразование роутов в элементы меню */
@@ -281,9 +281,9 @@ class NavigationStore {
   /** Регистрация вкладки текущего роута */
   _registerCurrentRouteTags() {
     const currentRoute = unref(this._router.currentRoute)
-    const paramsId = currentRoute.params.id as string | undefined
+    const id = currentRoute.params.id as string | undefined
 
-    const title = currentRoute.meta.title + (paramsId ? ` - ${paramsId}` : '')
+    const title = currentRoute.meta.title + (id ? ` - ${id}` : '')
     const path = trimEndPath(currentRoute.fullPath)
 
     if (this._tag.items.some((item) => trimEndPath(item.path) === path)) return
@@ -330,7 +330,7 @@ class NavigationStore {
       throw new Error('useNavigationStore: Navigation items is empty')
     }
     this._router.addRoute(this._routerBase.root)
-    routes.forEach((route) => this._router.addRoute(route as RouteRecordRaw))
+    for (const route of routes) this._router.addRoute(route as RouteRecordRaw)
     this._router.addRoute(this._routerBase.notFound)
     this._menu.items = convertRouteToMenuItem(routes)
     this._initializeRouteWatcher()
@@ -344,7 +344,7 @@ class NavigationStore {
 
     // Переход на следующую вкладку, если закрыта текущая
     if (tag.path === this._router.currentRoute.value.fullPath) {
-      const nextPath = this._tag.items[this._tag.items.length - 1]?.path || '/'
+      const nextPath = this._tag.items.at(-1)?.path || '/'
       await this._router.push(nextPath)
     }
   }

@@ -1,3 +1,1 @@
-import VuContentWrap from './src/content-wrap.vue'
-
-export { VuContentWrap }
+export { default as VuContentWrap } from './src/content-wrap.vue'

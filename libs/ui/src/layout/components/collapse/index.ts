@@ -1,3 +1,1 @@
-import TheCollapse from './src/the-collapse.vue'
-
-export { TheCollapse }
+export { default as TheCollapse } from './src/the-collapse.vue'

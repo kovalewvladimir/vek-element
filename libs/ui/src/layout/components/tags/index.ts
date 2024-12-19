@@ -1,3 +1,1 @@
-import TheTags from './src/the-tags.vue'
-
-export { TheTags }
+export { default as TheTags } from './src/the-tags.vue'

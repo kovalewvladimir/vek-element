@@ -1,11 +1,15 @@
-import { resolve } from 'path'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import { defineConfig } from 'vite'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   build: {
     lib: {
       entry: {
-        index: resolve(__dirname, 'src/index.ts')
+        index: path.resolve(__dirname, 'src/index.ts')
       },
       formats: ['es']
     },
@@ -14,7 +18,7 @@ export default defineConfig({
 
     rollupOptions: {
       // Библиотека, которую мы хотим использовать в качестве внешней зависимости
-      external: ['xml2js', 'vite', 'fs', 'fast-glob', 'pathe']
+      external: ['xml2js', 'vite', 'node:fs', 'fast-glob', 'pathe']
     }
   }
 })

@@ -7,13 +7,15 @@ function VuNotificationShow(title: string, message: string, type: NotificationTy
   if (type === 'success') ElMessage.closeAll()
   let duration = 1000
   switch (type) {
-    case 'success':
+    case 'success': {
       duration *= 5
       break
-    case 'error':
+    }
+    case 'error': {
       console.warn(message)
       duration *= 30
       break
+    }
   }
   ElMessage({
     // title,

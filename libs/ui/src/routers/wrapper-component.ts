@@ -13,7 +13,7 @@ import { type AsyncLoadComponent } from './types'
  * @param loader - функция загрузки компонента
  * @returns обертка для компонента
  */
-const createWrapperComponentRouterParams = (name: string, loader: AsyncLoadComponent) => {
+const createWrapperComponentRouterParameters = (name: string, loader: AsyncLoadComponent) => {
   const createComponent = async () => {
     const component = await loader()
     return component.default ? markRaw(component.default) : markRaw(component)
@@ -46,11 +46,12 @@ const createWrapperComponentRouterParams = (name: string, loader: AsyncLoadCompo
           }
         }
 
-        Object.keys(components.value)
-          .filter((path) => !navigationStore.tagItems.some((item) => item.path === path))
-          .forEach((path) => {
-            delete components.value[path]
-          })
+        const deleteComponentPaths = Object.keys(components.value).filter(
+          (path) => !navigationStore.tagItems.some((item) => item.path === path)
+        )
+        for (const path of deleteComponentPaths) {
+          delete components.value[path]
+        }
       })
 
       // Подписка на изменения в текущем роуте
@@ -60,10 +61,8 @@ const createWrapperComponentRouterParams = (name: string, loader: AsyncLoadCompo
           components.value[key].visible = false
         }
 
-        if (activeRoutePath.value) {
-          if (components.value.hasOwnProperty(activeRoutePath.value))
-            components.value[activeRoutePath.value].visible = true
-        }
+        if (activeRoutePath.value && components.value.hasOwnProperty(activeRoutePath.value))
+          components.value[activeRoutePath.value].visible = true
       })
 
       return { isSelf: activeRoutePath, components }
@@ -107,5 +106,4 @@ const generateUniqueNameComponent = (name: string, loader: AsyncLoadComponent) =
   return createComponent
 }
 
-export { createWrapperComponentRouterParams, generateUniqueNameComponent }
-export type { AsyncLoadComponent }
+export { createWrapperComponentRouterParameters, generateUniqueNameComponent }

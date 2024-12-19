@@ -1,5 +1,6 @@
+import fs from 'node:fs'
+
 import fg from 'fast-glob'
-import fs from 'fs'
 import path from 'pathe'
 import { normalizePath, type Plugin } from 'vite'
 import { Builder, parseStringPromise } from 'xml2js'
@@ -91,8 +92,8 @@ async function createModuleCode(cache: Map<string, FileStats>, options: ViteSvgI
   const xmlns = `xmlns="${XMLNS}"`
   const xmlnsLink = `xmlns:xlink="${XMLNS_LINK}"`
   const html = insertHtml
-    .replace(new RegExp(xmlns, 'g'), '')
-    .replace(new RegExp(xmlnsLink, 'g'), '')
+    .replaceAll(new RegExp(xmlns, 'g'), '')
+    .replaceAll(new RegExp(xmlnsLink, 'g'), '')
 
   const code = `
        if (typeof window !== 'undefined') {
@@ -121,16 +122,18 @@ async function createModuleCode(cache: Map<string, FileStats>, options: ViteSvgI
         `
   return {
     code: `${code}\nexport default {}`,
-    idSet: `export default ${JSON.stringify(Array.from(idSet))}`
+    idSet: `export default ${JSON.stringify([...idSet])}`
   }
 }
 
 function domInject(inject: DomInject = 'body-last') {
   switch (inject) {
-    case 'body-first':
+    case 'body-first': {
       return 'body.insertBefore(svgDom, body.firstChild);'
-    default:
+    }
+    default: {
       return 'body.insertBefore(svgDom, body.lastChild);'
+    }
   }
 }
 
@@ -159,6 +162,7 @@ async function compilerIcons(cache: Map<string, FileStats>, options: ViteSvgIcon
       let symbolId
       let relativeName = ''
 
+      // eslint-disable-next-line unicorn/consistent-function-scoping
       const getSymbol = async () => {
         relativeName = normalizePath(path).replace(normalizePath(dir + '/'), '')
         symbolId = createSymbolId(relativeName, options)
@@ -167,12 +171,12 @@ async function compilerIcons(cache: Map<string, FileStats>, options: ViteSvgIcon
       }
 
       if (cacheStat) {
-        if (cacheStat.mtimeMs !== mtimeMs) {
-          await getSymbol()
-        } else {
+        if (cacheStat.mtimeMs === mtimeMs) {
           svgSymbol = cacheStat.code
           symbolId = cacheStat.symbolId
           if (symbolId) idSet.add(symbolId)
+        } else {
+          await getSymbol()
         }
       } else {
         await getSymbol()
@@ -196,7 +200,7 @@ async function compilerIcon(file: string, symbolId: string): Promise<string | nu
     return null
   }
 
-  let content = fs.readFileSync(file, 'utf-8')
+  let content = fs.readFileSync(file, 'utf8')
 
   // fix cannot change svg color  by  parent node problem
   content = content.replace(/stroke="[a-zA-Z#0-9]*"/, 'stroke="currentColor"')
@@ -228,13 +232,13 @@ function createSymbolId(name: string, options: ViteSvgIconsPlugin) {
 
   const { fileName = '', dirName } = discreteDir(name)
   if (symbolId.includes('[dir]')) {
-    id = id.replace(/\[dir\]/g, dirName)
+    id = id.replaceAll('[dir]', dirName)
     if (!dirName) {
       id = id.replace('--', '-')
     }
     fName = fileName
   }
-  id = id.replace(/\[name\]/g, fName)
+  id = id.replaceAll('[name]', fName)
   return id.replace(path.extname(id), '')
 }
 

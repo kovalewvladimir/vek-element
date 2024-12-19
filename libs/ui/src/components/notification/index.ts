@@ -1,3 +1,1 @@
-import { VuNotificationShow } from './src/notification'
-
-export { VuNotificationShow }
+export { VuNotificationShow } from './src/notification'

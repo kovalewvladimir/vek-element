@@ -68,7 +68,7 @@ const querySearch = (query: string, cb: any) => {
     query = query.toLowerCase()
     let i = 0
     for (const option of options.value) {
-      if (option[valueKey].toLowerCase().indexOf(query) !== -1) {
+      if (option[valueKey].toLowerCase().includes(query)) {
         result.push(option)
         if (++i === maxReturnComplete) break
       }
@@ -86,18 +86,20 @@ const nextFocusInput = () => {
 
 const skeletonSize = computed(() => {
   switch (toValue(globalSize)) {
-    case 'small':
+    case 'small': {
       return { height: 'var(--el-component-size-small)' }
-    case 'large':
+    }
+    case 'large': {
       return { height: 'var(--el-component-size-large)' }
-    case 'default':
-    default:
+    }
+    default: {
       return { height: 'var(--el-component-size)' }
+    }
   }
 })
 
 const isValid = (): boolean => {
-  return options.value.find((option) => option[valueKey] === value.value) !== undefined
+  return options.value.some((option) => option[valueKey] === value.value)
 }
 defineExpose({ isValid })
 </script>
