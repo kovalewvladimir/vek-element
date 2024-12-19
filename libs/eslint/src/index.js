@@ -1,77 +1,27 @@
-import unocss from '@unocss/eslint-config/flat'
-import vueTsEslintConfig from '@vue/eslint-config-typescript'
-import skipFormattingConfig from 'eslint-config-prettier'
-import importPlugin from 'eslint-plugin-import'
-import simpleImportSort from 'eslint-plugin-simple-import-sort'
-import pluginVue from 'eslint-plugin-vue'
+import { importConfig } from './configs/import.js'
+import { prettierConfig } from './configs/prettier.js'
+import { typescriptConfig } from './configs/typescript.js'
+import { unocssConfig } from './configs/unocss.js'
+import { vueConfig } from './configs/vue.js'
+import { GLOB_EXCLUDE } from './globs.js'
 
 export default [
   {
-    name: 'app/files-to-lint',
+    name: 'vek/files-to-lint',
     files: ['**/*.{js,ts,mts,tsx,vue}']
   },
 
   {
-    name: 'app/files-to-ignore',
-    ignores: ['**/dist/', '**/node_modules/']
+    name: 'vek/files-to-ignore',
+    ignores: GLOB_EXCLUDE
   },
 
-  {
-    name: 'import-sort',
-    plugins: {
-      'simple-import-sort': simpleImportSort,
-      import: importPlugin
-    },
-    rules: {
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
-      'import/first': 'error',
-      'import/newline-after-import': 'error',
-      'import/no-duplicates': 'error'
-    }
-  },
+  ...importConfig,
 
-  {
-    name: 'unocss',
-    ...unocss,
-    rules: {}
-  },
+  ...unocssConfig,
 
-  {
-    name: 'typescript-custom-rules',
-    rules: {
-      '@typescript-eslint/consistent-type-imports': [
-        'error',
-        { disallowTypeAnnotations: true, fixStyle: 'inline-type-imports', prefer: 'type-imports' }
-      ]
-    }
-  },
+  ...typescriptConfig,
+  ...vueConfig,
 
-  // Vue + TypeScript
-  // https://github.com/vuejs/eslint-config-typescript
-  ...pluginVue.configs['flat/recommended'],
-  // Включите другие правила, которые вам нужны.
-  {
-    name: 'vue/custom-rules-enabling',
-    rules: {
-      'vue/no-undef-components': 'error'
-    }
-  },
-  ...vueTsEslintConfig({
-    extends: ['recommendedTypeChecked']
-  }),
-  // Отключите рекомендуемые правила, которые вам не нужны.
-  {
-    name: 'vue/custom-rules-disabling',
-    rules: {
-      'vue/singleline-html-element-content-newline': 'off',
-
-      '@typescript-eslint/no-explicit-any': 'off'
-    }
-  },
-  // Отключает все правила, которые не нужны или могут конфликтовать с Prettier .
-  {
-    name: 'skip-formatting-config',
-    ...skipFormattingConfig
-  }
+  ...prettierConfig
 ]
