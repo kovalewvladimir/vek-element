@@ -1,3 +1,3 @@
-import config from './configs/eslint.base.js'
+import config from '@vek-element/eslint-config'
 
 export default config

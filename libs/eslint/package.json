@@ -1,0 +1,27 @@
+{
+  "name": "@vek-element/eslint-config",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prepack": "node ../../scripts/clean-package-json.js ../libs/eslint/package.json"
+  },
+  "files": [
+    "src"
+  ],
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    }
+  },
+  "dependencies": {
+    "@unocss/eslint-config": "0.65.1",
+    "@vue/eslint-config-typescript": "14.1.4",
+    "eslint": "9.16.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-simple-import-sort": "12.1.1",
+    "prettier": "3.4.2"
+  }
+}

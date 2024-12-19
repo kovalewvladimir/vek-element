@@ -21,16 +21,10 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@vek-element/eslint-config": "file:./libs/eslint",
     "@types/node": "22.10.1",
-    "@unocss/eslint-config": "0.65.1",
     "@vitejs/plugin-vue": "5.2.1",
-    "@vue/eslint-config-typescript": "14.1.4",
-    "eslint": "9.16.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-simple-import-sort": "12.1.1",
     "husky": "9.1.7",
-    "prettier": "3.4.2",
     "typescript": "5.6.3",
     "unocss": "0.65.1",
     "unplugin-element-plus": "0.8.0",
