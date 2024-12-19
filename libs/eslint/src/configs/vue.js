@@ -12,6 +12,8 @@ export const vueConfig = [
     rules: {
       'vue/no-undef-components': 'error',
 
+      'vue/component-name-in-template-casing': ['error', 'kebab-case'],
+
       'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
       'vue/custom-event-name-casing': ['error', 'camelCase'],
       'vue/eqeqeq': ['error', 'smart'],
