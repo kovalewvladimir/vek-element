@@ -14,12 +14,18 @@ Vite плагин для работы с SVG
 
 [Документация](libs/plugins/vite/svg/README.md)
 
+### @vek-element/eslint-config
+
+ESLint конфигурация
+
+[Документация](libs/eslint/README.md)
+
 ## Структура проекта
 
 - `/apps` - Приложения
   - `/example` - Пример приложения
 - `/libs` - Библиотеки
+  - `/eslint` - ESLint конфигурация
   - `/plugins` - Плагины
   - `/ui` - UI компоненты
-- `/configs` - Конфигурационные файлы
 - `/scripts` - Вспомогательные скрипты
