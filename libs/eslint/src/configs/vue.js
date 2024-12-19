@@ -10,7 +10,40 @@ export const vueConfig = [
   {
     name: 'vek/custom-rules-enabling',
     rules: {
-      'vue/no-undef-components': 'error'
+      'vue/no-undef-components': 'error',
+
+      'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
+      'vue/custom-event-name-casing': ['error', 'camelCase'],
+      'vue/eqeqeq': ['error', 'smart'],
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            component: 'always',
+            normal: 'always',
+            void: 'any'
+          },
+          math: 'always',
+          svg: 'always'
+        }
+      ],
+
+      'vue/no-constant-condition': 'warn',
+      'vue/no-empty-pattern': 'error',
+      'vue/no-loss-of-precision': 'error',
+      'vue/no-unused-refs': 'error',
+      'vue/no-useless-v-bind': 'error',
+
+      'vue/object-shorthand': [
+        'error',
+        'always',
+        {
+          avoidQuotes: true,
+          ignoreConstructors: false
+        }
+      ],
+      'vue/padding-line-between-blocks': ['error', 'always'],
+      'vue/prefer-template': 'error'
     }
   },
 
