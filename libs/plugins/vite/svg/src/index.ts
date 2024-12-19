@@ -1,8 +1,7 @@
 import fg from 'fast-glob'
 import fs from 'fs'
 import path from 'pathe'
-import type { Plugin } from 'vite'
-import { normalizePath } from 'vite'
+import { normalizePath, type Plugin } from 'vite'
 import { Builder, parseStringPromise } from 'xml2js'
 
 import {
@@ -12,7 +11,7 @@ import {
   XMLNS,
   XMLNS_LINK
 } from './constants'
-import type { DomInject, FileStats, ViteSvgIconsPlugin } from './typing'
+import { type DomInject, type FileStats, type ViteSvgIconsPlugin } from './typing'
 
 function createSvgIconsPlugin(opt: ViteSvgIconsPlugin): Plugin {
   const cache = new Map<string, FileStats>()

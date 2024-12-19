@@ -1,4 +1,4 @@
-import type { INavigation } from '@vek-element/ui'
+import { type INavigation } from '@vek-element/ui'
 
 const navigation: INavigation = {
   type: 'login',

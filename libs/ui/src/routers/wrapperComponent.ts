@@ -2,7 +2,7 @@ import { type Component, computed, defineComponent, h, KeepAlive, markRaw, ref, 
 import { useRouter } from 'vue-router'
 
 import { useNavigationStore } from '../layout'
-import type { AsyncLoadComponent } from './types'
+import { type AsyncLoadComponent } from './types'
 
 /**
  * Создание обертки для компонента с возможностью кеширования

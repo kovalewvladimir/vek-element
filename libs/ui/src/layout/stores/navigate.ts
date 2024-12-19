@@ -8,9 +8,13 @@ import {
   getNotFound,
   getRootRouter
 } from '../../routers'
-import type { AsyncLoadComponent, IAppRouteRecordRaw, IRouteMetaCustom } from '../../routers/types'
+import {
+  type AsyncLoadComponent,
+  type IAppRouteRecordRaw,
+  type IRouteMetaCustom
+} from '../../routers/types'
 import { isAsyncLoadComponent, isNull, joinPath, randomString, trimEndPath } from '../../utils'
-import type { Roles } from './user'
+import { type Roles } from './user'
 
 interface IMenuItem {
   name: string

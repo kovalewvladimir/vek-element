@@ -2,7 +2,7 @@
 import { ElButton, ElTooltip } from 'element-plus'
 
 import { VuIconSvgDynamic } from '../../icon-svg'
-import type { VuButtonIconType } from './types'
+import { type VuButtonIconType } from './types'
 
 const {
   icon,
