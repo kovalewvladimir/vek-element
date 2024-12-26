@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLoading } from '@vek-element/ui'
+import { asyncSleep } from '@vek-element/ui/utils'
 import { ElButton, ElLink } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -19,6 +20,11 @@ const loginClk = loadingWrapper(async () => {
     return
   }
   await router.push('/')
+})
+
+const loginClkFail = loadingWrapper(async () => {
+  await asyncSleep(1000)
+  throw new Error('login fail')
 })
 </script>
 
@@ -43,6 +49,12 @@ const loginClk = loadingWrapper(async () => {
       :loading="loading"
       @click="loginClk"
       >Login</el-button
+    >
+
+    <el-button
+      :loading="loading"
+      @click="loginClkFail"
+      >loginClkFail</el-button
     >
   </div>
 </template>
