@@ -12,7 +12,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [
     Vue(),
-    ElementPlus({}),
+    ElementPlus({
+      include: ['**/*.vue', '**/*.ts'],
+      exclude: [/node_modules\/(?!@vek-element\/ui)/, /[/\\]\.git[/\\]/, /[/\\]\.nuxt[/\\]/]
+    }),
     UnoCSS(),
     SvgIcons({
       iconDirs: [path.resolve(__dirname, './src/assets/svgs')],
