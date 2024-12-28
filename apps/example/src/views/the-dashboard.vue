@@ -7,7 +7,7 @@ import {
   type VuModalDialogInstance
 } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
-import { ElButton, ElCard } from 'element-plus'
+import { ElButton, ElCard, ElDatePicker } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
 
 const configLayout = useLayoutConfigStore()
@@ -64,6 +64,10 @@ const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
       <el-button @click="configLayout.menu.setCollapse(!configLayout.menu.collapse)"
         >collapse - {{ configLayout.menu.collapse }}</el-button
       >
+    </el-card>
+
+    <el-card>
+      <el-date-picker />
     </el-card>
   </el-card>
 </template>

@@ -1,3 +1,5 @@
+import 'dayjs/locale/ru'
+
 import { type Component, createApp } from 'vue'
 
 import {
