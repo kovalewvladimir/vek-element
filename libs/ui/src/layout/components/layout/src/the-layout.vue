@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useNavigationStore } from '@vek-element/ui'
 import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 
-import { useNavigationStore } from '../../../stores'
 import ClassicLayout from './classic-layout.vue'
 
 const navigationStore = useNavigationStore()

@@ -1,19 +1,23 @@
-import { type Component, type Reactive, reactive, unref, watch } from 'vue'
-import { type Router, type RouteRecordRaw } from 'vue-router'
-
 import {
+  type AsyncLoadComponent,
   createWrapperComponentRouterParameters,
   generateUniqueNameComponent,
   getLoginRouter,
   getNotFound,
-  getRootRouter
-} from '../../routers'
-import {
-  type AsyncLoadComponent,
+  getRootRouter,
   type IAppRouteRecordRaw,
   type IRouteMetaCustom
-} from '../../routers/types'
-import { isAsyncLoadComponent, isNull, joinPath, randomString, trimEndPath } from '../../utils'
+} from '@vek-element/ui'
+import {
+  isAsyncLoadComponent,
+  isNull,
+  joinPath,
+  randomString,
+  trimEndPath
+} from '@vek-element/ui/utils'
+import { type Component, type Reactive, reactive, unref, watch } from 'vue'
+import { type Router, type RouteRecordRaw } from 'vue-router'
+
 import { type Roles } from './user'
 
 interface IMenuItem {

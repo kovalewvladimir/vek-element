@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { useLayoutConfigStore } from '@vek-element/ui'
+import {
+  TheBreadcrumb,
+  TheCollapse,
+  TheLogo,
+  TheMenu,
+  TheTags,
+  UserInfo
+} from '@vek-element/ui/layout'
 import { computed } from 'vue'
-
-import { useLayoutConfigStore } from '../../../stores'
-import { TheBreadcrumb } from '../../breadcrumb'
-import { TheCollapse } from '../../collapse'
-import { TheLogo } from '../../logo'
-import { TheMenu } from '../../menu'
-import { TheTags } from '../../tags'
-import { UserInfo } from '../../user-info'
 
 const config = useLayoutConfigStore()
 

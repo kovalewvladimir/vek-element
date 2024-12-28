@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import { useLayoutConfigStore, useNavigationStore } from '@vek-element/ui'
 import { ElMenu, ElScrollbar } from 'element-plus'
 import { toValue } from 'vue'
 
-import { useLayoutConfigStore } from '../../../stores/layout-config'
-import { useNavigationStore } from '../../../stores/navigate'
 import TheMenuItem from './the-menu-item.vue'
 
 const config = useLayoutConfigStore()

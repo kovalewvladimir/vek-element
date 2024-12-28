@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { VuIconSvgDynamic } from '@vek-element/ui'
 import { ElButton, ElTooltip } from 'element-plus'
 
-import { VuIconSvgDynamic } from '../../icon-svg'
 import { type VuButtonIconType } from './types'
 
 const {

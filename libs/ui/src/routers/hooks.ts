@@ -1,6 +1,5 @@
+import { useNavigationStore, useUserStore } from '@vek-element/ui'
 import { type NavigationGuardWithThis } from 'vue-router'
-
-import { useNavigationStore, useUserStore } from '../layout'
 
 const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefined> => {
   const whiteList = new Set([loginPath])

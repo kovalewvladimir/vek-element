@@ -1,4 +1,4 @@
-import { isNull } from '../../utils'
+import { isNull } from '@vek-element/ui/utils'
 
 type Role = 'RW' | 'RO'
 type Roles = { [key: string]: Role }

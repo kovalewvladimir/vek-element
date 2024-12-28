@@ -1,8 +1,8 @@
+import { type INavigation } from '@vek-element/ui'
+import { isAsyncLoadComponent, isNull, joinPath } from '@vek-element/ui/utils'
 import { h } from 'vue'
 import { createRouter, createWebHistory, type Router, type RouteRecordRaw } from 'vue-router'
 
-import { type INavigation } from '../layout'
-import { isAsyncLoadComponent, isNull, joinPath } from '../utils'
 import { permissionBeforeEach } from './hooks'
 
 const findNavigation = (

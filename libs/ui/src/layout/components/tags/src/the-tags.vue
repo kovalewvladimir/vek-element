@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useNavigationStore } from '@vek-element/ui'
 import { ElScrollbar } from 'element-plus'
 import { useTemplateRef } from 'vue'
 
-import { useNavigationStore } from '../../../stores/navigate'
 import TagButton from './tag-button.vue'
 
 const navigationStore = useNavigationStore()

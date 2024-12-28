@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import {
+  EpCloseIcon,
+  type ITagItem,
+  useNavigationStore,
+  VuIconSvgDynamic,
+  VuIconSvgSlot
+} from '@vek-element/ui'
+import { trimEndPath } from '@vek-element/ui/utils'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-
-import { EpCloseIcon, VuIconSvgDynamic, VuIconSvgSlot } from '../../../../components/icon-svg'
-import { trimEndPath } from '../../../../utils'
-import { type ITagItem, useNavigationStore } from '../../../stores/navigate'
 
 const { tag } = defineProps<{ tag: ITagItem }>()
 

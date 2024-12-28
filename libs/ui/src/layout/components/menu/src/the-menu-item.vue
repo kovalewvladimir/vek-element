@@ -1,9 +1,7 @@
 <script setup lang="ts">
+import { type IMenuItem, VuIconSvgDynamic } from '@vek-element/ui'
 import { ElMenuItem, ElSubMenu } from 'element-plus'
 import { useRouter } from 'vue-router'
-
-import { VuIconSvgDynamic } from '../../../../components/icon-svg'
-import { type IMenuItem } from '../../../stores'
 
 const { menuItem } = defineProps<{
   menuItem: IMenuItem

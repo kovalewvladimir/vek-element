@@ -1,6 +1,5 @@
+import { useUserStore } from '@vek-element/ui'
 import { useRoute } from 'vue-router'
-
-import { useUserStore } from '../layout'
 
 /** Хук для проверки прав доступа */
 export const useCan = (): {

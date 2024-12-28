@@ -2,9 +2,9 @@
 import {
   AntDesignMenuFoldOutlined,
   AntDesignMenuUnfoldOutlined,
+  useLayoutConfigStore,
   VuIconSvgSlot
-} from '../../../../components/icon-svg'
-import { useLayoutConfigStore } from '../../../stores'
+} from '@vek-element/ui'
 
 const configLayout = useLayoutConfigStore()
 </script>

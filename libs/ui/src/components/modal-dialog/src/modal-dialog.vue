@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { EpCloseIcon, VuIconSvgSlot } from '@vek-element/ui'
 import { ElDialog } from 'element-plus'
 import { nextTick, ref } from 'vue'
-
-import { EpCloseIcon, VuIconSvgSlot } from '../../icon-svg'
 
 const {
   dialogTitle = 'Dialog',

@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import { TheLoading } from '@vek-element/ui/layout'
 import { RouterView } from 'vue-router'
-
-import { TheLoading } from '../../loading'
 </script>
 
 <template>

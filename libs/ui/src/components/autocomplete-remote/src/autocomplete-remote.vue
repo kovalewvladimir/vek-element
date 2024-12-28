@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLoading } from '@vek-element/ui'
 import {
   ElAutocomplete,
   ElSkeleton,
@@ -6,8 +7,6 @@ import {
   useGlobalComponentSettings
 } from 'element-plus'
 import { computed, onMounted, ref, toValue, useTemplateRef } from 'vue'
-
-import { useLoading } from '../../../hooks'
 
 const {
   getLoadingOptions,

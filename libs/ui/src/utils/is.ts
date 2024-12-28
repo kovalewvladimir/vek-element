@@ -1,6 +1,5 @@
+import { type AsyncLoadComponent } from '@vek-element/ui'
 import { type Component } from 'vue'
-
-import { type AsyncLoadComponent } from '../routers'
 
 /**
  * Проверяет, является ли значение null.

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { VuIconSvgDynamic } from '../../../../components/icon-svg'
-import { useLayoutConfigStore } from '../../../stores'
+import { useLayoutConfigStore, VuIconSvgDynamic } from '@vek-element/ui'
 
 const config = useLayoutConfigStore()
 </script>

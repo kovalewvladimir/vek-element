@@ -13,7 +13,14 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "outDir": "dist/types",
-    "declaration": true
+    "declaration": true,
+
+    "baseUrl": "./",
+    "paths": {
+      "@vek-element/ui/utils": ["src/utils"],
+      "@vek-element/ui/layout": ["src/layout/components"]
+    }
   },
+
   "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.*", "uno.config.*"]
 }

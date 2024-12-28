@@ -1,7 +1,7 @@
+import { useNavigationStore } from '@vek-element/ui'
 import { type Component, computed, defineComponent, h, KeepAlive, markRaw, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useNavigationStore } from '../layout'
 import { type AsyncLoadComponent } from './types'
 
 /**

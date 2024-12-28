@@ -14,6 +14,11 @@
       "development": "./src/index.ts",
       "import": "./src/index.ts"
     },
+    "./layout": {
+      "types": "./src/layout/components/index.ts",
+      "development": "./src/layout/components/index.ts",
+      "import": "./src/layout/components/index.ts"
+    },
     "./utils": {
       "types": "./src/utils/index.ts",
       "development": "./src/utils/index.ts",

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import IconSvgDynamic from '../../../../components/icon-svg/src/icon-svg-dynamic.vue'
-import { isNull } from '../../../../utils'
-import { useLayoutConfigStore } from '../../../stores/layout-config'
+import { useLayoutConfigStore, VuIconSvgDynamic } from '@vek-element/ui'
+import { isNull } from '@vek-element/ui/utils'
 
 const config = useLayoutConfigStore()
 </script>
@@ -9,7 +8,7 @@ const config = useLayoutConfigStore()
 <template>
   <template v-if="config.logo.visible">
     <div class="h-full color-white flex items-center">
-      <icon-svg-dynamic
+      <vu-icon-svg-dynamic
         v-if="!isNull(config.logo.svg)"
         :name="config.logo.svg"
         :size="64"

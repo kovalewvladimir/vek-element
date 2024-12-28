@@ -1,9 +1,8 @@
 <script setup lang="ts">
+import { VuIconSvgDynamic } from '@vek-element/ui'
 import { ElBreadcrumb, ElBreadcrumbItem } from 'element-plus'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-
-import { VuIconSvgDynamic } from '../../../../components/icon-svg'
 
 const route = useRoute()
 

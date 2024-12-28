@@ -1,6 +1,5 @@
+import { VuNotificationShow } from '@vek-element/ui'
 import { ref } from 'vue'
-
-import { VuNotificationShow } from '../components/notification'
 
 type ErrorClass = new (...args: any[]) => Error
 let _skippedErrors: ErrorClass[] = []
