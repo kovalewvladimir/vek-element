@@ -15,5 +15,23 @@ export const importConfig = [
       'import/newline-after-import': 'error',
       'import/no-duplicates': 'error'
     }
+  },
+  {
+    name: 'vek/custom-imports',
+    rules: {
+      'no-duplicate-imports': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../*'],
+              message:
+                'Importing from parent directories is not allowed. Please restructure imports to avoid parent directory traversal.'
+            }
+          ]
+        }
+      ]
+    }
   }
 ]
