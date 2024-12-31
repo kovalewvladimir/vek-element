@@ -4,29 +4,48 @@ interface IInitialLayout {
   /** Заголовок */
   title: string
 
-  /** Логотип (svg) */
+  /** Логотип
+   *
+   * Возможные значения:
+   * - Путь к файлу в папке public
+   * - SVG @vek-element/vite-svg
+   */
   logo?: string
 
-  /** Аватар по умолчанию */
+  /**
+   * Аватар по умолчанию
+   *
+   * Файл должен находиться в папке public
+   *
+   * Любой формат изображения
+   * */
   defaultAvatar: string
 }
 
 class Logo {
   private _title: string
-  private _svg: string | null
+  private _logo: string | null
   private _visible: boolean
 
   constructor() {
     this._title = 'DEMO'
-    this._svg = null
+    this._logo = null
     this._visible = true
   }
 
-  get svg() {
-    return this._svg
+  setLogo(logo: string | null) {
+    this._logo = logo
   }
-  setSvg(svg: string | null) {
-    this._svg = svg
+
+  get svg() {
+    if (!this._logo) return null
+    const length = this._logo.toLowerCase().split('.').length
+    return length === 1 ? this._logo : null
+  }
+  get image() {
+    if (!this._logo) return null
+    const ext = this._logo.toLowerCase().split('.').pop()
+    return ['jpg', 'jpeg', 'png', 'gif'].includes(ext || '') ? this._logo : null
   }
 
   get visible() {
@@ -77,7 +96,7 @@ const layoutConfigStore = new LayoutConfigStore()
 
 const initializeLayoutConfigStore = (layout: IInitialLayout) => {
   if (layout?.title) layoutConfigStore.logo.setTitle(layout?.title)
-  if (layout?.logo) layoutConfigStore.logo.setSvg(layout?.logo)
+  if (layout?.logo) layoutConfigStore.logo.setLogo(layout?.logo)
   document.title = layoutConfigStore.logo.title
 }
 

@@ -66,6 +66,8 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 .logo {
   grid-area: logo;
 
+  font-weight: bold;
+  color: var(--menu-color);
   background-color: var(--menu-bg-color);
 }
 

@@ -1,20 +1,12 @@
 <script setup lang="ts">
-import { useLayoutConfigStore, VuIconSvgDynamic } from '@vek-element/ui'
-
-const config = useLayoutConfigStore()
+import { TheLogo } from '@vek-element/ui/layout'
 </script>
 
 <template>
   <div class="app-loading">
     <div class="app-loading-wrap">
       <div class="app-loading-title">
-        <vu-icon-svg-dynamic
-          v-if="config.logo.svg"
-          :name="config.logo.svg"
-          :size="100"
-          class="app-loading-logo"
-        />
-        <div class="app-loading-title">{{ config.logo.title }}</div>
+        <the-logo class="app-loading-logo" />
       </div>
       <div class="app-loading-item">
         <div class="app-loading-outer"></div>

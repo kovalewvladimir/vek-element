@@ -17,8 +17,8 @@ createUI({
   },
   layout: {
     title: 'TEST123',
-    logo: 'el-logo',
-    defaultAvatar: '/default_rabbit.gif'
+    logo: '/imgs/logo.png',
+    defaultAvatar: '/imgs/default_rabbit.gif'
   },
   auth: auth,
   navigation: navigation
