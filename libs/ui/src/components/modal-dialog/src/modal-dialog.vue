@@ -70,6 +70,7 @@ defineExpose({ open, close })
 <template>
   <el-dialog
     v-model="visible"
+    class="vu-modal-dialog"
     destroy-on-close
     :lock-scroll="false"
     draggable
@@ -112,24 +113,27 @@ defineExpose({ open, close })
   </el-dialog>
 </template>
 
-<style scoped>
-:deep(.el-dialog .el-dialog__body) {
-  padding: var(--el-dialog-padding-primary);
-}
-
-:deep(.el-dialog .el-dialog__header) {
-  border-bottom: 1px solid var(--el-border-color);
-}
-:deep(.el-dialog .el-dialog__footer) {
-  border-top: 1px solid var(--el-border-color);
-}
-:deep(.el-dialog) {
+<style>
+.vu-modal-dialog {
   padding-left: 0;
   padding-right: 0;
-}
-:deep(.el-dialog .el-dialog__header) > div,
-:deep(.el-dialog .el-dialog__footer) > div {
-  padding-left: var(--el-dialog-padding-primary);
-  padding-right: var(--el-dialog-padding-primary);
+
+  .el-dialog__header > div,
+  .el-dialog__footer > div {
+    padding-left: var(--el-dialog-padding-primary);
+    padding-right: var(--el-dialog-padding-primary);
+  }
+
+  .el-dialog__body {
+    padding: var(--el-dialog-padding-primary);
+  }
+
+  .el-dialog__header {
+    border-bottom: 1px solid var(--el-border-color);
+  }
+
+  .el-dialog__footer {
+    border-top: 1px solid var(--el-border-color);
+  }
 }
 </style>
