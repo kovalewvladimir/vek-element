@@ -68,50 +68,48 @@ defineExpose({ open, close })
 </script>
 
 <template>
-  <div>
-    <el-dialog
-      v-model="visible"
-      destroy-on-close
-      :lock-scroll="false"
-      draggable
-      :top="top"
-      :close-on-click-modal="false"
-      :show-close="false"
-      :before-close="handleBeforeClose"
-      @open="handlerOpen"
-      @close="handlerClose"
-    >
-      <template #header>
-        <div class="flex items-center">
-          <div>
-            <slot name="title">
-              {{ dialogTitle }}
-            </slot>
-          </div>
-          <div class="flex flex-grow-1 flex-justify-end">
-            <vu-icon-svg-slot
-              color="var(--el-color-info)"
-              hover-color="var(--el-color-primary)"
-              class="cursor-pointer"
-              :size="24"
-              @click="close()"
-            >
-              <ep-close-icon />
-            </vu-icon-svg-slot>
-          </div>
+  <el-dialog
+    v-model="visible"
+    destroy-on-close
+    :lock-scroll="false"
+    draggable
+    :top="top"
+    :close-on-click-modal="false"
+    :show-close="false"
+    :before-close="handleBeforeClose"
+    @open="handlerOpen"
+    @close="handlerClose"
+  >
+    <template #header>
+      <div class="flex items-center">
+        <div>
+          <slot name="title">
+            {{ dialogTitle }}
+          </slot>
         </div>
-      </template>
+        <div class="flex flex-grow-1 flex-justify-end">
+          <vu-icon-svg-slot
+            color="var(--el-color-info)"
+            hover-color="var(--el-color-primary)"
+            class="cursor-pointer"
+            :size="24"
+            @click="close()"
+          >
+            <ep-close-icon />
+          </vu-icon-svg-slot>
+        </div>
+      </div>
+    </template>
 
-      <slot />
+    <slot />
 
-      <template
-        v-if="$slots.footer"
-        #footer
-      >
-        <div><slot name="footer" /></div>
-      </template>
-    </el-dialog>
-  </div>
+    <template
+      v-if="$slots.footer"
+      #footer
+    >
+      <div><slot name="footer" /></div>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>
