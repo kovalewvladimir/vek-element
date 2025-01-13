@@ -1,6 +1,6 @@
 import 'dayjs/locale/ru'
 
-import { type Component, createApp } from 'vue'
+import { type Component, createApp, type Plugin } from 'vue'
 
 import {
   type IAuth,
@@ -21,6 +21,9 @@ interface IConfig {
     /** Селектор контейнера */
     container: string
   }
+
+  /** Плагины vue */
+  plugins?: Plugin[]
 
   /** Конфигурация layout */
   layout: IInitialLayout
@@ -64,6 +67,12 @@ const createUI = (config: IConfig) => {
   initializeLayoutConfigStore(config.layout)
   initializeUserStore(config.auth, config.layout.defaultAvatar)
   initializeNavigationStore(router, config.navigation)
+
+  if (config.plugins) {
+    for (const plugin of config.plugins) {
+      app.use(plugin)
+    }
+  }
 
   app.use(router)
   app.mount(config.root.container)
