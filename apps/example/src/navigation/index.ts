@@ -21,7 +21,7 @@ const navigation: INavigation[] = [
   paramsNavigation,
   subMenuNavigation,
 
-  ...emptyNavigation
+  emptyNavigation
 ]
 
 export { navigation }

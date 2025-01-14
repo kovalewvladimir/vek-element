@@ -9,7 +9,7 @@ const findNavigation = (
   navigationItems: INavigation[],
   predicate: (route: INavigation) => boolean | undefined,
   basePath: string = '/'
-): INavigation => {
+): INavigation | null => {
   let foundNavigation: INavigation | null = null
 
   const searchNavigation = (navigationSearchItems: INavigation[], basePath: string): void => {
@@ -31,15 +31,15 @@ const findNavigation = (
 
   searchNavigation(navigationItems, basePath)
 
-  if (isNull(foundNavigation)) {
-    throw new Error('Navigation path not found')
-  }
-
   return foundNavigation
 }
 
 const getLoginRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
   const loginRoute = findNavigation(navigation, (n) => n.type === 'login', basePath)
+
+  if (isNull(loginRoute)) {
+    throw new Error('Login route not found')
+  }
   if (!loginRoute.component) {
     throw new Error('Login path component not found')
   }
@@ -61,6 +61,10 @@ const getLoginRouter = (navigation: INavigation[], basePath: string = '/'): Rout
 const getRootRouter = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
   const rootRoute = findNavigation(navigation, (n) => n.type === 'root', basePath)
 
+  if (isNull(rootRoute)) {
+    throw new Error('Root route not found')
+  }
+
   return {
     name: 'root',
     path: '/',
@@ -71,6 +75,10 @@ const getRootRouter = (navigation: INavigation[], basePath: string = '/'): Route
 const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRecordRaw => {
   try {
     const notFoundRoute = findNavigation(navigation, (n) => n.type === 'notFound', basePath)
+
+    if (isNull(notFoundRoute)) {
+      throw new Error(`'Not found' route not found`)
+    }
     if (!notFoundRoute.component) {
       throw new Error('Not found component not found')
     }
@@ -117,4 +125,4 @@ const initializeRouter = (navigation: INavigation[]): Router => {
   return router
 }
 
-export { getLoginRouter, getNotFound, getRootRouter, initializeRouter }
+export { findNavigation, getLoginRouter, getNotFound, getRootRouter, initializeRouter }

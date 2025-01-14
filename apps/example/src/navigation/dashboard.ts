@@ -1,7 +1,6 @@
 import { type INavigation, VuLayout } from '@vek-element/ui'
 
 const navigation: INavigation = {
-  type: 'root',
   name: 'dashboard',
   component: VuLayout,
   title: '',
@@ -10,6 +9,7 @@ const navigation: INavigation = {
   hidden: true,
   children: [
     {
+      type: 'root',
       name: 'the-dashboard',
       path: '',
       title: 'Главная',

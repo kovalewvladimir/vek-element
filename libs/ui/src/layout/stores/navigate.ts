@@ -1,6 +1,7 @@
 import {
   type AsyncLoadComponent,
   createWrapperComponentRouterParameters,
+  findNavigation,
   generateUniqueNameComponent,
   getLoginRouter,
   getNotFound,
@@ -172,10 +173,19 @@ const convertNavigationToRoute = (
       throw new Error(`Component with dynamic path should be cached: ${name}`)
     }
 
+    // Проверка на наличие компонента
+    // Компонент должен быть указан у всех путей
+    // Исключение для вложенных путей, у которых есть дочерние элементы, но тогда
+    // должен быть указан children
+    if (!nav.component && !nav.children) {
+      throw new Error(`Component is not defined: ${name}`)
+    }
+
     // Проверка на доступность пункта меню по ролям
     // Если роль не найдена или у пункта меню указан тип, то пропускаем
     // Пути у которых есть тип должны быть доступны всем (Главная, Авторизация, 404 и тд)
-    if (isUndefined(nav.type) && !rolesKeys.includes(name)) return null
+    const isNavType = isNull(findNavigation([nav], (n) => !isUndefined(n.type)))
+    if (isNavType && !rolesKeys.includes(name)) return null
 
     // Обертка компонента для параметризованных путей и уникальных имен роутов
     let component: Component | undefined = nav.component

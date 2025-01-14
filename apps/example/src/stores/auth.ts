@@ -40,7 +40,6 @@ class Auth implements IAuth {
       name: 'Test',
       surname: 'Test',
       patronymic: 'Test',
-      // avatar: 'https://i.pravatar.cc/300',
       roles: getAllPrivileges(navigation)
     }
 
