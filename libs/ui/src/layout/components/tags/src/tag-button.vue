@@ -93,7 +93,7 @@ const closeClk = async () => {
   padding-right: 20px;
 
   border: 1px solid var(--el-border-color);
-  border-radius: 3px;
+  border-radius: var(--el-border-radius-base);
 }
 .button + .button {
   margin-left: 5px;

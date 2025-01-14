@@ -18,7 +18,7 @@
   flex-direction: column;
   height: 100%;
 
-  border-radius: 3px;
+  border-radius: var(--el-border-radius-base);
   border: 1px solid var(--el-border-color-light);
   background-color: var(--el-fill-color-blank);
   overflow: hidden;
