@@ -1,5 +1,16 @@
 import { useNavigationStore } from '@vek-element/ui'
-import { type Component, computed, defineComponent, h, KeepAlive, markRaw, ref, watch } from 'vue'
+import { isNull } from '@vek-element/ui/utils'
+import {
+  type Component,
+  computed,
+  defineComponent,
+  h,
+  KeepAlive,
+  markRaw,
+  onMounted,
+  ref,
+  watch
+} from 'vue'
 import { useRouter } from 'vue-router'
 
 import { type AsyncLoadComponent } from './types'
@@ -22,50 +33,78 @@ const createWrapperComponentRouterParameters = (name: string, loader: AsyncLoadC
   return defineComponent({
     name: name,
     setup() {
+      onMounted(async () => {
+        if (isNull(activeRoutePath.value)) return
+        await initializeComponent(activeRoutePath.value)
+      })
+
       const router = useRouter()
       const navigationStore = useNavigationStore()
 
       const components = ref<Record<string, { visible: boolean; component: Component }>>({})
+      const isCache = router.currentRoute.value.meta.cache
+
+      const initializeComponent = async (path: string) => {
+        components.value[path] = {
+          visible: true,
+          component: await createComponent()
+        }
+      }
+      const visibleComponent = (path: string) => {
+        if (components.value.hasOwnProperty(path)) {
+          components.value[path].visible = true
+        }
+      }
+      const hideComponent = (path: string) => {
+        if (components.value.hasOwnProperty(path)) {
+          components.value[path].visible = false
+        }
+      }
+      const deleteComponent = (path: string) => {
+        delete components.value[path]
+      }
 
       // Проверка на то что текущий роут это сам компонент
-      const activeRoutePath = computed(() => {
+      const activeRoutePath = computed<string | null>(() => {
         return router.currentRoute.value.name === name ? router.currentRoute.value.fullPath : null
       })
 
       // Подписка на изменения в навигации
-      // Если в навигации появился новый пункт с текущим именем
-      // то создаем компонент и добавляем его в список
-      watch(navigationStore.tagItems, async () => {
-        const tagItems = navigationStore.tagItems.filter((item) => item.route.name === name)
-        for (const item of tagItems) {
-          if (!components.value[item.path]) {
-            components.value[item.path] = {
-              visible: true,
-              component: await createComponent()
-            }
-          }
-        }
-
+      // Если удалили тег, то удаляем компонент
+      watch(navigationStore.tagItems, () => {
         const deleteComponentPaths = Object.keys(components.value).filter(
           (path) => !navigationStore.tagItems.some((item) => item.path === path)
         )
         for (const path of deleteComponentPaths) {
-          delete components.value[path]
+          deleteComponent(path)
         }
       })
 
       // Подписка на изменения в текущем роуте
       // Если текущий роут это сам компонент, то показываем его
-      watch(activeRoutePath, () => {
-        for (const key in components.value) {
-          components.value[key].visible = false
+      // И если выключено кеширование, то удаляем его из списка
+      watch(activeRoutePath, async () => {
+        // Если выключено кеширование, то удаляем все компоненты
+        if (!isCache) {
+          for (const path in components.value) {
+            deleteComponent(path)
+          }
         }
 
-        if (activeRoutePath.value && components.value.hasOwnProperty(activeRoutePath.value))
-          components.value[activeRoutePath.value].visible = true
+        for (const path in components.value) {
+          hideComponent(path)
+        }
+
+        if (activeRoutePath.value) {
+          if (components.value.hasOwnProperty(activeRoutePath.value)) {
+            visibleComponent(activeRoutePath.value)
+          } else {
+            await initializeComponent(activeRoutePath.value)
+          }
+        }
       })
 
-      return { isSelf: activeRoutePath, components }
+      return { components }
     },
     render() {
       const renderComponent = []

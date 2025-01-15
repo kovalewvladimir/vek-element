@@ -16,6 +16,9 @@ interface IRouteMetaCustom extends Record<string | number | symbol, unknown> {
   /** Всегда закреплен в тегах */
   affix: boolean
 
+  /** Показывать в тегах (tag) */
+  tag: boolean
+
   /** Скрыть в меню */
   hidden: boolean
 

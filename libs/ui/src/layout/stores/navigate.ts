@@ -17,7 +17,15 @@ import {
   randomString,
   trimEndPath
 } from '@vek-element/ui/utils'
-import { type Component, type Reactive, reactive, unref, watch } from 'vue'
+import {
+  type Component,
+  computed,
+  type ComputedRef,
+  type Reactive,
+  reactive,
+  unref,
+  watch
+} from 'vue'
 import { type Router, type RouteRecordRaw } from 'vue-router'
 
 import { type Roles } from './user'
@@ -46,6 +54,7 @@ interface ITagItem {
   affix: boolean
   route: {
     name: string
+    path: string
     meta: IRouteMetaCustom
   }
 }
@@ -82,6 +91,9 @@ interface INavigation {
 
   /** Всегда закреплен в тегах (по умолчанию false) */
   affix?: boolean
+
+  /** Показывать в тегах (tag) (по умолчанию true) */
+  tag?: boolean
 
   /**
    * Показывать в хлебных крошках (breadcrumb)
@@ -145,6 +157,8 @@ const convertNavigationToRoute = (
 
   const convert = (nav: INavigation): IAppRouteRecordRaw | null => {
     const name = nav.name
+    const cache = nav.cache ?? true
+    const tag = nav.tag ?? true
     const _newName = `${name}-${randomString()}`
 
     // Проверка на дубликаты имен
@@ -166,11 +180,10 @@ const convertNavigationToRoute = (
       seenComponent.add(_component)
     }
 
-    // Проверка на динамический путь без кэширования
-    // Компоненты с динамическими путями должны быть кэшированы
-    // тк в createWrapperComponentRouterParams не реализована логика отключения кэширования
-    if (nav.path.includes(':') && nav.cache === false) {
-      throw new Error(`Component with dynamic path should be cached: ${name}`)
+    // Нужно явно указать при выключенном теге, что кэширование отключено
+    // тк если выключен тег, то кэширование не будет работать в любом случае
+    if (!tag && cache) {
+      throw new Error(`Tag is disabled, but cache is enabled: ${name}`)
     }
 
     // Проверка на наличие компонента
@@ -204,9 +217,10 @@ const convertNavigationToRoute = (
         title: nav.title,
         icon: nav.icon,
         affix: nav.affix ?? false,
+        tag: tag,
         breadcrumb: nav.breadcrumb ?? true,
         hidden: nav.hidden ?? false,
-        cache: nav.cache ?? true,
+        cache: cache,
         roles: nav.roles
       },
       component: component,
@@ -258,6 +272,7 @@ class NavigationStore {
 
   private _isRouteWatchActive = false
   private _navigationItems: INavigation[]
+  private _cachedComponentNameList: ComputedRef<string[]>
 
   private _menu: Reactive<IMenu> = reactive({
     active: '',
@@ -276,6 +291,16 @@ class NavigationStore {
       root: getRootRouter(this._navigationItems),
       notFound: getNotFound(this._navigationItems)
     }
+
+    this._cachedComponentNameList = computed(() => {
+      const setComponentNames = new Set<string>()
+      for (const item of this.tagItems) {
+        if (item.route.meta.cache) {
+          setComponentNames.add(item.route.name)
+        }
+      }
+      return [...setComponentNames]
+    })
   }
 
   /** Инициализация слежения за роутером */
@@ -298,17 +323,24 @@ class NavigationStore {
   /** Регистрация вкладки текущего роута */
   _registerCurrentRouteTags() {
     const currentRoute = unref(this._router.currentRoute)
-    const id = currentRoute.params.id as string | undefined
 
+    if (!currentRoute.meta.tag) return
+
+    const id = currentRoute.params.id as string | undefined
     const title = currentRoute.meta.title + (id ? ` - ${id}` : '')
     const path = trimEndPath(currentRoute.fullPath)
 
     if (this._tag.items.some((item) => trimEndPath(item.path) === path)) return
+
     this._tag.items.push({
       title,
       path,
       affix: currentRoute.meta.affix,
-      route: { name: currentRoute.name as string, meta: currentRoute.meta }
+      route: {
+        name: currentRoute.name as string,
+        path: this.findByName(currentRoute.meta.name)?.path || '',
+        meta: currentRoute.meta
+      }
     })
   }
 
@@ -316,6 +348,11 @@ class NavigationStore {
   _syncMenuWithCurrentRoute() {
     const initName = this._router.currentRoute.value.name as string
     this._menu.active = initName
+  }
+
+  /** Поиск элемента навигации по имени */
+  findByName(name: string): INavigation | null {
+    return findNavigation(this._navigationItems, (n) => n.name === name)
   }
 
   /** Базовый роутер */
@@ -336,6 +373,11 @@ class NavigationStore {
   /** Вкладки */
   get tagItems(): readonly ITagItem[] {
     return this._tag.items
+  }
+
+  /** Список кэшируемых компонентов */
+  get cachedComponentNameList(): ComputedRef<string[]> {
+    return this._cachedComponentNameList
   }
 
   /** Инициализация меню */

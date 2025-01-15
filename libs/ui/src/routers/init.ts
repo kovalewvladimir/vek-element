@@ -18,7 +18,7 @@ const findNavigation = (
 
       if (predicate(navigation)) {
         if (foundNavigation) {
-          throw new Error('Found multiple navigation paths')
+          throw new Error('Found multiple navigation')
         }
         foundNavigation = { ...navigation, path: fullPath }
       }

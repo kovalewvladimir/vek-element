@@ -9,8 +9,10 @@ import {
 import { asyncSleep } from '@vek-element/ui/utils'
 import { ElButton, ElCard, ElDatePicker } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
+import { useRouter } from 'vue-router'
 
 const configLayout = useLayoutConfigStore()
+const router = useRouter()
 
 const autocompleteValue = ref<string>('')
 
@@ -47,6 +49,18 @@ const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
         hover-color="green"
         color="red"
       />
+      <div>
+        <el-button
+          type="primary"
+          @click="() => router.push('/not-found/not-found')"
+          >not-found</el-button
+        >
+        <el-button
+          type="primary"
+          @click="() => router.push('/login')"
+          >login</el-button
+        >
+      </div>
     </el-card>
     <el-card>
       <el-button @click="() => dialogRef?.open()">Open modal dialog</el-button>

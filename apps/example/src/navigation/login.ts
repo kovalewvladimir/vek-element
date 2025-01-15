@@ -6,6 +6,8 @@ const navigation: INavigation = {
   title: 'login',
   path: '/login',
   hidden: true,
+  tag: false,
+  cache: false,
   component: () => import('@/views/login/the-login.vue')
 }
 

@@ -5,6 +5,8 @@ const navigation: INavigation = {
   name: 'not-found',
   title: 'not-found',
   path: '/404',
+  tag: false,
+  cache: false,
   hidden: true,
   component: () => import('@/views/not-found.vue')
 }
