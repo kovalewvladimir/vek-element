@@ -159,7 +159,7 @@ const convertNavigationToRoute = (
     const name = nav.name
     const cache = nav.cache ?? true
     const tag = nav.tag ?? true
-    const _newName = `${name}-${randomString()}`
+    const uniqueName = `${name}-${randomString()}`
 
     // Проверка на дубликаты имен
     // Нужно для ролевой модели тк имя будет ключом для доступа
@@ -204,12 +204,12 @@ const convertNavigationToRoute = (
     let component: Component | undefined = nav.component
     if (nav.component && isAsyncLoadComponent(nav.component)) {
       component = nav.path.includes(':')
-        ? createWrapperComponentRouterParameters(_newName, nav.component)
-        : generateUniqueNameComponent(_newName, nav.component)
+        ? createWrapperComponentRouterParameters(uniqueName, nav.component)
+        : generateUniqueNameComponent(uniqueName, nav.component)
     }
 
     return {
-      name: _newName,
+      name: uniqueName,
       path: nav.path,
       redirect: nav.redirect,
       meta: {
