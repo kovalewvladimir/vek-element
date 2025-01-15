@@ -355,6 +355,13 @@ class NavigationStore {
     return findNavigation(this._navigationItems, (n) => n.name === name)
   }
 
+  /** Получение полного пути по имени */
+  getFullPathByName(name: string): string | null {
+    const routers = this._router.getRoutes()
+    const route = routers.find((r) => r.meta.name === name)
+    return route ? route.path : null
+  }
+
   /** Базовый роутер */
   get routerBase() {
     return this._routerBase

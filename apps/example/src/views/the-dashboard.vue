@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import {
   useLayoutConfigStore,
+  useNavigationStore,
   VuAutocompleteRemote,
   VuIconSvgDynamic,
   VuModalDialog,
   type VuModalDialogInstance
 } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
-import { ElButton, ElCard, ElDatePicker } from 'element-plus'
+import { ElButton, ElCard, ElDatePicker, ElInput } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 
 const configLayout = useLayoutConfigStore()
 const router = useRouter()
+const navigation = useNavigationStore()
 
 const autocompleteValue = ref<string>('')
 
@@ -26,6 +28,8 @@ const getOptions = async () => {
     ]
   }
 }
+
+const findName = ref<string>('SubMenu1-1')
 
 const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
 </script>
@@ -49,6 +53,7 @@ const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
         hover-color="green"
         color="red"
       />
+
       <div>
         <el-button
           type="primary"
@@ -59,6 +64,15 @@ const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
           type="primary"
           @click="() => router.push('/login')"
           >login</el-button
+        >
+      </div>
+
+      <div class="mt-10px">
+        <el-input v-model="findName" />
+        <el-button
+          type="primary"
+          @click="console.log(navigation.getFullPathByName(findName))"
+          >getFullPathByName</el-button
         >
       </div>
     </el-card>
