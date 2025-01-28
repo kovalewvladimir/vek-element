@@ -1,10 +1,13 @@
-import vueTsEslintConfig from '@vue/eslint-config-typescript'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import pluginVue from 'eslint-plugin-vue'
 
 export const vueConfig = [
   // Vue + TypeScript
   // https://github.com/vuejs/eslint-config-typescript
-  ...pluginVue.configs['flat/recommended'],
+  ...defineConfigWithVueTs(
+    pluginVue.configs['flat/recommended'],
+    vueTsConfigs.recommendedTypeChecked
+  ),
 
   // Включите другие правила, которые вам нужны.
   {
@@ -48,10 +51,6 @@ export const vueConfig = [
       'vue/prefer-template': 'error'
     }
   },
-
-  ...vueTsEslintConfig({
-    extends: ['recommendedTypeChecked']
-  }),
 
   // Отключите рекомендуемые правила, которые вам не нужны.
   {
