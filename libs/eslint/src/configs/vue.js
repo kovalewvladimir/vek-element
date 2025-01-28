@@ -48,7 +48,9 @@ export const vueConfig = [
         }
       ],
       'vue/padding-line-between-blocks': ['error', 'always'],
-      'vue/prefer-template': 'error'
+      'vue/prefer-template': 'error',
+
+      'vue/prefer-use-template-ref': 'error'
     }
   },
 
