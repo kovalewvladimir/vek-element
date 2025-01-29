@@ -34,7 +34,7 @@ const isHoverColor = computed(() => hoverColor !== undefined)
 
 const symbolId = computed<string>(() => `#icon-${name}`)
 
-defineEmits(['click'])
+const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
 </script>
 
 <template>
@@ -42,7 +42,7 @@ defineEmits(['click'])
     :class="{ 'icon-sgv': isHoverColor }"
     :color="color"
     :size="size"
-    @click="$emit('click', $event)"
+    @click="emit('click', $event)"
   >
     <svg aria-hidden="true">
       <use :href="symbolId" />

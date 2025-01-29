@@ -24,7 +24,7 @@ const {
   top?: string
 }>()
 
-const emit = defineEmits(['open'])
+const emit = defineEmits<{ (e: 'open'): void }>()
 
 const visible = ref<boolean>(false)
 let resolvePromise: ((value: unknown) => void) | null = null

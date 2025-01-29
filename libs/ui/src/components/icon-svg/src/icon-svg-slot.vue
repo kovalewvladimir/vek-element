@@ -24,7 +24,7 @@ const {
 
 const isHoverColor = computed(() => hoverColor !== undefined)
 
-defineEmits(['click'])
+const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
 </script>
 
 <template>
@@ -32,7 +32,7 @@ defineEmits(['click'])
     :class="{ 'icon-sgv': isHoverColor }"
     :color="color"
     :size="size"
-    @click="$emit('click', $event)"
+    @click="emit('click', $event)"
   >
     <slot />
   </el-icon>
