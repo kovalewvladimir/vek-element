@@ -43,6 +43,7 @@ export const useVirtualData = (
         sort,
         filters
       })
+      isLoadingError.value = false
     } catch (error) {
       isLoadingError.value = true
       throw error
