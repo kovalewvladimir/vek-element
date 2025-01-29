@@ -83,7 +83,7 @@ export class Column {
 }
 
 export class Columns extends Array<Column> {
-  constructor(...columns: Column[]) {
+  constructor(...columns: IColumn[]) {
     super(...columns.map((v) => new Column(v)))
   }
 
