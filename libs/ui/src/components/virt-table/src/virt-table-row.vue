@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+import { type Column, type Columns } from './column'
 import { COLUMN_AUTO_WIDTH } from './constants'
-import { type Column, Columns } from './types'
 
-const { columns } = defineProps({
-  columns: {
-    type: Columns,
-    required: true
-  }
-})
+const { columns } = defineProps<{ columns: Columns }>()
 
 const emit = defineEmits<{
   (e: 'click', event: MouseEvent, column: Column): void

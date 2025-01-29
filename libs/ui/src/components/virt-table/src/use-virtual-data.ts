@@ -2,7 +2,8 @@ import { useLoading } from '@vek-element/ui'
 import { useInfiniteScroll, useVirtualList } from '@vueuse/core'
 import { type Ref, ref, unref } from 'vue'
 
-import { type Columns, type onLoadDataType } from './types'
+import { type Columns } from './column'
+import { type OnLoadDataType } from './types'
 
 const resetScroll = (container: Ref<HTMLElement | null>) => {
   const virtualList = unref(container)
@@ -10,7 +11,7 @@ const resetScroll = (container: Ref<HTMLElement | null>) => {
 }
 
 export const useVirtualData = (
-  onLoadData: onLoadDataType,
+  onLoadData: OnLoadDataType,
   columns: Columns,
   sizePage: number,
   rowHeight: number,

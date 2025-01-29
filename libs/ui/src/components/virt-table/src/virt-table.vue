@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ElEmpty, ElTooltip } from 'element-plus'
-import { computed, onActivated, type PropType, useTemplateRef } from 'vue'
+import { computed, onActivated, useTemplateRef } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
+import { type Column, type Columns } from './column'
 import { COLUMN_MIN_WIDTH } from './constants'
-import { type Column, Columns, type onLoadDataType } from './types'
+import { type OnLoadDataType } from './types'
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
@@ -12,67 +13,49 @@ import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
 
-const props = defineProps({
+const {
+  columns,
+  onLoadData,
+  sizePage = 100,
+  height = '300px',
+  rowHeight = 28,
+  virtualListOverscan = 10,
+  infiniteScrollDistance = 10,
+  tooltipShowDelay = 500
+} = defineProps<{
   /**
    * Список колонок для отображения в таблице (обязательный параметр).
    */
-  columns: {
-    type: Columns,
-    required: true
-  },
+  columns: Columns
   /**
    * Функция, которая вызывается при загрузке данных (обязательный параметр).
    */
-  onLoadData: {
-    type: Function as PropType<onLoadDataType>,
-    required: true
-  },
+  onLoadData: OnLoadDataType
   /**
-   * Кол-во строк в одной странице
+   * Кол-во строк в одной странице (по умолчанию 100).
    */
-  sizePage: {
-    type: Number,
-    default: 100
-  },
-
+  sizePage?: number
   /**
    * Высота таблицы (по умолчанию '300px').
    */
-  height: {
-    type: String,
-    default: '300px'
-  },
+  height?: string
   /**
    * Высота строки таблицы (по умолчанию 28).
    */
-  rowHeight: {
-    type: Number,
-    default: 28
-  },
-
+  rowHeight?: number
   /**
    * Количество "лишних" элементов виртуального списка (по умолчанию 10).
    */
-  virtualListOverscan: {
-    type: Number,
-    default: 10
-  },
+  virtualListOverscan?: number
   /**
    * Расстояние до нижней части таблицы, когда начинается бесконечная прокрутка (по умолчанию 10)
    */
-  infiniteScrollDistance: {
-    type: Number,
-    default: 10
-  },
-
+  infiniteScrollDistance?: number
   /**
    * Задержка перед показом всплывающей подсказки (по умолчанию 500 миллисекунд).
    */
-  tooltipShowDelay: {
-    type: Number,
-    default: 500
-  }
-})
+  tooltipShowDelay?: number
+}>()
 
 // Восстановление позиции scroll при переходе по страницам
 onActivated(() => {
@@ -83,9 +66,9 @@ onBeforeRouteLeave(() => {
 })
 
 // computed
-const rowHeight = computed(() => `${props.rowHeight}px`)
-const headerHeight = computed(() => `${props.rowHeight + 6}px`)
-const columnMinWidth = computed(() => `${COLUMN_MIN_WIDTH}px`)
+const rowHeightPx = computed(() => `${rowHeight}px`)
+const headerHeightPx = computed(() => `${rowHeight + 6}px`)
+const columnMinWidthPx = computed(() => `${COLUMN_MIN_WIDTH}px`)
 
 // Виртуальный список & Загрузка новых данных при scroll`е
 const {
@@ -98,12 +81,12 @@ const {
   virtualContainerProps,
   virtualWrapperProps
 } = useVirtualData(
-  props.onLoadData,
-  props.columns,
-  props.sizePage,
-  props.rowHeight,
-  props.virtualListOverscan,
-  props.infiniteScrollDistance
+  onLoadData,
+  columns,
+  sizePage,
+  rowHeight,
+  virtualListOverscan,
+  infiniteScrollDistance
 )
 
 // Scroll для vue-router
@@ -116,7 +99,7 @@ const {
   tooltipTriggerRef,
   handleCellMouseEnter,
   handleCellMouseLeave
-} = useTooltip(props.tooltipShowDelay)
+} = useTooltip(tooltipShowDelay)
 
 // Контекстное меню
 const virtTableMenuRef = useTemplateRef('virtTableMenuRef')
@@ -126,7 +109,7 @@ const onShowContextMenu = (e: MouseEvent, column: Column) => {
 const onSortColumn = (_e: MouseEvent, column: Column) => {
   if (column.menu) {
     const sort = column.sort
-    props.columns.setSort(column, sort === 'ASC' ? 'DESC' : 'ASC')
+    columns.setSort(column, sort === 'ASC' ? 'DESC' : 'ASC')
     void reloadData()
   }
 }
@@ -140,7 +123,7 @@ defineExpose({ reloadData, data })
     v-loading="loading"
     v-bind="$attrs"
     class="relative"
-    :style="`height: ${props.height}`"
+    :style="`height: ${height}`"
   >
     <div
       v-bind="virtualContainerProps"
@@ -245,7 +228,7 @@ defineExpose({ reloadData, data })
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100% - v-bind('headerHeight'));
+    height: calc(100% - v-bind('headerHeightPx'));
 
     font-size: 24px;
   }
@@ -260,7 +243,7 @@ defineExpose({ reloadData, data })
     font-weight: 600;
 
     & .cell {
-      height: v-bind('headerHeight');
+      height: v-bind('headerHeightPx');
       /* line-height: v-bind('headerHeight'); */
 
       background: var(--table-header-bg-color);
@@ -273,13 +256,13 @@ defineExpose({ reloadData, data })
 
   & .cell {
     flex: 1 1 0%;
-    min-width: v-bind('columnMinWidth');
+    min-width: v-bind('columnMinWidthPx');
 
     display: flex;
     align-items: center;
 
-    height: v-bind('rowHeight');
-    /* line-height: v-bind('rowHeight'); */
+    height: v-bind('rowHeightPx');
+    /* line-height: v-bind('rowHeightPx'); */
     padding: 0 5px;
 
     box-sizing: border-box;

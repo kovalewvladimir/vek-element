@@ -1,7 +1,7 @@
 import { debounce } from 'lodash-es'
 import { ref } from 'vue'
 
-import { type Column } from './types'
+import { type Column } from './column'
 
 export const useTooltip = (showDelay: number) => {
   const tooltipPosition = ref({

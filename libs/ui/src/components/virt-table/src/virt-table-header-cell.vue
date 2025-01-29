@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { VuIconSvgDynamic } from '@vek-element/ui'
-import { computed, type PropType } from 'vue'
+import { computed } from 'vue'
 
-import { type Column } from './types'
+import { type Column } from './column'
 
-const props = defineProps({
-  column: {
-    type: Object as PropType<Column>,
-    required: true
-  }
-})
+const { column } = defineProps<{ column: Column }>()
 
 const iconName = computed<string | null>(() => {
-  const isFilter = props.column.filters.length > 0
-  const isASC = props.column.sort === 'ASC'
-  const isDESC = props.column.sort === 'DESC'
+  const isFilter = column.filters.length > 0
+  const isASC = column.sort === 'ASC'
+  const isDESC = column.sort === 'DESC'
 
   if (isFilter && isASC) return 'fluent-mdl2/filter-ascending'
   if (isFilter && isDESC) return 'fluent-mdl2/filter-descending'

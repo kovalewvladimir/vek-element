@@ -4,7 +4,7 @@ import { ElButton, ElDatePicker, ElOption, ElOptionGroup, ElSelect } from 'eleme
 import { computed, type Ref, ref, unref } from 'vue'
 
 import { FILTER_TYPE_LABEL } from './constants'
-import { type FilterDateType, type FilterStringType, type IFilterDate } from './types'
+import { type FilterDateType, type IFilterDate } from './types'
 
 const currentDate = new Date()
 const currentMouth = currentDate.getMonth()
@@ -31,7 +31,7 @@ const changeType = () => {
 
 const createFilter = (closeMenu: boolean) => {
   const _value = isValueRange.value ? unref(valueRange) : unref(value)
-  const _type = (isValueRange.value ? 'between' : unref(type)) as FilterStringType
+  const _type = isValueRange.value ? 'between' : unref(type)
 
   if (_value) {
     emit('createFilter', { type: _type, value: _value }, closeMenu)

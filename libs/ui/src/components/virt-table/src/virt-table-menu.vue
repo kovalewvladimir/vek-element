@@ -10,17 +10,12 @@ import {
 import { ElInputNumber } from 'element-plus'
 import { computed, type Ref, ref } from 'vue'
 
+import { type Column, type Columns } from './column'
 import { COLUMN_AUTO_WIDTH, COLUMN_MIN_WIDTH, FILTER_TYPE_LABEL } from './constants'
 import DateFilter from './filter-date.vue'
 import NumberFilter from './filter-number.vue'
 import StringFilter from './filter-string.vue'
-import {
-  type Column,
-  type Columns,
-  type FilterLogicalOperator,
-  type FilterType,
-  type SortType
-} from './types'
+import { type FilterLogicalOperator, type FilterType, type SortType } from './types'
 
 const { columns } = defineProps<{ columns: Columns }>()
 
