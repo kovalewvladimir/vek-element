@@ -50,7 +50,10 @@ export const vueConfig = [
       'vue/padding-line-between-blocks': ['error', 'always'],
       'vue/prefer-template': 'error',
 
-      'vue/prefer-use-template-ref': 'error'
+      'vue/prefer-use-template-ref': 'error',
+
+      'vue/define-props-declaration': 'error',
+      'vue/define-emits-declaration': 'error'
     }
   },
 
