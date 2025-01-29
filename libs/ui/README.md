@@ -7,9 +7,6 @@ UI компоненты
 ## NPM зависимости
 
 ```bash
-npm install @vek-element/ui --save
-npm install @vek-element/vite-svg --save
-
 npm install unocss --save-dev
 npm install unplugin-element-plus --save-dev
 
