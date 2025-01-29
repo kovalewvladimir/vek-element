@@ -127,7 +127,7 @@ defineExpose({ reloadData, data })
   >
     <div
       v-bind="virtualContainerProps"
-      class="virt-table-body h-full"
+      class="virt-table-body"
     >
       <!-- Header -->
       <div class="header">
@@ -221,6 +221,7 @@ defineExpose({ reloadData, data })
   color: var(--el-text-color-regular);
   font-size: 12px;
   width: 100%;
+  height: 100%;
   overflow-y: scroll;
   border: var(--table-border);
 
@@ -228,9 +229,10 @@ defineExpose({ reloadData, data })
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100% - v-bind('headerHeightPx'));
 
+    height: calc(100% - v-bind('headerHeightPx'));
     font-size: 24px;
+    overflow: hidden;
   }
 
   & .header {

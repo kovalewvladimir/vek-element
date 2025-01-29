@@ -21,6 +21,7 @@ export const useVirtualData = (
   const { loading, loadingWrapper } = useLoading()
 
   const isAllDataLoaded = ref(false)
+  const isLoadingError = ref(false)
 
   const data: Ref<any> = ref([])
   const currentPage = ref(0)
@@ -34,7 +35,18 @@ export const useVirtualData = (
     const filters = columns.getFilters()
     currentPage.value = options.reload ? 1 : currentPage.value + 1
 
-    const loadedData = await onLoadData({ page: currentPage.value, size: sizePage, sort, filters })
+    let loadedData: any[]
+    try {
+      loadedData = await onLoadData({
+        page: currentPage.value,
+        size: sizePage,
+        sort,
+        filters
+      })
+    } catch (error) {
+      isLoadingError.value = true
+      throw error
+    }
 
     if (loadedData.length < sizePage) isAllDataLoaded.value = true
 
@@ -78,7 +90,7 @@ export const useVirtualData = (
     },
     {
       distance: infiniteScrollDistance,
-      canLoadMore: () => !isAllDataLoaded.value
+      canLoadMore: () => !isAllDataLoaded.value && !isLoadingError.value
     }
   )
 
