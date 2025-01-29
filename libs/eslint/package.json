@@ -1,6 +1,6 @@
 {
   "name": "@vek-element/eslint-config",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "scripts": {
     "prepack": "node ../../scripts/clean-package-json.js ../libs/eslint/package.json"
