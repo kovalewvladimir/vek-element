@@ -13,6 +13,13 @@ const navigation: INavigation = {
       title: 'VuButtonIcon',
       icon: 'el-icon-menu',
       component: () => import('@/views/vu-components/the-vu-button-icon.vue')
+    },
+    {
+      name: 'TheVuVirtTable',
+      path: 'vu-virt-table',
+      title: 'VuVirtTable',
+      icon: 'el-icon-menu',
+      component: () => import('@/views/vu-components/the-vu-virt-table.vue')
     }
   ]
 }
