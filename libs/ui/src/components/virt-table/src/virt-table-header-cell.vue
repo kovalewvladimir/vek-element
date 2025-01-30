@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { VuIconSvgDynamic } from '@vek-element/ui'
+import { VuIconSvgSlot } from '@vek-element/ui'
 import { computed } from 'vue'
 
 import { type Column } from './column'
+import { SvgFilter, SvgFilterAscending, SvgFilterDescending, SvgSortDown, SvgSortUp } from './svgs'
 
 const { column } = defineProps<{ column: Column }>()
 
-const iconName = computed<string | null>(() => {
+const icon = computed<string | null>(() => {
   const isFilter = column.filters.length > 0
   const isASC = column.sort === 'ASC'
   const isDESC = column.sort === 'DESC'
 
-  if (isFilter && isASC) return 'fluent-mdl2/filter-ascending'
-  if (isFilter && isDESC) return 'fluent-mdl2/filter-descending'
-  if (isFilter) return 'fluent-mdl2/filter'
-  if (isASC) return 'fluent-mdl2/sort-up'
-  if (isDESC) return 'fluent-mdl2/sort-down'
+  if (isFilter && isASC) return 'filter-ascending'
+  if (isFilter && isDESC) return 'filter-descending'
+  if (isFilter) return 'filter'
+  if (isASC) return 'sort-up'
+  if (isDESC) return 'sort-down'
 
   return null
 })
@@ -25,16 +26,20 @@ const iconName = computed<string | null>(() => {
   <slot :column="column">
     <div
       class="text grow-1"
-      :class="{ 'c-blue': iconName, 'cursor-pointer': column.menu }"
+      :class="{ 'c-blue': icon, 'cursor-pointer': column.menu }"
       >{{ column.label }}</div
     >
     <div>
-      <vu-icon-svg-dynamic
-        v-if="iconName"
-        :name="iconName"
+      <vu-icon-svg-slot
         :size="16"
         color="#60A5FA"
-      />
+      >
+        <svg-filter-ascending v-if="icon === 'filter-ascending'" />
+        <svg-filter-descending v-if="icon === 'filter-descending'" />
+        <svg-filter v-if="icon === 'filter'" />
+        <svg-sort-up v-if="icon === 'sort-up'" />
+        <svg-sort-down v-if="icon === 'sort-down'" />
+      </vu-icon-svg-slot>
     </div>
   </slot>
 </template>

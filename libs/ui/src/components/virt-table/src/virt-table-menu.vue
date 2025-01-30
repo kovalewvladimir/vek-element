@@ -15,6 +15,20 @@ import { COLUMN_AUTO_WIDTH, COLUMN_MIN_WIDTH, FILTER_TYPE_LABEL } from './consta
 import DateFilter from './filter-date.vue'
 import NumberFilter from './filter-number.vue'
 import StringFilter from './filter-string.vue'
+import {
+  SvgAutoFitWindow,
+  SvgClose,
+  SvgColumn,
+  SvgColumnEdit,
+  SvgColumnOptions,
+  SvgFilterClear,
+  SvgFilterSettings,
+  SvgFitWidth,
+  SvgHide,
+  SvgSortDown,
+  SvgSortUp,
+  SvgView
+} from './svgs'
 import { type FilterLogicalOperator, type FilterType, type SortType } from './types'
 
 const { columns } = defineProps<{ columns: Columns }>()
@@ -108,23 +122,26 @@ defineExpose({ onShowContextMenu })
   >
     <context-menu-item
       label="Сортировать"
-      svg-icon="#icon-fluent-mdl2/sort-up"
       @click="setSort('ASC')"
-    />
+    >
+      <template #icon><svg-sort-up /></template>
+    </context-menu-item>
     <context-menu-item
       label="Сортировать"
-      svg-icon="#icon-fluent-mdl2/sort-down"
       @click="setSort('DESC')"
-    />
+    >
+      <template #icon><svg-sort-down /></template>
+    </context-menu-item>
 
     <context-menu-separator />
 
     <context-menu-item
       label="Фильтры недоступны"
-      svg-icon="#icon-fluent-mdl2/filter-settings"
       custom-class="no-hover"
       :click-close="false"
     >
+      <template #icon><svg-filter-settings /></template>
+
       <template #label>
         <date-filter
           v-if="columnCurrent?.type === 'date'"
@@ -149,10 +166,11 @@ defineExpose({ onShowContextMenu })
       <template v-if="column.filters.length > 0">
         <context-menu-separator />
         <context-menu-group
-          svg-icon="#icon-ant-design/column"
           :click-close="false"
           :label="column.label"
         >
+          <template #icon><svg-column /></template>
+
           <context-menu-item
             label="И"
             :click-close="false"
@@ -172,38 +190,41 @@ defineExpose({ onShowContextMenu })
         :key="column.prop + f_index"
         :label="`${FILTER_TYPE_LABEL[filter.type]}: ${filter.value}`"
         :click-close="false"
-        svg-icon="#icon-ant-design/close-outlined"
         @click="deleteFilter(column, filter)"
-      />
+      >
+        <template #icon><svg-close /></template>
+      </context-menu-item>
     </template>
 
     <context-menu-separator />
 
     <context-menu-item
       label="Сбросить фильтры"
-      svg-icon="#icon-fluent-mdl2/clear-filter"
       :click-close="false"
       @click="resetFilter"
-    />
+    >
+      <template #icon><svg-filter-clear /></template>
+    </context-menu-item>
 
     <context-menu-separator />
 
-    <context-menu-group
-      label="Настройки"
-      svg-icon="#icon-fluent-mdl2/column-options"
-    >
+    <context-menu-group label="Настройки">
+      <template #icon><svg-column-options /></template>
+
       <context-menu-item
         :label="`Автоширина ${isColumnAutoWidth ? '- ВЫКЛ' : '- ВКЛ'}`"
-        svg-icon="#icon-fluent-mdl2/auto-fit-window"
         :click-close="false"
         @click="onAutoWidth"
-      />
+      >
+        <template #icon><svg-auto-fit-window /></template>
+      </context-menu-item>
       <context-menu-item
         :click-close="false"
         :disabled="isColumnAutoWidth"
         custom-class="no-hover"
-        svg-icon="#icon-fluent-mdl2/fit-width"
       >
+        <template #icon><svg-fit-width /></template>
+
         <template #label>
           <el-input-number
             v-model="columnWidth"
@@ -217,31 +238,34 @@ defineExpose({ onShowContextMenu })
 
       <context-menu-separator />
 
-      <context-menu-group
-        label="Столбцы"
-        svg-icon="#icon-fluent-mdl2/triple-column-edit"
-      >
+      <context-menu-group label="Столбцы">
+        <template #icon><svg-column-edit /></template>
+
         <context-menu-item
           label="Скрыть"
-          svg-icon="#icon-fluent-mdl2/hide-3"
           @click="onHideCurrent"
-        />
+        >
+          <template #icon><svg-hide /></template>
+        </context-menu-item>
         <context-menu-item
           label="Показать все"
-          svg-icon="#icon-fluent-mdl2/view"
           @click="onVisibleAll"
-        />
+        >
+          <template #icon><svg-view /></template>
+        </context-menu-item>
 
         <context-menu-separator />
 
         <context-menu-item
           v-for="(column, index) of columns"
           :key="index"
-          :svg-icon="column.visible ? '#icon-fluent-mdl2/view' : '#icon-fluent-mdl2/hide-3'"
           :label="column.label"
           :click-close="false"
           @click="setColumnVisible(column, !column.visible)"
-        />
+          ><template #icon
+            ><svg-view v-if="column.visible" /><svg-hide v-if="!column.visible"
+          /></template>
+        </context-menu-item>
       </context-menu-group>
     </context-menu-group>
   </context-menu>
