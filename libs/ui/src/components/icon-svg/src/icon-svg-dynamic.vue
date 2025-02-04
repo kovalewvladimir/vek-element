@@ -34,8 +34,12 @@ const isHoverColor = computed(() => hoverColor !== undefined)
 
 const symbolId = computed<string>(() => {
   const iconId = `#icon-${name}`
-  if (!document.querySelector(iconId)) {
-    warn(`Icon '${name}' not found`)
+  try {
+    if (!document.querySelector(iconId)) {
+      warn(`Icon '${name}' not found`)
+    }
+  } catch {
+    warn(`Icon '${name}' not supported. Please check the icon name`)
   }
   return iconId
 })
