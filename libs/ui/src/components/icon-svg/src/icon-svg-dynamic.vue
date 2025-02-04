@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElIcon } from 'element-plus'
-import { computed } from 'vue'
+import { computed, warn } from 'vue'
 
 const {
   name,
@@ -32,7 +32,13 @@ const {
 
 const isHoverColor = computed(() => hoverColor !== undefined)
 
-const symbolId = computed<string>(() => `#icon-${name}`)
+const symbolId = computed<string>(() => {
+  const iconId = `#icon-${name}`
+  if (!document.querySelector(iconId)) {
+    warn(`Icon '${name}' not found`)
+  }
+  return iconId
+})
 
 const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
 </script>
