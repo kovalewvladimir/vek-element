@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElEmpty, ElTooltip } from 'element-plus'
-import { computed, onActivated, useTemplateRef } from 'vue'
+import { computed, isReactive, onActivated, useTemplateRef, warn } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 import { type Column, type Columns } from './column'
@@ -56,6 +56,11 @@ const {
    */
   tooltipShowDelay?: number
 }>()
+
+// Проверка на реактивность
+if (!isReactive(columns)) {
+  warn('`columns` должен быть реактивным')
+}
 
 // Восстановление позиции scroll при переходе по страницам
 onActivated(() => {
