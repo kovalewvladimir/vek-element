@@ -18,7 +18,7 @@ interface IAuth {
 
 interface IUserInfo {
   /** Пользовательский id */
-  id: number
+  id: number | string
 
   /** Логин пользователя */
   username: string
