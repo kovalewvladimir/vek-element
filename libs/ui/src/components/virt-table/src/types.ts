@@ -13,7 +13,7 @@ export type FilterNumberType = FilterEquals | FilterCompare | FilterCompareEqual
 export type FilterDateType = 'eq' | 'before' | 'after' | 'between'
 export type FilterType = IFilterString | IFilterNumber | IFilterDate
 
-export type OnLoadDataType = (params: IOnLoadDataParams) => Promise<any[]>
+export type OnLoadDataType<T = any> = (params: IOnLoadDataParams) => Promise<T[]>
 export interface IOnLoadDataParams {
   page: number
   size: number
