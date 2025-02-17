@@ -19,6 +19,8 @@ export class Column {
   readonly prop: string
   readonly type: ColumnType
 
+  readonly slot: string
+
   readonly label: string
   readonly width: number
   readonly align: AlignType
@@ -35,6 +37,8 @@ export class Column {
   constructor(column: IColumn) {
     this.prop = column.prop
     this.type = column.type
+
+    this.slot = column.prop.includes('.') ? column.prop.replaceAll('\.', '_') : column.prop
 
     this.label = column.label
     this.width = column.width ?? COLUMN_AUTO_WIDTH

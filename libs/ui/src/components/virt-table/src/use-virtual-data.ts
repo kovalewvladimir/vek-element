@@ -4,6 +4,7 @@ import { type Ref, ref, unref } from 'vue'
 
 import { type Columns } from './column'
 import { type OnLoadDataType } from './types'
+import { getValueByPath, setValueByPath } from './utils'
 
 const resetScroll = (container: Ref<HTMLElement | null>) => {
   const virtualList = unref(container)
@@ -52,8 +53,14 @@ export const useVirtualData = (
     if (loadedData.length < sizePage) isAllDataLoaded.value = true
 
     for (const column of columns)
-      if (column.formatter)
-        for (const v of loadedData) v[`_${column.prop}`] = column.formatter(v[column.prop])
+      if (column.formatter) {
+        for (const v of loadedData) {
+          v.__formatData = v.__formatData || {}
+
+          const _data = getValueByPath(v, column.prop)
+          setValueByPath(v, `__formatData.${column.prop}`, column.formatter(_data))
+        }
+      }
 
     if (options.reload) {
       resetScroll(virtualContainerProps.ref)

@@ -5,10 +5,11 @@ import { onBeforeRouteLeave } from 'vue-router'
 
 import { type Column, type Columns } from './column'
 import { COLUMN_MIN_WIDTH } from './constants'
-import { type OnLoadDataType } from './types'
+import { type IColumn, type OnLoadDataType } from './types'
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
+import { getValueByPath } from './utils'
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
@@ -94,6 +95,11 @@ const {
   infiniteScrollDistance
 )
 
+const getCellValue = (row: any, column: IColumn) => {
+  const path = column.formatter ? `__formatData.${column.prop}` : column.prop
+  return getValueByPath(row, path)
+}
+
 // Scroll для vue-router
 const { saveScrollPosition, restoreScrollPosition } = useScrollPosition(virtualContainerProps.ref)
 
@@ -171,10 +177,10 @@ defineExpose({ reloadData, data })
                 @mouseleave="handleCellMouseLeave($event, column)"
               >
                 <slot
-                  :name="column.prop"
+                  :name="column.slot"
                   :column="column"
                   :row="row"
-                  >{{ column.formatter ? row[`_${column.prop}`] : row[column.prop] }}</slot
+                  >{{ getCellValue(row, column) }}</slot
                 >
               </div>
             </template>

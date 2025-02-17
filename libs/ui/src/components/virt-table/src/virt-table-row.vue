@@ -11,8 +11,23 @@ const emit = defineEmits<{
   (e: 'contextmenu', event: MouseEvent, column: Column): void
 }>()
 
-const computedColumns = computed(() => {
-  return columns.filter((v) => v.visible)
+const computedColumns = computed<Column[]>(() => {
+  // В TypeScript/JavaScript метод Array.filter() создает новый массив,
+  // проходя по каждому элементу исходного массива.
+  // При этом, если у вас определен тип Column как класс с конструктором,
+  // то при попытке копирования элементов в новый массив может происходить
+  // неявный вызов конструктора
+  //
+  // Поэтому нельзя использовать Array.filter() для фильтрации массива объектов
+  // return columns.filter((v) => v.visible)
+
+  const result = []
+  for (const column of columns) {
+    if (column.visible) {
+      result.push(column)
+    }
+  }
+  return result
 })
 </script>
 
