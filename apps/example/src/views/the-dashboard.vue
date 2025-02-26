@@ -74,6 +74,11 @@ const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
           @click="console.log(navigation.getFullPathByName(findName))"
           >getFullPathByName</el-button
         >
+        <el-button
+          type="primary"
+          @click="navigation.navigateToItem(findName)"
+          >navigateToItem</el-button
+        >
       </div>
     </el-card>
     <el-card>

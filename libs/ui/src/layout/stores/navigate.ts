@@ -26,7 +26,7 @@ import {
   unref,
   watch
 } from 'vue'
-import { type Router, type RouteRecordRaw } from 'vue-router'
+import { type NavigationFailure, type Router, type RouteRecordRaw } from 'vue-router'
 
 import { type Roles } from './user'
 
@@ -360,6 +360,13 @@ class NavigationStore {
     const routers = this._router.getRoutes()
     const route = routers.find((r) => r.meta.name === name)
     return route ? route.path : null
+  }
+
+  /** Переход к элементу навигации по имени */
+  async navigateToItem(name: string): Promise<NavigationFailure | void | undefined> {
+    const fullPath = this.getFullPathByName(name)
+    if (!fullPath) throw new Error(`Navigation item not found: ${name}`)
+    return await this._router.push(fullPath)
   }
 
   /** Базовый роутер */
