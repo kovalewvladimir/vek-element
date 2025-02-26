@@ -362,10 +362,13 @@ class NavigationStore {
     return route ? route.path : null
   }
 
-  /** Переход к элементу навигации по имени */
-  async navigateToItem(name: string): Promise<NavigationFailure | void | undefined> {
+  /** Переход к элементу. Если элемент не найден, то переход на дефолтный путь */
+  async navigateToItem(
+    name: string,
+    defaultTo: string = '/'
+  ): Promise<NavigationFailure | void | undefined> {
     const fullPath = this.getFullPathByName(name)
-    if (!fullPath) throw new Error(`Navigation item not found: ${name}`)
+    if (!fullPath) return await this._router.push(defaultTo)
     return await this._router.push(fullPath)
   }
 
