@@ -15,12 +15,15 @@ const VuNotificationConfig = (skippedErrors: ErrorClass[]) => {
 /**
  * Хук для отображения состояния загрузки
  */
-const useLoading = () => {
+const useLoading = (delay: number = 200) => {
   const loading = ref(false)
+  let loadingTimeout: NodeJS.Timeout | null = null
 
   const loadingWrapper = <T extends any[]>(cb: (...args: T) => Promise<void>) => {
     return async (...args: T) => {
-      loading.value = true
+      loadingTimeout = setTimeout(() => {
+        loading.value = true
+      }, delay)
 
       try {
         await cb(...args)
@@ -29,6 +32,9 @@ const useLoading = () => {
           VuNotificationShow('Ошибка', (error as Error).message, 'error')
         }
       } finally {
+        if (loadingTimeout) {
+          clearTimeout(loadingTimeout)
+        }
         loading.value = false
       }
     }
