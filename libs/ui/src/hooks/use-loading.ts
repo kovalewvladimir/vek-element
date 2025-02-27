@@ -15,7 +15,7 @@ const VuNotificationConfig = (skippedErrors: ErrorClass[]) => {
 /**
  * Хук для отображения состояния загрузки
  */
-const useLoading = (delay: number = 200) => {
+const useLoading = (delay: number = 200, enableTimingLog: boolean = false) => {
   const loading = ref(false)
   let loadingTimeout: NodeJS.Timeout | null = null
 
@@ -26,7 +26,9 @@ const useLoading = (delay: number = 200) => {
       }, delay)
 
       try {
+        if (enableTimingLog) console.time('loadingWrapper')
         await cb(...args)
+        if (enableTimingLog) console.timeEnd('loadingWrapper')
       } catch (error) {
         if (!_skippedErrors.some((v) => error instanceof v)) {
           VuNotificationShow('Ошибка', (error as Error).message, 'error')
