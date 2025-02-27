@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Columns, type OnLoadDataType, VuContentWrap, VuVirtTable } from '@vek-element/ui'
 import { asyncSleep, dateIsoToFrontendFormat } from '@vek-element/ui/utils'
+import { ElButton, ElButtonGroup } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
 
 const tableRef = useTemplateRef('table')
+
+const COUNT_GENERATE_ITEMS = 10
 
 const columns = ref(
   new Columns(
@@ -20,31 +23,70 @@ const getRandomDate = () => {
   return new Date(start + Math.random() * (end.getTime() - start)).toISOString()
 }
 
+const generateItem = () => ({
+  id: Math.floor(Math.random() * 1000),
+  name: `Name ${Math.floor(Math.random() * 1000)}`,
+  dateCreate: getRandomDate(),
+  date: {
+    create: getRandomDate()
+  }
+})
+
 const loadData: OnLoadDataType = async () => {
   await asyncSleep(1000)
+  return Array.from({ length: 10 }).map(() => generateItem())
+}
 
-  return Array.from({ length: 100 }).map((_, index) => ({
-    id: index,
-    name: `Name ${index}`,
-    dateCreate: getRandomDate(),
-    date: {
-      create: getRandomDate()
-    }
-  }))
+const addDataItem = () => {
+  tableRef?.value?.createDataItem(generateItem())
+}
+const updateDataItem = () => {
+  const item = tableRef?.value?.data[0]
+  const genItem = generateItem()
+  genItem.id = item.id
+
+  tableRef?.value?.updateDataItem(genItem, 'id')
+}
+const deleteDataItem = () => {
+  tableRef?.value?.deleteDataItem(tableRef?.value?.data[0], 'id')
 }
 </script>
 
 <template>
   <vu-content-wrap>
     <template #header>
-      <h2>vu-virt-table</h2>
-      <button @click="tableRef?.reloadData()">Reload</button>
+      <el-button
+        type="primary"
+        @click="tableRef?.reloadData()"
+        >Reload</el-button
+      >
+
+      <el-button-group class="mx-10px">
+        <el-button
+          type="success"
+          @click="addDataItem"
+          >Добавить</el-button
+        >
+        <el-button
+          type="warning"
+          @click="updateDataItem"
+          >Изменить</el-button
+        >
+        <el-button
+          type="danger"
+          @click="deleteDataItem"
+          >Удалить</el-button
+        >
+      </el-button-group>
     </template>
+
+    <h2>vu-virt-table</h2>
 
     <vu-virt-table
       ref="table"
       :columns="columns"
       :on-load-data="loadData"
+      :size-page="COUNT_GENERATE_ITEMS"
     >
       <!-- <template #date_create="{ row }">{{ row }}</template> -->
     </vu-virt-table>

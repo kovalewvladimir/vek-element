@@ -1,14 +1,23 @@
 import { useLoading } from '@vek-element/ui'
 import { useInfiniteScroll, useVirtualList } from '@vueuse/core'
-import { type Ref, ref, unref } from 'vue'
+import { type Ref, ref } from 'vue'
 
 import { type Columns } from './column'
 import { type OnLoadDataType } from './types'
 import { getValueByPath, setValueByPath } from './utils'
 
-const resetScroll = (container: Ref<HTMLElement | null>) => {
-  const virtualList = unref(container)
-  if (virtualList) virtualList.scrollTo(0, 0)
+/** Создание форматированных данных */
+export const createFormattedData = (rowData: any, columns: Columns): Record<string, any> => {
+  const formatData = rowData.__formatData || {}
+
+  for (const column of columns) {
+    if (column.formatter) {
+      const value = getValueByPath(rowData, column.prop)
+      setValueByPath(formatData, column.prop, column.formatter(value))
+    }
+  }
+
+  return formatData
 }
 
 export const useVirtualData = (
@@ -24,7 +33,7 @@ export const useVirtualData = (
   const isAllDataLoaded = ref(false)
   const isLoadingError = ref(false)
 
-  const data: Ref<any> = ref([])
+  const data: Ref<any[]> = ref([])
   const currentPage = ref(0)
 
   const DEFAULT_OPTIONS = { reload: false } as const
@@ -52,18 +61,12 @@ export const useVirtualData = (
 
     if (loadedData.length < sizePage) isAllDataLoaded.value = true
 
-    for (const column of columns)
-      if (column.formatter) {
-        for (const v of loadedData) {
-          v.__formatData = v.__formatData || {}
-
-          const _data = getValueByPath(v, column.prop)
-          setValueByPath(v, `__formatData.${column.prop}`, column.formatter(_data))
-        }
-      }
+    for (const v of loadedData) {
+      v.__formatData = createFormattedData(v, columns)
+    }
 
     if (options.reload) {
-      resetScroll(virtualContainerProps.ref)
+      scrollTo(0)
       data.value = loadedData
     } else {
       data.value.push(...loadedData)
@@ -71,10 +74,9 @@ export const useVirtualData = (
 
     // Bugfix: не отображаются данные, если они все помещаются в контейнер без scroll`а.
     // Что бы они отобразились нужно принудительно сделать перерендер
-    if (currentPage.value === 1) scrollTo(0)
+    if (currentPage.value === 1) virtualContainerProps.onScroll()
   })
   const reloadData = async () => {
-    scrollTo(0)
     isAllDataLoaded.value = false
     await getData({ reload: true })
   }

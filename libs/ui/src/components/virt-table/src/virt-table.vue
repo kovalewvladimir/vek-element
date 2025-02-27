@@ -8,7 +8,7 @@ import { COLUMN_MIN_WIDTH } from './constants'
 import { type IColumn, type OnLoadDataType } from './types'
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
-import { useVirtualData } from './use-virtual-data'
+import { createFormattedData, useVirtualData } from './use-virtual-data'
 import { getValueByPath } from './utils'
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
@@ -125,8 +125,35 @@ const onSortColumn = (_e: MouseEvent, column: Column) => {
   }
 }
 
+// Изменение данных
+/** Добавление нового элемента в таблицу */
+const createDataItem = (item: any) => {
+  const _clonedItem = structuredClone(item)
+  _clonedItem.__formatData = createFormattedData(_clonedItem, columns)
+  data.value.unshift(_clonedItem)
+  virtualContainerProps.onScroll()
+}
+/** Изменение данных в таблице */
+const updateDataItem = (item: any, identifier: string) => {
+  const index = data.value.findIndex((i) => i[identifier] === item[identifier])
+  if (index !== -1) {
+    const _clonedItem = structuredClone(item)
+    _clonedItem.__formatData = createFormattedData(_clonedItem, columns)
+    data.value.splice(index, 1, _clonedItem)
+    virtualContainerProps.onScroll()
+  }
+}
+/** Удаление элемента из таблицы */
+const deleteDataItem = (item: any, identifier: string) => {
+  const index = data.value.findIndex((i) => i[identifier] === item[identifier])
+  if (index !== -1) {
+    data.value.splice(index, 1)
+    virtualContainerProps.onScroll()
+  }
+}
+
 // Expose
-defineExpose({ reloadData, data })
+defineExpose({ reloadData, data, createDataItem, updateDataItem, deleteDataItem })
 </script>
 
 <template>
