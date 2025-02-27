@@ -16,14 +16,14 @@
     }
   },
   "dependencies": {
-    "@unocss/eslint-config": "65.4.3",
-    "@vue/eslint-config-typescript": "14.3.0",
-    "eslint": "9.19.0",
-    "eslint-config-prettier": "10.0.1",
+    "@unocss/eslint-config": "66.0.0",
+    "@vue/eslint-config-typescript": "14.4.0",
+    "eslint": "9.21.0",
+    "eslint-config-prettier": "10.0.2",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-simple-import-sort": "12.1.1",
-    "eslint-plugin-unicorn": "56.0.1",
+    "eslint-plugin-unicorn": "57.0.0",
     "eslint-plugin-vue": "9.32.0",
-    "prettier": "3.4.2"
+    "prettier": "3.5.2"
   }
 }

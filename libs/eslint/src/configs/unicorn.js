@@ -1,7 +1,7 @@
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 
 export const unicornConfig = [
-  eslintPluginUnicorn.configs['flat/all'],
+  eslintPluginUnicorn.configs.all,
   {
     name: 'vek/unicorn',
     rules: {
