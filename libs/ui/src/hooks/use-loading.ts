@@ -28,15 +28,14 @@ const useLoading = (delay: number = 200, enableTimingLog: boolean = false) => {
       try {
         if (enableTimingLog) console.time('loadingWrapper')
         await cb(...args)
-        if (enableTimingLog) console.timeEnd('loadingWrapper')
       } catch (error) {
         if (!_skippedErrors.some((v) => error instanceof v)) {
           VuNotificationShow('Ошибка', (error as Error).message, 'error')
         }
       } finally {
-        if (loadingTimeout) {
-          clearTimeout(loadingTimeout)
-        }
+        if (enableTimingLog) console.timeEnd('loadingWrapper')
+
+        if (loadingTimeout) clearTimeout(loadingTimeout)
         loading.value = false
       }
     }
