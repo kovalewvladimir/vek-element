@@ -35,23 +35,50 @@ export type EventBusActionKeyType<T> = EventBusKey<{
 
 /** Базовые параметры формы */
 interface FormConfig<T> {
+  /** Имя параметра маршрута. Нужен для получения идентификатора по которому нужно получить данные */
   routeParamName: string
+
+  /** Функция для перехода на предыдущую страницу */
   navigationToBack: () => Promise<NavigationFailure | void | undefined>
+
+  /** Ключ шины событий. Нужен для отправки событий в другие компоненты */
   busKey: EventBusActionKeyType<T>
 }
 
 /** API функции для работы с данными */
-interface ApiActions<T, C, U, ID_T> {
+interface ApiActions<T, C, U, ID_T, ID_KEY extends string = 'id'> {
+  /** Поле идентификатора */
+  idField?: ID_KEY
+
+  /** Функция для получения данных */
   getData: (id: ID_T | undefined) => Promise<T | C>
+
+  /** Функция для создания данных */
   createFunction: (data: C) => Promise<T>
+
+  /** Функция для обновления данных */
   updateFunction: (id: ID_T, data: U) => Promise<T>
+
+  /** Функция для удаления данных */
   deleteFunction: (id: ID_T) => Promise<T>
 }
 
 /** Инициализация данных для формы */
-export const useForm = <T extends { _id: ID_T }, C, U, ID_T = string>(
+export const useForm = <
+  T extends Record<ID_KEY, ID_T>,
+  C,
+  U,
+  ID_T = string,
+  ID_KEY extends string = 'id'
+>(
   { routeParamName, navigationToBack, busKey }: FormConfig<T>,
-  { getData, createFunction, updateFunction, deleteFunction }: ApiActions<T, C, U, ID_T>
+  {
+    getData,
+    createFunction,
+    updateFunction,
+    deleteFunction,
+    idField = 'id' as ID_KEY
+  }: ApiActions<T, C, U, ID_T, ID_KEY>
 ) => {
   //#region Данные
   const route = useRoute()
@@ -89,7 +116,7 @@ export const useForm = <T extends { _id: ID_T }, C, U, ID_T = string>(
     if (!isValid) throw new Error('Ошибка валидации')
 
     const data = await createFunction(dataForm.value as C)
-    VuNotificationShow('Успешно', `Создан ${String(data._id)}`)
+    VuNotificationShow('Успешно', `Создан ${String(data[idField])}`)
     busEvent.emit({ status: 'create', data: data })
     await navigationToBack()
   })
@@ -100,8 +127,8 @@ export const useForm = <T extends { _id: ID_T }, C, U, ID_T = string>(
     if (!isValid) throw new Error('Ошибка валидации')
     if (!dataUpdate.value) throw new Error('Нет данных для обновления')
 
-    const data = await updateFunction((dataForm.value as T)._id, dataUpdate.value)
-    VuNotificationShow('Успешно', `Изменен ${String(data._id)}`)
+    const data = await updateFunction((dataForm.value as T)[idField], dataUpdate.value)
+    VuNotificationShow('Успешно', `Изменен ${String(data[idField])}`)
     copyFormData(data)
     busEvent.emit({ status: 'update', data: data })
     if (isBackNavigation) await navigationToBack()
@@ -109,8 +136,8 @@ export const useForm = <T extends { _id: ID_T }, C, U, ID_T = string>(
 
   /** Удаляет запись и перенаправляет на предыдущую страницу */
   const remove = loadingWrapper(async () => {
-    const data = await deleteFunction((dataForm.value as T)._id)
-    VuNotificationShow('Успешно', `Удален ${String(data._id)}`)
+    const data = await deleteFunction((dataForm.value as T)[idField])
+    VuNotificationShow('Успешно', `Удален ${String(data[idField])}`)
     busEvent.emit({ status: 'delete', data: data })
     await navigationToBack()
   })
