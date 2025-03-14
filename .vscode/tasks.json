@@ -14,10 +14,11 @@
       "command": "chokidar '**/*.vue' '**/*.ts' -i node_modules -c 'clear & npx eslint --cache'",
       "problemMatcher": [],
       "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "dedicated"
+        // "echo": true,
+        // "reveal": "always",
+        // "focus": true,
+        // "panel": "dedicated",
+        "group": "watch-tasks"
       }
     },
     {
@@ -26,10 +27,11 @@
       "command": "npx vue-tsc --noEmit -p ./apps/example/tsconfig.json --watch",
       "problemMatcher": [],
       "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated"
+        // "echo": true,
+        // "reveal": "always",
+        // "focus": false,
+        // "panel": "dedicated",
+        "group": "watch-tasks"
       }
     }
   ]
