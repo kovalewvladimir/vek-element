@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElEmpty, ElTooltip } from 'element-plus'
-import { computed, isReactive, onActivated, useTemplateRef, warn } from 'vue'
+import { computed, isReactive, onActivated, type Ref, useTemplateRef, warn } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 import { type Column, type Columns } from './column'
@@ -153,7 +153,19 @@ const deleteDataItem = (item: any, identifier: string) => {
 }
 
 // Expose
-defineExpose({ reloadData, data, createDataItem, updateDataItem, deleteDataItem })
+defineExpose<{
+  /** Функция для перезагрузки данных */
+  reloadData: () => Promise<void>
+
+  /** Данные таблицы */
+  data: Ref<any[]>
+  /** Функция для создания нового элемента в таблице */
+  createDataItem: (item: any) => void
+  /** Функция для обновления данных в таблице */
+  updateDataItem: (item: any, identifier: string) => void
+  /** Функция для удаления элемента из таблицы */
+  deleteDataItem: (item: any, identifier: string) => void
+}>({ reloadData, data, createDataItem, updateDataItem, deleteDataItem })
 </script>
 
 <template>
