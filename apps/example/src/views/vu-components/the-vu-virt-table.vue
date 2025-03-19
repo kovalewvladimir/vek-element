@@ -6,7 +6,7 @@ import { ref, useTemplateRef } from 'vue'
 
 const tableRef = useTemplateRef('table')
 
-const COUNT_GENERATE_ITEMS = 10
+const COUNT_GENERATE_ITEMS = 1000
 
 const columns = ref(
   new Columns(
@@ -34,7 +34,7 @@ const generateItem = () => ({
 
 const loadData: OnLoadDataType = async () => {
   await asyncSleep(1000)
-  return Array.from({ length: 10 }).map(() => generateItem())
+  return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem())
 }
 
 const addDataItem = () => {
@@ -80,10 +80,9 @@ const deleteDataItem = () => {
       </el-button-group>
     </template>
 
-    <h2>vu-virt-table</h2>
-
     <vu-virt-table
       ref="table"
+      height="100%"
       :columns="columns"
       :on-load-data="loadData"
       :size-page="COUNT_GENERATE_ITEMS"
