@@ -30,7 +30,10 @@
         "streetsidesoftware.code-spell-checker-russian",
 
         // git
-        "donjayamanne.githistory"
+        "donjayamanne.githistory",
+
+        //
+        "pflannery.vscode-versionlens"
       ]
     }
   }
