@@ -14,9 +14,14 @@ import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
 
+// ==================
+// Props
+// ==================
+
 const {
   columns,
   onLoadData,
+  rowUniqueKey = 'id',
   sizePage = 100,
   height = '300px',
   rowHeight = 28,
@@ -28,6 +33,10 @@ const {
    * Список колонок для отображения в таблице (обязательный параметр).
    */
   columns: Columns
+  /**
+   * Уникальный ключ для таблицы (по умолчанию 'id').
+   */
+  rowUniqueKey?: string
   /**
    * Функция, которая вызывается при загрузке данных (обязательный параметр).
    */
@@ -63,6 +72,10 @@ if (!isReactive(columns)) {
   warn('`columns` должен быть реактивным')
 }
 
+// ==================
+// Lifecycle
+// ==================
+
 // Восстановление позиции scroll при переходе по страницам
 onActivated(() => {
   restoreScrollPosition()
@@ -71,12 +84,19 @@ onBeforeRouteLeave(() => {
   saveScrollPosition()
 })
 
-// computed
+// ==================
+// Computed
+// ==================
+
 const rowHeightPx = computed(() => `${rowHeight}px`)
 const headerHeightPx = computed(() => `${rowHeight + 6}px`)
 const columnMinWidthPx = computed(() => `${COLUMN_MIN_WIDTH}px`)
 
-// Виртуальный список & Загрузка новых данных при scroll`е
+// ==================
+// Methods
+// ==================
+
+// Виртуальный список
 const {
   loading,
   isAllDataLoaded,
@@ -94,11 +114,6 @@ const {
   virtualListOverscan,
   infiniteScrollDistance
 )
-
-const getCellValue = (row: any, column: IColumn) => {
-  const path = column.formatter ? `__formatData.${column.prop}` : column.prop
-  return getValueByPath(row, path)
-}
 
 // Scroll для vue-router
 const { saveScrollPosition, restoreScrollPosition } = useScrollPosition(virtualContainerProps.ref)
@@ -125,47 +140,103 @@ const onSortColumn = (_e: MouseEvent, column: Column) => {
   }
 }
 
-// Изменение данных
+/** Получение значения ячейки */
+const getCellValue = (row: any, column: IColumn) => {
+  const path = column.formatter ? `__formatData.${column.prop}` : column.prop
+  return getValueByPath(row, path)
+}
+
+// ===================================
+// Работа с данными таблицы данных
+// ===================================
+
+interface ICreateDataItemOptions {
+  /** Индекс, куда вставить новый элемент */
+  index?: number
+  /** Данные являются массивом? */
+  isDataArray?: boolean
+  /** Нужно ли клонировать данные? */
+  isCloneData?: boolean
+}
+interface IUpdateDataItemOptions {
+  /** Идентификатор элемента */
+  index: number
+  /** Нужно ли клонировать данные? */
+  isCloneData?: boolean
+}
+
+/** Поиск индекса элемента в таблице */
+const findDataItemIndex = (item: any, identifier: string) => {
+  return data.value.findIndex((i) => i[identifier] === item)
+}
 /** Добавление нового элемента в таблицу */
-const createDataItem = (item: any) => {
-  const _clonedItem = structuredClone(item)
-  _clonedItem.__formatData = createFormattedData(_clonedItem, columns)
-  data.value.unshift(_clonedItem)
+const createDataItem = (item: any, options: ICreateDataItemOptions = {}) => {
+  const { index = 0, isCloneData = true } = options
+
+  const _item = isCloneData ? structuredClone(item) : item
+
+  if (Array.isArray(_item)) {
+    for (const i of _item) i.__formatData = createFormattedData(i, columns)
+    data.value.splice(index, 0, ..._item)
+  } else {
+    _item.__formatData = createFormattedData(_item, columns)
+    data.value.splice(index, 0, _item)
+  }
+
   virtualContainerProps.onScroll()
 }
 /** Изменение данных в таблице */
-const updateDataItem = (item: any, identifier: string) => {
-  const index = data.value.findIndex((i) => i[identifier] === item[identifier])
-  if (index !== -1) {
-    const _clonedItem = structuredClone(item)
-    _clonedItem.__formatData = createFormattedData(_clonedItem, columns)
-    data.value.splice(index, 1, _clonedItem)
-    virtualContainerProps.onScroll()
-  }
+const updateDataItem = (item: any, options: IUpdateDataItemOptions) => {
+  const { index, isCloneData = true } = options
+
+  if (data.value.length <= index) return
+
+  const _item = isCloneData ? structuredClone(item) : item
+  _item.__formatData = createFormattedData(_item, columns)
+  data.value.splice(index, 1, _item)
+
+  virtualContainerProps.onScroll()
 }
 /** Удаление элемента из таблицы */
-const deleteDataItem = (item: any, identifier: string) => {
-  const index = data.value.findIndex((i) => i[identifier] === item[identifier])
-  if (index !== -1) {
-    data.value.splice(index, 1)
-    virtualContainerProps.onScroll()
-  }
+const deleteDataItem = (index: number) => {
+  data.value.splice(index, 1)
+  virtualContainerProps.onScroll()
+}
+/** Удаление нескольких элементов из таблицы */
+const deleteDataItems = (index: number, count: number) => {
+  data.value.splice(index, count)
+  virtualContainerProps.onScroll()
 }
 
+// ==================
 // Expose
+// ==================
+
 defineExpose<{
   /** Функция для перезагрузки данных */
   reloadData: () => Promise<void>
 
   /** Данные таблицы */
   data: Ref<any[]>
+  /** Функция для поиска индекса элемента в таблице */
+  findDataItemIndex: (item: any, identifier: string) => number
   /** Функция для создания нового элемента в таблице */
-  createDataItem: (item: any) => void
+  createDataItem: (item: any, options?: ICreateDataItemOptions) => void
   /** Функция для обновления данных в таблице */
-  updateDataItem: (item: any, identifier: string) => void
+  updateDataItem: (item: any, options: IUpdateDataItemOptions) => void
   /** Функция для удаления элемента из таблицы */
-  deleteDataItem: (item: any, identifier: string) => void
-}>({ reloadData, data, createDataItem, updateDataItem, deleteDataItem })
+  deleteDataItem: (index: number) => void
+  /** Функция для удаления нескольких элементов из таблицы */
+  deleteDataItems: (index: number, count: number) => void
+}>({
+  reloadData,
+  data,
+  findDataItemIndex,
+  createDataItem,
+  updateDataItem,
+  deleteDataItem,
+  deleteDataItems
+})
 </script>
 
 <template>
@@ -203,8 +274,8 @@ defineExpose<{
         v-bind="virtualWrapperProps"
       >
         <div
-          v-for="{ index, data: row } in virtualData"
-          :key="index"
+          v-for="{ data: row } in virtualData"
+          :key="row[rowUniqueKey]"
           class="row"
         >
           <virt-table-row :columns="columns">
