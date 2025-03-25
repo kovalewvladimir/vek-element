@@ -300,6 +300,11 @@ defineExpose<{
         >
           <virt-table-row :columns="computedVisibleColumns">
             <template #default="{ column }">
+              <slot
+                :name="`${column.slot}-before`"
+                :column="column"
+                :row="row"
+              />
               <div
                 class="text"
                 :class="{ 'text-right w-full': column.align === 'right' }"
