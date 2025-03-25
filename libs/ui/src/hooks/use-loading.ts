@@ -14,6 +14,9 @@ const VuNotificationConfig = (skippedErrors: ErrorClass[]) => {
 
 /**
  * Хук для отображения состояния загрузки
+ *
+ * @param delay - задержка перед отображением состояния загрузки (по умолчанию 200 мс)
+ * @param enableTimingLog - включение логирования времени выполнения
  */
 const useLoading = (delay: number = 200, enableTimingLog: boolean = false) => {
   const loading = ref(false)
