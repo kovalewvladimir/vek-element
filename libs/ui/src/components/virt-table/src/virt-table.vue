@@ -92,6 +92,26 @@ const rowHeightPx = computed(() => `${rowHeight}px`)
 const headerHeightPx = computed(() => `${rowHeight + 6}px`)
 const columnMinWidthPx = computed(() => `${COLUMN_MIN_WIDTH}px`)
 
+/** Фильтрация видимых колонок */
+const computedVisibleColumns = computed<Column[]>(() => {
+  // В TypeScript/JavaScript метод Array.filter() создает новый массив,
+  // проходя по каждому элементу исходного массива.
+  // При этом, если у вас определен тип Column как класс с конструктором,
+  // то при попытке копирования элементов в новый массив может происходить
+  // неявный вызов конструктора
+  //
+  // Поэтому нельзя использовать Array.filter() для фильтрации массива объектов
+  // return columns.filter((v) => v.visible)
+
+  const result = []
+  for (const column of columns) {
+    if (column.visible) {
+      result.push(column)
+    }
+  }
+  return result
+})
+
 // ==================
 // Methods
 // ==================
@@ -253,7 +273,7 @@ defineExpose<{
       <!-- Header -->
       <div class="header">
         <virt-table-row
-          :columns="columns"
+          :columns="computedVisibleColumns"
           @click="onSortColumn"
           @contextmenu="onShowContextMenu"
         >
@@ -278,7 +298,7 @@ defineExpose<{
           :key="row[rowUniqueKey]"
           class="row"
         >
-          <virt-table-row :columns="columns">
+          <virt-table-row :columns="computedVisibleColumns">
             <template #default="{ column }">
               <div
                 class="text"
