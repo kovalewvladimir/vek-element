@@ -32,7 +32,7 @@
         // git
         "donjayamanne.githistory",
 
-        //
+        // Показывает последние версии зависимостей в package.json
         "pflannery.vscode-versionlens"
       ]
     }
