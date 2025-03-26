@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { ElEmpty, ElTooltip } from 'element-plus'
-import { computed, isReactive, onActivated, type Ref, useTemplateRef, warn } from 'vue'
+import { computed, isReactive, onActivated, provide, useTemplateRef, warn } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 import { type Column, type Columns } from './column'
 import { COLUMN_MIN_WIDTH } from './constants'
-import { type IColumn, type OnLoadDataType } from './types'
+import {
+  type IColumn,
+  type ICreateDataItemOptions,
+  type IUpdateDataItemOptions,
+  type IVirtTableExpose,
+  type OnLoadDataType
+} from './types'
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
 import { createFormattedData, useVirtualData } from './use-virtual-data'
@@ -170,21 +176,6 @@ const getCellValue = (row: any, column: IColumn) => {
 // Работа с данными таблицы данных
 // ===================================
 
-interface ICreateDataItemOptions {
-  /** Индекс, куда вставить новый элемент */
-  index?: number
-  /** Данные являются массивом? */
-  isDataArray?: boolean
-  /** Нужно ли клонировать данные? */
-  isCloneData?: boolean
-}
-interface IUpdateDataItemOptions {
-  /** Идентификатор элемента */
-  index: number
-  /** Нужно ли клонировать данные? */
-  isCloneData?: boolean
-}
-
 /** Поиск индекса элемента в таблице */
 const findDataItemIndex = (item: any, identifier: string) => {
   return data.value.findIndex((i) => i[identifier] === item)
@@ -232,23 +223,21 @@ const deleteDataItems = (index: number, count: number) => {
 // Expose
 // ==================
 
-defineExpose<{
-  /** Функция для перезагрузки данных */
-  reloadData: () => Promise<void>
+defineExpose<IVirtTableExpose>({
+  reloadData,
+  data,
+  findDataItemIndex,
+  createDataItem,
+  updateDataItem,
+  deleteDataItem,
+  deleteDataItems
+})
 
-  /** Данные таблицы */
-  data: Ref<any[]>
-  /** Функция для поиска индекса элемента в таблице */
-  findDataItemIndex: (item: any, identifier: string) => number
-  /** Функция для создания нового элемента в таблице */
-  createDataItem: (item: any, options?: ICreateDataItemOptions) => void
-  /** Функция для обновления данных в таблице */
-  updateDataItem: (item: any, options: IUpdateDataItemOptions) => void
-  /** Функция для удаления элемента из таблицы */
-  deleteDataItem: (index: number) => void
-  /** Функция для удаления нескольких элементов из таблицы */
-  deleteDataItems: (index: number, count: number) => void
-}>({
+// ==================
+// Provide
+// ==================
+
+provide<IVirtTableExpose>('virt-table-api', {
   reloadData,
   data,
   findDataItemIndex,

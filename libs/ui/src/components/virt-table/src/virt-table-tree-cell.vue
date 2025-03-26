@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { useLoading, VuIconSvgSlot, type VuVirtTable } from '@vek-element/ui'
-import { computed } from 'vue'
+import { type IVirtTableExpose, useLoading, VuIconSvgSlot } from '@vek-element/ui'
+import { computed, inject, unref } from 'vue'
 
 import { SvgArrowRight, SvgLoading } from './svgs'
+
+// ==================
+// Inject
+// ==================
+
+const apiTable = inject<IVirtTableExpose>('virt-table-api')
 
 // ==================
 // Composable
@@ -18,7 +24,6 @@ const {
   row,
   uniqueKey,
   expandableKey = 'isExpandable',
-  tableRef,
   onLoadData,
   levelIndent = 20
 } = defineProps<{
@@ -28,8 +33,6 @@ const {
   uniqueKey: string
   /** Ключ для дерева (по умолчанию isExpandable) */
   expandableKey?: string
-  /** Ref на таблицу */
-  tableRef: InstanceType<typeof VuVirtTable> | null // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
   /** Функция загрузки данных */
   onLoadData: (row: any) => Promise<any[]>
   /** Величина отступа для уровня вложенности в пикселях (по умолчанию 20) */
@@ -66,15 +69,15 @@ function countItemsAtLevel(startIndex: number, dataItems: any[], level: number) 
 
 /** Обработчик клика по стрелке дерева */
 const handleTreeCellClick = loadingWrapper(async (row: any) => {
-  if (!tableRef) throw new Error('tableRef is undefined')
+  if (!apiTable) throw new Error('apiTable is undefined')
 
-  const { data: dataItems, findDataItemIndex, createDataItem, deleteDataItems } = tableRef
+  const { data: dataItems, findDataItemIndex, createDataItem, deleteDataItems } = apiTable
 
   const index = findDataItemIndex(row[uniqueKey], uniqueKey)
   if (index === -1) throw new Error(`Item not found. Unique key: ${uniqueKey}`)
 
   if (row.__isExpanded) {
-    const countItemDelete = countItemsAtLevel(index, dataItems, currentLevel)
+    const countItemDelete = countItemsAtLevel(index, unref(dataItems), currentLevel)
     deleteDataItems(index + 1, countItemDelete)
   } else {
     const _newData = await onLoadData(row)

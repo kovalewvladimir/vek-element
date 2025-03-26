@@ -124,7 +124,6 @@ const deleteDataItem = () => {
         <vu-virt-table-tree-cell
           :row="row"
           unique-key="id"
-          :table-ref="tableRef"
           :on-load-data="
             async (row) => {
               await asyncSleep(1000)

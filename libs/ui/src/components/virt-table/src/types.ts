@@ -1,3 +1,5 @@
+import { type Ref } from 'vue'
+
 export type FormatterType = ((value: any) => string) | null
 export type AlignType = 'left' | 'right'
 export type ColumnType = 'string' | 'number' | 'date' | 'string[]'
@@ -76,4 +78,36 @@ export interface IColumn {
   operator?: FilterLogicalOperator
   /** Фильтры */
   filters?: ReadonlyArray<FilterType>
+}
+
+export interface ICreateDataItemOptions {
+  /** Индекс, куда вставить новый элемент */
+  index?: number
+  /** Данные являются массивом? */
+  isDataArray?: boolean
+  /** Нужно ли клонировать данные? */
+  isCloneData?: boolean
+}
+export interface IUpdateDataItemOptions {
+  /** Идентификатор элемента */
+  index: number
+  /** Нужно ли клонировать данные? */
+  isCloneData?: boolean
+}
+
+export interface IVirtTableExpose {
+  /** Функция для перезагрузки данных */ reloadData: () => Promise<void>
+
+  /** Данные таблицы */
+  data: Ref<any[]>
+  /** Функция для поиска индекса элемента в таблице */
+  findDataItemIndex: (item: any, identifier: string) => number
+  /** Функция для создания нового элемента в таблице */
+  createDataItem: (item: any, options?: ICreateDataItemOptions) => void
+  /** Функция для обновления данных в таблице */
+  updateDataItem: (item: any, options: IUpdateDataItemOptions) => void
+  /** Функция для удаления элемента из таблицы */
+  deleteDataItem: (index: number) => void
+  /** Функция для удаления нескольких элементов из таблицы */
+  deleteDataItems: (index: number, count: number) => void
 }
