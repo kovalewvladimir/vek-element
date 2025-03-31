@@ -115,6 +115,8 @@ const handleTreeCellClick = loadingWrapper(async (row: any) => {
   .wrap-icon {
     display: flex;
     flex: 0 0 20px;
+
+    user-select: none;
   }
 
   .expend-icon {
