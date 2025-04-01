@@ -210,13 +210,16 @@ const updateDataItem = (item: any, options: IUpdateDataItemOptions) => {
 }
 /** Удаление элемента из таблицы */
 const deleteDataItem = (index: number) => {
-  data.value.splice(index, 1)
+  const deleteData = data.value.splice(index, 1)
   virtualContainerProps.onScroll()
+  if (deleteData.length === 0) return null
+  return deleteData[0]
 }
 /** Удаление нескольких элементов из таблицы */
 const deleteDataItems = (index: number, count: number) => {
-  data.value.splice(index, count)
+  const deleteData = data.value.splice(index, count)
   virtualContainerProps.onScroll()
+  return deleteData
 }
 
 // ==================

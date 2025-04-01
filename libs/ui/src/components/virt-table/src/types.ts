@@ -107,7 +107,7 @@ export interface IVirtTableExpose {
   /** Функция для обновления данных в таблице */
   updateDataItem: (item: any, options: IUpdateDataItemOptions) => void
   /** Функция для удаления элемента из таблицы */
-  deleteDataItem: (index: number) => void
+  deleteDataItem: (index: number) => any
   /** Функция для удаления нескольких элементов из таблицы */
-  deleteDataItems: (index: number, count: number) => void
+  deleteDataItems: (index: number, count: number) => any[]
 }

@@ -25,6 +25,7 @@ const {
   uniqueKey,
   expandableKey = 'isExpandable',
   onLoadData,
+  isCacheData = true,
   isCloneData = false,
   levelIndent = 20
 } = defineProps<{
@@ -36,6 +37,8 @@ const {
   expandableKey?: string
   /** Функция загрузки данных */
   onLoadData: (row: any) => Promise<any[]>
+  /** Использовать кэшированные данные (по умолчанию true) */
+  isCacheData?: boolean
   /** Клонировать данные при вставке в таблицу (по умолчанию false) */
   isCloneData?: boolean
   /** Величина отступа для уровня вложенности в пикселях (по умолчанию 20) */
@@ -47,6 +50,7 @@ const {
 // ==================
 
 const currentLevel: number = row.__level ?? 0
+let cache: any[] = []
 
 // ==================
 // Computed
@@ -79,21 +83,34 @@ const handleTreeCellClick = loadingWrapper(async (row: any) => {
   const index = findDataItemIndex(row[uniqueKey], uniqueKey)
   if (index === -1) throw new Error(`Item not found. Unique key: ${uniqueKey}`)
 
+  // Если элемент уже открыт, то удаляем все элементы ниже него
   if (row.__isExpanded) {
     const countItemDelete = countItemsAtLevel(index, unref(dataItems), currentLevel)
-    deleteDataItems(index + 1, countItemDelete)
-  } else {
-    const _newData = await onLoadData(row)
-    for (const item of _newData) {
-      // Сбрасываем флаг __isExpanded для всех элементов
-      if (item[expandableKey]) item.__isExpanded = false
-      // Устанавливаем уровень вложенности
-      item.__level = currentLevel + 1
-    }
-    createDataItem(_newData, { index: index + 1, isDataArray: true, isCloneData: isCloneData })
+    const deleteData = deleteDataItems(index + 1, countItemDelete)
+
+    if (isCacheData) cache = deleteData
+
+    row.__isExpanded = false
+    return
   }
 
-  row.__isExpanded = !row.__isExpanded
+  // Если элемент открыт, то проверяем кэшированные данные
+  if (isCacheData && cache.length > 0) {
+    createDataItem(cache, { index: index + 1, isDataArray: true, isCloneData: isCloneData })
+    row.__isExpanded = true
+    return
+  }
+
+  // Если элемент не открыт, то загружаем данные
+  const _newData = await onLoadData(row)
+  for (const item of _newData) {
+    // Сбрасываем флаг __isExpanded для всех элементов
+    if (item[expandableKey]) item.__isExpanded = false
+    // Устанавливаем уровень вложенности
+    item.__level = currentLevel + 1
+  }
+  createDataItem(_newData, { index: index + 1, isDataArray: true, isCloneData: isCloneData })
+  row.__isExpanded = true
 })
 </script>
 
