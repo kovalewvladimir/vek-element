@@ -83,8 +83,6 @@ export interface IColumn {
 export interface ICreateDataItemOptions {
   /** Индекс, куда вставить новый элемент */
   index?: number
-  /** Данные являются массивом? */
-  isDataArray?: boolean
   /** Нужно ли клонировать данные? */
   isCloneData?: boolean
 }

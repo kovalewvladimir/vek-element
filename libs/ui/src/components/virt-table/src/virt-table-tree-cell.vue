@@ -96,7 +96,7 @@ const handleTreeCellClick = loadingWrapper(async (row: any) => {
 
   // Если элемент открыт, то проверяем кэшированные данные
   if (isCacheData && cache.length > 0) {
-    createDataItem(cache, { index: index + 1, isDataArray: true, isCloneData: isCloneData })
+    createDataItem(cache, { index: index + 1, isCloneData: isCloneData })
     row.__isExpanded = true
     return
   }
@@ -109,7 +109,7 @@ const handleTreeCellClick = loadingWrapper(async (row: any) => {
     // Устанавливаем уровень вложенности
     item.__level = currentLevel + 1
   }
-  createDataItem(_newData, { index: index + 1, isDataArray: true, isCloneData: isCloneData })
+  createDataItem(_newData, { index: index + 1, isCloneData: isCloneData })
   row.__isExpanded = true
 })
 </script>
