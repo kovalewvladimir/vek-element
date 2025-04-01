@@ -177,8 +177,8 @@ const getCellValue = (row: any, column: IColumn) => {
 // ===================================
 
 /** Поиск индекса элемента в таблице */
-const findDataItemIndex = (item: any, identifier: string) => {
-  return data.value.findIndex((i) => i[identifier] === item)
+const findDataItemIndex = (value: any) => {
+  return data.value.findIndex((i) => i[rowUniqueKey] === value)
 }
 /** Добавление нового элемента в таблицу */
 const createDataItem = (item: any, options: ICreateDataItemOptions = {}) => {

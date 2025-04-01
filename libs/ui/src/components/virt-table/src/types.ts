@@ -101,7 +101,7 @@ export interface IVirtTableExpose {
   /** Данные таблицы */
   data: Ref<any[]>
   /** Функция для поиска индекса элемента в таблице */
-  findDataItemIndex: (item: any, identifier: string) => number
+  findDataItemIndex: (value: any) => number
   /** Функция для создания нового элемента в таблице */
   createDataItem: (item: any, options?: ICreateDataItemOptions) => void
   /** Функция для обновления данных в таблице */

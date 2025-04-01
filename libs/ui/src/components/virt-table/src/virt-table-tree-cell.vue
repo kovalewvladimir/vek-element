@@ -80,7 +80,7 @@ const handleTreeCellClick = loadingWrapper(async (row: any) => {
 
   const { data: dataItems, findDataItemIndex, createDataItem, deleteDataItems } = apiTable
 
-  const index = findDataItemIndex(row[uniqueKey], uniqueKey)
+  const index = findDataItemIndex(row[uniqueKey])
   if (index === -1) throw new Error(`Item not found. Unique key: ${uniqueKey}`)
 
   // Если элемент уже открыт, то удаляем все элементы ниже него
