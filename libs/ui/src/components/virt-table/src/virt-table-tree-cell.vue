@@ -25,6 +25,7 @@ const {
   uniqueKey,
   expandableKey = 'isExpandable',
   onLoadData,
+  isCloneData = false,
   levelIndent = 20
 } = defineProps<{
   /** Данные строки */
@@ -35,6 +36,8 @@ const {
   expandableKey?: string
   /** Функция загрузки данных */
   onLoadData: (row: any) => Promise<any[]>
+  /** Клонировать данные при вставке в таблицу (по умолчанию false) */
+  isCloneData?: boolean
   /** Величина отступа для уровня вложенности в пикселях (по умолчанию 20) */
   levelIndent?: number
 }>()
@@ -81,8 +84,13 @@ const handleTreeCellClick = loadingWrapper(async (row: any) => {
     deleteDataItems(index + 1, countItemDelete)
   } else {
     const _newData = await onLoadData(row)
-    for (const item of _newData) item.__level = currentLevel + 1
-    createDataItem(_newData, { index: index + 1, isDataArray: true })
+    for (const item of _newData) {
+      // Сбрасываем флаг __isExpanded для всех элементов
+      if (item[expandableKey]) item.__isExpanded = false
+      // Устанавливаем уровень вложенности
+      item.__level = currentLevel + 1
+    }
+    createDataItem(_newData, { index: index + 1, isDataArray: true, isCloneData: isCloneData })
   }
 
   row.__isExpanded = !row.__isExpanded
