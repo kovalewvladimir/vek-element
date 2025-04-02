@@ -56,10 +56,10 @@ export class Column {
     this.operator = 'or'
     this.filters = column.filters ?? []
 
-    this.widthStyle = this.__calculateWidthStyle()
+    this.widthStyle = this.calculateWidthStyle()
   }
 
-  __calculateWidthStyle(): string {
+  calculateWidthStyle(): string {
     return this.width === COLUMN_AUTO_WIDTH ? '' : `flex: 0 0 auto; width: ${this.width}px`
   }
 
@@ -67,7 +67,7 @@ export class Column {
     // @ts-expect-error: Редактирую значение readonly только из спец методов класса
     this.width = width
     // @ts-expect-error: Редактирую значение readonly только из спец методов класса
-    this.widthStyle = this.__calculateWidthStyle()
+    this.widthStyle = this.calculateWidthStyle()
   }
   setVisibility(visible: boolean): void {
     // @ts-expect-error: Редактирую значение readonly только из спец методов класса
