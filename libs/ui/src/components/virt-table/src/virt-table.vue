@@ -14,8 +14,8 @@ import {
 } from './types'
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
-import { createFormattedData, useVirtualData } from './use-virtual-data'
-import { getValueByPath } from './utils'
+import { useVirtualData } from './use-virtual-data'
+import { getFormatData, getValueByPath, injectMetaData } from './utils'
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
@@ -168,8 +168,7 @@ const onSortColumn = (_e: MouseEvent, column: Column) => {
 
 /** Получение значения ячейки */
 const getCellValue = (row: any, column: IColumn) => {
-  const path = column.formatter ? `__formatData.${column.prop}` : column.prop
-  return getValueByPath(row, path)
+  return column.formatter ? getFormatData(row, column.prop) : getValueByPath(row, column.prop)
 }
 
 // ===================================
@@ -187,10 +186,10 @@ const createDataItem = (item: any, options: ICreateDataItemOptions = {}) => {
   const _item = isCloneData ? structuredClone(item) : item
 
   if (Array.isArray(_item)) {
-    for (const i of _item) i.__formatData = createFormattedData(i, columns)
+    for (const i of _item) injectMetaData(i, columns)
     data.value.splice(index, 0, ..._item)
   } else {
-    _item.__formatData = createFormattedData(_item, columns)
+    injectMetaData(_item, columns)
     data.value.splice(index, 0, _item)
   }
 
@@ -203,7 +202,7 @@ const updateDataItem = (item: any, options: IUpdateDataItemOptions) => {
   if (data.value.length <= index) return
 
   const _item = isCloneData ? structuredClone(item) : item
-  _item.__formatData = createFormattedData(_item, columns)
+  injectMetaData(_item, columns)
   data.value.splice(index, 1, _item)
 
   virtualContainerProps.onScroll()

@@ -4,21 +4,7 @@ import { type Ref, ref } from 'vue'
 
 import { type Columns } from './column'
 import { type OnLoadDataType } from './types'
-import { getValueByPath, setValueByPath } from './utils'
-
-/** Создание форматированных данных */
-export const createFormattedData = (rowData: any, columns: Columns): Record<string, any> => {
-  const formatData = rowData.__formatData || {}
-
-  for (const column of columns) {
-    if (column.formatter) {
-      const value = getValueByPath(rowData, column.prop)
-      setValueByPath(formatData, column.prop, column.formatter(value))
-    }
-  }
-
-  return formatData
-}
+import { injectMetaData } from './utils'
 
 export const useVirtualData = (
   onLoadData: OnLoadDataType,
@@ -62,7 +48,7 @@ export const useVirtualData = (
     if (loadedData.length < sizePage) isAllDataLoaded.value = true
 
     for (const v of loadedData) {
-      v.__formatData = createFormattedData(v, columns)
+      injectMetaData(v, columns)
     }
 
     if (options.reload) {
