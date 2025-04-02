@@ -35,8 +35,9 @@ const { columns } = defineProps<{ columns: Columns }>()
 
 const emit = defineEmits<{ (e: 'changeSort'): void; (e: 'changeFilter'): void }>()
 
-//////////////////////////////////////////////////////////////////////////////////////////
+// ==================
 // Мутации Props!!!!
+// ==================
 const setColumnWidth = (width: number): void => {
   columnCurrent.value?.setWidth(width)
 }
@@ -71,7 +72,7 @@ const deleteFilter = (column: Column, filter: FilterType) => {
   column.deleteFilter(filter)
   emit('changeFilter')
 }
-//////////////////////////////////////////////////////////////////////////////////////////
+// ==================
 
 const contextMenuVisible = ref(false)
 const contextMenuOptions = ref({ theme: 'virt-table', zIndex: 999, x: 0, y: 0 })

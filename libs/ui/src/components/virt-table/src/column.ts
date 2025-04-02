@@ -34,6 +34,9 @@ export class Column {
   readonly operator: FilterLogicalOperator
   readonly filters: ReadonlyArray<FilterType>
 
+  /** CSS стиль для ширины колонки. Нужно для оптимизации чтоб не пересчитывать ширину в каждом render */
+  readonly widthStyle: string
+
   constructor(column: IColumn) {
     this.prop = column.prop
     this.type = column.type
@@ -52,11 +55,19 @@ export class Column {
     this.sort = column.sort ?? null
     this.operator = 'or'
     this.filters = column.filters ?? []
+
+    this.widthStyle = this.__calculateWidthStyle()
+  }
+
+  __calculateWidthStyle(): string {
+    return this.width === COLUMN_AUTO_WIDTH ? '' : `flex: 0 0 auto; width: ${this.width}px`
   }
 
   setWidth(width: number): void {
     // @ts-expect-error: Редактирую значение readonly только из спец методов класса
     this.width = width
+    // @ts-expect-error: Редактирую значение readonly только из спец методов класса
+    this.widthStyle = this.__calculateWidthStyle()
   }
   setVisibility(visible: boolean): void {
     // @ts-expect-error: Редактирую значение readonly только из спец методов класса
