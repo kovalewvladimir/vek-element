@@ -26,11 +26,11 @@ import VirtTableRow from './virt-table-row.vue'
 
 const {
   columns,
-  onLoadData,
   rowUniqueKey = 'id',
-  sizePage = 100,
+  onLoadData,
   height = '300px',
   rowHeight = 28,
+  sizePage = 100,
   virtualListOverscan = 10,
   infiniteScrollDistance = 10,
   tooltipShowDelay = 500
@@ -39,18 +39,22 @@ const {
   columns: Columns
   /** Уникальный ключ для таблицы (по умолчанию 'id'). */
   rowUniqueKey?: string
+
   /** Функция, которая вызывается при загрузке данных (обязательный параметр). */
   onLoadData: OnLoadDataType
-  /** Кол-во строк в одной странице (по умолчанию 100). */
-  sizePage?: number
+
   /** Высота таблицы (по умолчанию '300px'). */
   height?: string
   /** Высота строки таблицы (по умолчанию 28). */
   rowHeight?: number
+
+  /** Кол-во строк в одной странице (по умолчанию 100). */
+  sizePage?: number
   /** Количество "лишних" элементов виртуального списка (по умолчанию 10). */
   virtualListOverscan?: number
   /** Расстояние до нижней части таблицы, когда начинается бесконечная прокрутка (по умолчанию 10) */
   infiniteScrollDistance?: number
+
   /** Задержка перед показом всплывающей подсказки (по умолчанию 500 миллисекунд). */
   tooltipShowDelay?: number
 }>()
