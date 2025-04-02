@@ -59,10 +59,49 @@ const {
   tooltipShowDelay?: number
 }>()
 
-// Проверка на реактивность
-if (!isReactive(columns)) {
-  warn('`columns` должен быть реактивным')
+// ==================
+// Validate
+// ==================
+
+/** Валидация колонок */
+function validateColumns() {
+  if (!isReactive(columns)) warn('`columns` должен быть реактивным')
 }
+
+/** Валидация слотов  */
+function validateSlots() {
+  const slots = useSlots()
+  const slotNames = Object.keys(slots)
+
+  // Получаем все валидные имена слотов из колонок
+  const validColumnSlots = new Set()
+  for (const column of columns) {
+    // слоты заголовков
+    if (`h-${column.prop}`) {
+      validColumnSlots.add(`h-${column.prop}`)
+    }
+    // основные слоты колонок
+    if (column.slot) {
+      validColumnSlots.add(column.slot)
+    }
+    // слоты before
+    if (column.slot) {
+      validColumnSlots.add(`${column.slot}-before`)
+    }
+  }
+
+  // Проверяем каждый используемый слот
+  for (const slotName of slotNames) {
+    if (!validColumnSlots.has(slotName)) {
+      warn(
+        `Неверное имя слота "${slotName}". Допустимые имена слотов: ${[...validColumnSlots].join(', ')}`
+      )
+    }
+  }
+}
+
+validateColumns()
+validateSlots()
 
 // ==================
 // Lifecycle
