@@ -8,7 +8,7 @@ import { ref, useTemplateRef } from 'vue'
 // Constants
 // ==================
 
-const COUNT_GENERATE_ITEMS = 1000
+const COUNT_GENERATE_ITEMS = 10
 
 // ==================
 // Variables
@@ -78,6 +78,18 @@ const updateDataItem = () => {
 const deleteDataItem = () => {
   tableRef?.value?.deleteDataItem(0)
 }
+
+async function expandAll() {
+  if (tableRef.value === null) throw new Error('tableRef is not defined')
+
+  for (let j = 1; j <= 4; j++) {
+    const tasks = []
+    for (let i = 0; i < tableRef.value.data.length; i++) {
+      tasks.push(tableRef.value.toggleRowExpansion(i, true))
+    }
+    await Promise.all(tasks)
+  }
+}
 </script>
 
 <template>
@@ -106,6 +118,12 @@ const deleteDataItem = () => {
           >Удалить</el-button
         >
       </el-button-group>
+
+      <el-button
+        type="info"
+        @click="expandAll"
+        >Expand All</el-button
+      >
     </template>
 
     <vu-virt-table

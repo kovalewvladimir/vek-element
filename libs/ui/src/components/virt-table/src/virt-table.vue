@@ -259,7 +259,7 @@ function countItemsAtLevel(startIndex: number, level: number) {
 }
 
 /** Обработчик клика по стрелке дерева */
-const handleTreeCellClick = async (row: any) => {
+async function handleTreeCellClick(row: any) {
   const { loadingWrapper: loadingWrapperTree } = useLoading(0)
 
   const meta = getMetaData(row)
@@ -314,6 +314,30 @@ const handleTreeCellClick = async (row: any) => {
   })()
 
   metaTree.isLoading = false
+}
+
+/** Переключение состояния раскрытия строки */
+async function toggleRowExpansion(index: number, expanded?: boolean) {
+  const row = data.value[index]
+  if (!row) throw new Error('Row not found')
+
+  const meta = getMetaData(row)
+
+  if (!row[_tree.expandableKey]) return
+
+  if (expanded === undefined) {
+    await handleTreeCellClick(row)
+    return
+  }
+
+  if (expanded) {
+    if (meta?.tree?.isOpen) return
+    await handleTreeCellClick(row)
+    return
+  }
+
+  if (!meta?.tree?.isOpen) return
+  await handleTreeCellClick(row)
 }
 
 // ===================================
@@ -382,7 +406,8 @@ defineExpose<IVirtTableExpose>({
   createDataItem,
   updateDataItem,
   deleteDataItem,
-  deleteDataItems
+  deleteDataItems,
+  toggleRowExpansion
 })
 
 // ==================
@@ -396,7 +421,8 @@ provide<IVirtTableExpose>('virt-table-api', {
   createDataItem,
   updateDataItem,
   deleteDataItem,
-  deleteDataItems
+  deleteDataItems,
+  toggleRowExpansion
 })
 </script>
 

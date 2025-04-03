@@ -98,8 +98,8 @@ export interface IUpdateDataItemOptions {
 }
 
 export interface IVirtTableExpose {
-  /** Функция для перезагрузки данных */ reloadData: () => Promise<void>
-
+  /** Функция для перезагрузки данных */
+  reloadData: () => Promise<void>
   /** Данные таблицы */
   data: Ref<any[]>
   /** Функция для поиска индекса элемента в таблице */
@@ -112,4 +112,7 @@ export interface IVirtTableExpose {
   deleteDataItem: (index: number) => any
   /** Функция для удаления нескольких элементов из таблицы */
   deleteDataItems: (index: number, count: number) => any[]
+
+  /** Переключение состояния раскрытия строки */
+  toggleRowExpansion(index: number, expanded?: boolean): Promise<void>
 }
