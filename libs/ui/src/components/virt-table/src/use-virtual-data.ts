@@ -4,7 +4,7 @@ import { type Ref, ref } from 'vue'
 
 import { type Columns } from './column'
 import { type OnLoadDataType } from './types'
-import { injectMetaData } from './utils'
+import { injectFormatMetaData } from './utils'
 
 export const useVirtualData = (
   onLoadData: OnLoadDataType,
@@ -48,7 +48,7 @@ export const useVirtualData = (
     if (loadedData.length < sizePage) isAllDataLoaded.value = true
 
     for (const v of loadedData) {
-      injectMetaData(v, columns)
+      injectFormatMetaData(v, columns)
     }
 
     if (options.reload) {

@@ -80,6 +80,10 @@ export interface IColumn {
   filters?: ReadonlyArray<FilterType>
 }
 
+export interface IFindDataItemIndexOptions {
+  /** Выбросить исключение, если элемент не найден (по умолчанию false) */
+  throwIfNotFound?: boolean
+}
 export interface ICreateDataItemOptions {
   /** Индекс, куда вставить новый элемент */
   index?: number

@@ -5,7 +5,18 @@ const METADATA_KEY = '__meta'
 /** Интерфейс для метаданных */
 interface IMetaData {
   /** Обработанные данные. Используются для отображения в таблице */
-  format: Record<string, any>
+  format?: Record<string, any>
+  /** Метаданные для древовидного отображения таблицы */
+  tree?: {
+    /** Состояние загрузки вложенных данных */
+    isLoading: boolean
+    /** Состояние открытия/закрытия вложенных данных */
+    isOpen: boolean
+    /** Уровень вложенности */
+    level: number
+    /** Кэшированные данные */
+    cache: any[]
+  }
 }
 
 /**
@@ -20,10 +31,16 @@ export const getValueByPath = (obj: any, path: string) => {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj)
 }
 
+/** Получает метаданные из объекта данных */
+export function getMetaData(data: any): IMetaData {
+  if (data[METADATA_KEY] === undefined) data[METADATA_KEY] = {}
+  return data[METADATA_KEY]
+}
+
 /** Получает значение форматированных данных для prop */
 export function getFormatData(data: any, prop: string) {
-  const meta: IMetaData = data[METADATA_KEY]
-  return meta?.format[prop]
+  const meta = getMetaData(data)
+  return meta.format?.[prop]
 }
 
 /**
@@ -34,7 +51,7 @@ export function getFormatData(data: any, prop: string) {
  *
  * @returns  Ничего не возвращает, но мутирует объект данных, добавляя в него поле __meta
  */
-export function injectMetaData(data: any, columns: Columns) {
+export function injectFormatMetaData(data: any, columns: Columns) {
   const format: Record<string, any> = {}
 
   // Формируем объект форматированных данных
@@ -45,6 +62,6 @@ export function injectMetaData(data: any, columns: Columns) {
     }
   }
 
-  const meta: IMetaData = { format }
-  data[METADATA_KEY] = meta
+  const meta = getMetaData(data)
+  meta.format = format
 }

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  Columns,
-  type OnLoadDataType,
-  VuContentWrap,
-  VuVirtTable,
-  VuVirtTableTreeCell
-} from '@vek-element/ui'
+import { Columns, type OnLoadDataType, VuContentWrap, VuVirtTable } from '@vek-element/ui'
 import { asyncSleep, dateIsoToFrontendFormat } from '@vek-element/ui/utils'
 import { ElButton, ElButtonGroup, ElTag } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
@@ -49,10 +43,10 @@ const getRandomDate = () => {
 }
 
 let id = 0
-const generateItem = () => ({
+const generateItem = (name: string = '') => ({
   id: id++,
   isExpandable: Math.random() > 0.5,
-  name: `Name ${Math.floor(Math.random() * 1000)}`,
+  name: `${name ? name + ' - ' : ''}Name ${Math.floor(Math.random() * 1000)}`,
   name1: `Name ${Math.floor(Math.random() * 1000)}`,
   name2: `Name ${Math.floor(Math.random() * 1000)}`,
   name3: `Name ${Math.floor(Math.random() * 1000)}`,
@@ -119,20 +113,14 @@ const deleteDataItem = () => {
       height="100%"
       :columns="columns"
       :on-load-data="loadData"
+      :tree="{
+        enabled: true,
+        onLoadData: async (row) => {
+          await asyncSleep(1000)
+          return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem(row.id))
+        }
+      }"
     >
-      <template #id-before="{ row }">
-        <vu-virt-table-tree-cell
-          :row="row"
-          unique-key="id"
-          :on-load-data="
-            async (row) => {
-              await asyncSleep(1000)
-              return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem())
-            }
-          "
-        />
-      </template>
-
       <template #name1="{ row }">
         <el-button>{{ row.name1 }}</el-button>
       </template>

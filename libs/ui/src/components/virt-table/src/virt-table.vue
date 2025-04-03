@@ -1,6 +1,16 @@
 <script setup lang="ts">
+import { useLoading } from '@vek-element/ui'
 import { ElEmpty, ElTooltip } from 'element-plus'
-import { computed, isReactive, onActivated, provide, useTemplateRef, warn } from 'vue'
+import {
+  computed,
+  isReactive,
+  onActivated,
+  provide,
+  unref,
+  useSlots,
+  useTemplateRef,
+  warn
+} from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 import { type Column, type Columns } from './column'
@@ -8,6 +18,7 @@ import { COLUMN_MIN_WIDTH } from './constants'
 import {
   type IColumn,
   type ICreateDataItemOptions,
+  type IFindDataItemIndexOptions,
   type IUpdateDataItemOptions,
   type IVirtTableExpose,
   type OnLoadDataType
@@ -15,10 +26,11 @@ import {
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
-import { getFormatData, getValueByPath, injectMetaData } from './utils'
+import { getFormatData, getMetaData, getValueByPath, injectFormatMetaData } from './utils'
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
+import virtTableTreeCell from './virt-table-tree-cell.vue'
 
 // ==================
 // Props
@@ -27,6 +39,10 @@ import VirtTableRow from './virt-table-row.vue'
 const {
   columns,
   rowUniqueKey = 'id',
+  tree = {
+    enabled: false,
+    onLoadData: () => Promise.resolve([])
+  },
   onLoadData,
   height = '300px',
   rowHeight = 28,
@@ -39,6 +55,25 @@ const {
   columns: Columns
   /** Уникальный ключ для таблицы (по умолчанию 'id'). */
   rowUniqueKey?: string
+
+  tree?: {
+    /** Включить древовидную таблицу */
+    enabled: boolean
+
+    /** Функция загрузки данных */
+    onLoadData: (row: any) => Promise<any[]>
+
+    /** Ключ для дерева (по умолчанию isExpandable) */
+    expandableKey?: string
+
+    /** Использовать кэшированные данные (по умолчанию true) */
+    isCacheData?: boolean
+    /** Клонировать данные при вставке в таблицу (по умолчанию false) */
+    isCloneData?: boolean
+
+    /** Величина отступа для уровня вложенности в пикселях (по умолчанию 20) */
+    levelIndent?: number
+  }
 
   /** Функция, которая вызывается при загрузке данных (обязательный параметр). */
   onLoadData: OnLoadDataType
@@ -58,6 +93,15 @@ const {
   /** Задержка перед показом всплывающей подсказки (по умолчанию 500 миллисекунд). */
   tooltipShowDelay?: number
 }>()
+
+// Устанавливаем значения по умолчанию для tree
+const _tree: Required<NonNullable<typeof tree>> = {
+  ...tree,
+  expandableKey: tree.expandableKey ?? 'isExpandable',
+  isCacheData: tree.isCacheData ?? true,
+  isCloneData: tree.isCloneData ?? false,
+  levelIndent: tree.levelIndent ?? 20
+}
 
 // ==================
 // Validate
@@ -197,12 +241,93 @@ const getCellValue = (row: any, column: IColumn) => {
 }
 
 // ===================================
-// Работа с данными таблицы данных
+// Методы для древовидной таблицы
+// ===================================
+
+/** Поиск количества элементов на уровне */
+function countItemsAtLevel(startIndex: number, level: number) {
+  const _data = unref(data)
+
+  let count = 0
+  for (let i = startIndex + 1; i < _data.length; i++) {
+    const meta = getMetaData(data.value[i])
+    const dataLevel = meta?.tree?.level ?? 0
+    if (dataLevel <= level) break
+    count++
+  }
+  return count
+}
+
+/** Обработчик клика по стрелке дерева */
+const handleTreeCellClick = async (row: any) => {
+  const { loadingWrapper: loadingWrapperTree } = useLoading(0)
+
+  const meta = getMetaData(row)
+  meta.tree = meta.tree ?? {
+    isLoading: false,
+    isOpen: false,
+    level: 0,
+    cache: []
+  }
+  const { tree: metaTree } = meta
+
+  await loadingWrapperTree(async () => {
+    const currentLevel: number = metaTree.level
+
+    // Если элемент уже открыт, то удаляем все элементы ниже него
+    if (metaTree.isOpen) {
+      const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
+
+      const countItemDelete = countItemsAtLevel(index, currentLevel)
+      const deleteData = deleteDataItems(index + 1, countItemDelete)
+
+      if (_tree.isCacheData) metaTree.cache = deleteData
+
+      metaTree.isOpen = false
+      return
+    }
+
+    // Если элемент открыт, то проверяем кэшированные данные
+    if (_tree.isCacheData && metaTree.cache.length > 0) {
+      const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
+
+      createDataItem(metaTree.cache, { index: index + 1, isCloneData: _tree.isCloneData })
+      metaTree.isOpen = true
+      return
+    }
+
+    // Если элемент не открыт, то загружаем данные
+    metaTree.isLoading = true
+    const _newData = await _tree.onLoadData(row)
+    for (const item of _newData) {
+      const itemMeta = getMetaData(item)
+      itemMeta.tree = itemMeta.tree ?? {
+        isLoading: false,
+        isOpen: false,
+        level: currentLevel + 1,
+        cache: []
+      }
+    }
+    const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
+    createDataItem(_newData, { index: index + 1, isCloneData: _tree.isCloneData })
+    metaTree.isOpen = true
+  })()
+
+  metaTree.isLoading = false
+}
+
+// ===================================
+// Работа с данными таблицы
 // ===================================
 
 /** Поиск индекса элемента в таблице */
-const findDataItemIndex = (value: any) => {
-  return data.value.findIndex((i) => i[rowUniqueKey] === value)
+const findDataItemIndex = (value: any, options: IFindDataItemIndexOptions = {}) => {
+  const { throwIfNotFound = false } = options
+  const index = data.value.findIndex((i) => i[rowUniqueKey] === value)
+  if (index === -1 && throwIfNotFound) {
+    throw new Error(`Item not found.`)
+  }
+  return index
 }
 /** Добавление нового элемента в таблицу */
 const createDataItem = (item: any, options: ICreateDataItemOptions = {}) => {
@@ -211,10 +336,10 @@ const createDataItem = (item: any, options: ICreateDataItemOptions = {}) => {
   const _item = isCloneData ? structuredClone(item) : item
 
   if (Array.isArray(_item)) {
-    for (const i of _item) injectMetaData(i, columns)
+    for (const i of _item) injectFormatMetaData(i, columns)
     data.value.splice(index, 0, ..._item)
   } else {
-    injectMetaData(_item, columns)
+    injectFormatMetaData(_item, columns)
     data.value.splice(index, 0, _item)
   }
 
@@ -227,7 +352,7 @@ const updateDataItem = (item: any, options: IUpdateDataItemOptions) => {
   if (data.value.length <= index) return
 
   const _item = isCloneData ? structuredClone(item) : item
-  injectMetaData(_item, columns)
+  injectFormatMetaData(_item, columns)
   data.value.splice(index, 1, _item)
 
   virtualContainerProps.onScroll()
@@ -315,12 +440,21 @@ provide<IVirtTableExpose>('virt-table-api', {
           class="row"
         >
           <virt-table-row :columns="computedVisibleColumns">
-            <template #default="{ column }">
+            <template #default="{ column, index }">
+              <virt-table-tree-cell
+                v-if="_tree.enabled && index === 0"
+                :row="row"
+                :expandable-key="_tree.expandableKey"
+                :level-indent="_tree.levelIndent"
+                @click="handleTreeCellClick(row)"
+              />
+
               <slot
                 :name="`${column.slot}-before`"
                 :column="column"
                 :row="row"
               />
+
               <div
                 class="text"
                 :class="{ 'text-right w-full': column.align === 'right' }"

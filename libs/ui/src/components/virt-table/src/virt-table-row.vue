@@ -11,13 +11,16 @@ const emit = defineEmits<{
 
 <template>
   <div
-    v-for="column in columns"
+    v-for="(column, index) in columns"
     :key="column.prop"
     class="cell"
     :style="column.widthStyle"
     @click="emit('click', $event, column)"
     @contextmenu="emit('contextmenu', $event, column)"
   >
-    <slot :column="column" />
+    <slot
+      :column="column"
+      :index="index"
+    />
   </div>
 </template>
