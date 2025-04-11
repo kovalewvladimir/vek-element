@@ -6,6 +6,7 @@ const METADATA_KEY = '__meta'
 interface IMetaData {
   /** Обработанные данные. Используются для отображения в таблице */
   format?: Record<string, any>
+
   /** Метаданные для древовидного отображения таблицы */
   tree?: {
     /** Состояние загрузки вложенных данных */
@@ -17,6 +18,9 @@ interface IMetaData {
     /** Кэшированные данные */
     cache: any[]
   }
+
+  /** Состояние активности */
+  isActive: boolean
 }
 
 /**
@@ -33,7 +37,12 @@ export const getValueByPath = (obj: any, path: string) => {
 
 /** Получает метаданные из объекта данных */
 export function getMetaData(data: any): IMetaData {
-  if (data[METADATA_KEY] === undefined) data[METADATA_KEY] = {}
+  if (data[METADATA_KEY] === undefined) {
+    const initMeta: IMetaData = {
+      isActive: false
+    }
+    data[METADATA_KEY] = initMeta
+  }
   return data[METADATA_KEY]
 }
 

@@ -160,6 +160,14 @@ onBeforeRouteLeave(() => {
 })
 
 // ==================
+// Emit
+// ==================
+
+const emit = defineEmits<{
+  (e: 'changeActiveRow', row: any): void
+}>()
+
+// ==================
 // Computed
 // ==================
 
@@ -222,12 +230,24 @@ const {
   handleCellMouseLeave
 } = useTooltip(tooltipShowDelay)
 
+/** Получение значения ячейки */
+const getCellValue = (row: any, column: IColumn) => {
+  return column.formatter ? getFormatData(row, column.prop) : getValueByPath(row, column.prop)
+}
+
+// ===================================
 // Контекстное меню
+// ===================================
+
 const virtTableMenuRef = useTemplateRef('virtTableMenuRef')
-const onShowContextMenu = (e: MouseEvent, column: Column) => {
+
+/** Обработчик контекстного меню */
+function onShowContextMenu(e: MouseEvent, column: Column) {
   if (column.menu) virtTableMenuRef.value?.onShowContextMenu(e, column)
 }
-const onSortColumn = (_e: MouseEvent, column: Column) => {
+
+/** Обработчик сортировки колонки */
+function onSortColumn(_e: MouseEvent, column: Column) {
   if (column.menu) {
     const sort = column.sort
     columns.setSort(column, sort === 'ASC' ? 'DESC' : 'ASC')
@@ -235,9 +255,23 @@ const onSortColumn = (_e: MouseEvent, column: Column) => {
   }
 }
 
-/** Получение значения ячейки */
-const getCellValue = (row: any, column: IColumn) => {
-  return column.formatter ? getFormatData(row, column.prop) : getValueByPath(row, column.prop)
+// ===================================
+// Обработчик клика по строке
+// ===================================
+
+/** Обработчик клика по строке */
+function handleRowClick(row: any) {
+  const meta = getMetaData(row)
+  if (meta.isActive) return
+
+  for (const _data of data.value) {
+    const _meta = getMetaData(_data)
+    _meta.isActive = false
+  }
+
+  meta.isActive = true
+
+  emit('changeActiveRow', row)
 }
 
 // ===================================
@@ -464,6 +498,8 @@ provide<IVirtTableExpose>('virt-table-api', {
           v-for="{ data: row } in virtualData"
           :key="row[rowUniqueKey]"
           class="row"
+          :class="{ active: getMetaData(row).isActive }"
+          @click="handleRowClick(row)"
         >
           <virt-table-row :columns="computedVisibleColumns">
             <template #default="{ column, index }">
@@ -576,6 +612,10 @@ provide<IVirtTableExpose>('virt-table-api', {
 
   & .row {
     display: flex;
+  }
+
+  & .row.active .cell {
+    background-color: var(--el-fill-color-light);
   }
 
   & .cell {

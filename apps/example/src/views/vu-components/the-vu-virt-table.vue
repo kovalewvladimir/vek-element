@@ -138,6 +138,11 @@ async function expandAll() {
           return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem(row.id))
         }
       }"
+      @change-active-row="
+        (row) => {
+          console.log('change-active-row', row)
+        }
+      "
     >
       <template #name1="{ row }">
         <el-button>{{ row.name1 }}</el-button>

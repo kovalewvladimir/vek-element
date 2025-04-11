@@ -64,7 +64,7 @@ const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
         v-else
         :class="{ 'is-open': isOpen }"
         class="expend-icon"
-        @click="emit('click', $event)"
+        @click.stop="emit('click', $event)"
       />
     </vu-icon-svg-slot>
   </span>
