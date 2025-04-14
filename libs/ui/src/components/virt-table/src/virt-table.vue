@@ -582,6 +582,7 @@ provide<IVirtTableExpose>('virt-table-api', {
   height: 100%;
   overflow-y: scroll;
   border: var(--table-border);
+  border-radius: var(--el-border-radius-base);
 
   & .empty {
     display: flex;
