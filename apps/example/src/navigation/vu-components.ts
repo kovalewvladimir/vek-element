@@ -15,6 +15,13 @@ const navigation: INavigation = {
       component: () => import('@/views/vu-components/the-vu-button-icon.vue')
     },
     {
+      name: 'TheVuModalDialog',
+      path: 'vu-modal-dialog',
+      title: 'VuModalDialog',
+      icon: 'el-icon-menu',
+      component: () => import('@/views/vu-components/dialog/the-vu-modal-dialog.vue')
+    },
+    {
       name: 'TheVuVirtTable',
       path: 'vu-virt-table',
       title: 'VuVirtTable',

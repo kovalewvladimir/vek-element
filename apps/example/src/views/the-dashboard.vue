@@ -3,13 +3,11 @@ import {
   useLayoutConfigStore,
   useNavigationStore,
   VuAutocompleteRemote,
-  VuIconSvgDynamic,
-  VuModalDialog,
-  type VuModalDialogInstance
+  VuIconSvgDynamic
 } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
 import { ElButton, ElCard, ElDatePicker, ElInput } from 'element-plus'
-import { ref, useTemplateRef } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const configLayout = useLayoutConfigStore()
@@ -30,8 +28,6 @@ const getOptions = async () => {
 }
 
 const findName = ref<string>('SubMenu1-1')
-
-const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
 </script>
 
 <template>
@@ -80,17 +76,6 @@ const dialogRef = useTemplateRef<VuModalDialogInstance>('dialogRef')
           >navigateToItem</el-button
         >
       </div>
-    </el-card>
-    <el-card>
-      <el-button @click="() => dialogRef?.open()">Open modal dialog</el-button>
-      <vu-modal-dialog ref="dialogRef">
-        <template #default>
-          <h1>Test vu-modal-dialog</h1>
-        </template>
-        <template #footer>
-          <el-button @click="() => dialogRef?.close()">Close</el-button>
-        </template>
-      </vu-modal-dialog>
     </el-card>
 
     <el-card>

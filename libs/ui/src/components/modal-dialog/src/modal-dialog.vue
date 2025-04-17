@@ -41,7 +41,7 @@ const open = () => {
   return promise
 }
 
-const close = (outputObj = null) => {
+const close = (outputObj: any = null) => {
   // nextTick нужен для того, чтобы isBlockClose успел обновиться
   void nextTick(() => {
     if (isBlockClose) return
