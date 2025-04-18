@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { VuModalDialog } from '@vek-element/ui'
-import { ElButton } from 'element-plus'
+import { useLoading, VuModalDialog } from '@vek-element/ui'
+import { asyncSleep } from '@vek-element/ui/utils'
+import { ElButton, ElDatePicker } from 'element-plus'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+
+const { loading, loadingWrapper } = useLoading()
 
 // =========================
 // Refs
@@ -34,13 +37,17 @@ async function open(input: string) {
   if (!dialog.value) return
   inputData.value = input
   const res = await dialog.value.open()
-  console.log('result dialog:', res)
   return res as string
 }
 
 function close() {
   dialog.value?.close('close Data')
 }
+
+const error = loadingWrapper(async () => {
+  await asyncSleep(2000)
+  throw new Error('Error')
+})
 
 // =========================
 // Expose
@@ -54,8 +61,15 @@ defineExpose({ open })
     <template #default>
       <h1>{{ title }}</h1>
       <h2>{{ inputData }}</h2>
+
+      <el-date-picker />
     </template>
     <template #footer>
+      <el-button
+        v-loading="loading"
+        @click="error"
+        >Error</el-button
+      >
       <el-button @click="close">Close</el-button>
     </template>
   </vu-modal-dialog>

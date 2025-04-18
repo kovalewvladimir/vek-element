@@ -1,9 +1,12 @@
-import { type Component, type ComponentInternalInstance, createApp } from 'vue'
-
-// Определяем интерфейс для компонентов с методом open
-interface DialogComponent {
-  open: (...args: any[]) => Promise<any>
-}
+import { ElConfigProvider } from 'element-plus'
+import {
+  type Component,
+  type ComponentInternalInstance,
+  createVNode,
+  h,
+  markRaw,
+  render
+} from 'vue'
 
 /** Создания и управления динамическими модальными диалогами */
 export function useModalDialog<
@@ -35,19 +38,24 @@ export function useModalDialog<
     // Создаем DOM-элемент для монтирования
     const mountEl = document.createElement('div')
     parentEl.append(mountEl)
-    const dialogApp = createApp(dialog)
-    const vm = dialogApp.mount(mountEl) as unknown as DialogComponent
+    // Создаем виртуальный узел для диалога
+    const vNodeDialog = h(dialog)
+    // Создаем виртуальный узел для конфигурации Element Plus
+    const vNodeConfig = createVNode(markRaw(h(ElConfigProvider, {}, () => vNodeDialog)), {}, null)
+    // Устанавливаем родительский контекст для vNode
+    vNodeConfig.appContext = currentInstance.appContext
+    // Рендерим виртуальный узел в mountEl
+    render(vNodeConfig, mountEl)
 
-    // Проверяем наличие метода open
-    if (typeof vm.open !== 'function') {
-      throw new TypeError('Component does not have an open method')
+    // Открываем диалог и получаем результат
+    const vm = vNodeDialog.component?.exposed
+    if (!vm || typeof vm.open !== 'function') {
+      throw new TypeError('Component does not have an exposed open method')
     }
-
-    // Вызываем метод open и получаем результат
     const resultData = await vm.open(...args)
 
     // Обработка закрытия
-    dialogApp.unmount()
+    render(null, mountEl)
     mountEl.remove()
 
     return resultData
