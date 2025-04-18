@@ -54,9 +54,12 @@ export function useModalDialog<
     }
     const resultData = await vm.open(...args)
 
-    // Обработка закрытия
-    render(null, mountEl)
-    mountEl.remove()
+    // Обработка закрытия диалога
+    // setTimeout нужно, чтобы дождаться завершения анимации
+    setTimeout(() => {
+      render(null, mountEl)
+      mountEl.remove()
+    }, 1000)
 
     return resultData
   }
