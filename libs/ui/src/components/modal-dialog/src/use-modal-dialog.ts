@@ -37,6 +37,9 @@ export function useModalDialog<
 
     // Создаем DOM-элемент для монтирования
     const mountEl = document.createElement('div')
+    mountEl.dataset.vuModalDialog = ''
+    // @ts-expect-error: __name не существует в типе Component, но есть в DefaultComponent
+    mountEl.dataset.componentName = dialog.__name
     parentEl.append(mountEl)
     // Создаем виртуальный узел для диалога
     const vNodeDialog = h(dialog)
