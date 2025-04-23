@@ -6,6 +6,13 @@ import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
 const { loading, loadingWrapper } = useLoading()
 
+// ==================
+// Types
+// ==================
+
+// Получаем тип параметра функции close
+type CloseData = Parameters<typeof close>[0]
+
 // =========================
 // Refs
 // =========================
@@ -34,14 +41,13 @@ onUnmounted(() => {
 // =========================
 
 async function open(input: string) {
-  if (!dialog.value) return
+  if (!dialog.value) throw new Error('Dialog is not defined')
   inputData.value = input
-  const res = await dialog.value.open()
-  return res as string
+  return (await dialog.value.open()) as CloseData
 }
 
-function close() {
-  dialog.value?.close('close Data')
+function close(data: string) {
+  dialog.value?.close(data)
 }
 
 const error = loadingWrapper(async () => {
@@ -70,7 +76,7 @@ defineExpose({ open })
         @click="error"
         >Error</el-button
       >
-      <el-button @click="close">Close</el-button>
+      <el-button @click="close('close dialog')">Close</el-button>
     </template>
   </vu-modal-dialog>
 </template>
