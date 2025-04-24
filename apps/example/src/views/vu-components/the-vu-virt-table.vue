@@ -66,7 +66,10 @@ const loadData = async () => {
 }
 
 const addDataItem = () => {
-  tableRef?.value?.createDataItem(generateItem())
+  tableRef?.value?.pushDataItem(generateItem())
+}
+const addDataChildItem = (row: ReturnType<typeof generateItem>) => {
+  tableRef?.value?.pushDataTreeItem(row, generateItem(String(row.id)))
 }
 const updateDataItem = () => {
   const data = tableRef.value!.data
@@ -148,7 +151,7 @@ async function expandAll() {
       "
     >
       <template #name1="{ row }">
-        <el-button>{{ row.name1 }}</el-button>
+        <el-button @click="() => addDataChildItem(row)">add children</el-button>
       </template>
 
       <template #name2="{ row }">

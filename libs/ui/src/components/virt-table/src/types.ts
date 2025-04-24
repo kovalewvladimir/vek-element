@@ -84,9 +84,13 @@ export interface IFindDataItemIndexOptions {
   /** Выбросить исключение, если элемент не найден (по умолчанию false) */
   throwIfNotFound?: boolean
 }
-export interface ICreateDataItemOptions {
+export interface IPushDataItemOptions {
   /** Индекс, куда вставить новый элемент */
   index?: number
+  /** Нужно ли клонировать данные? */
+  isCloneData?: boolean
+}
+export interface IPushDataTreeItemOptions {
   /** Нужно ли клонировать данные? */
   isCloneData?: boolean
 }
@@ -104,8 +108,10 @@ export interface IVirtTableExpose<T> {
   data: Ref<T[]>
   /** Функция для поиска индекса элемента в таблице */
   findDataItemIndex: (value: T) => number
-  /** Функция для создания нового элемента в таблице */
-  createDataItem: (item: T | T[], options?: ICreateDataItemOptions) => void
+  /** Функция для добавления нового элемента в таблице */
+  pushDataItem: (item: T | T[], options?: IPushDataItemOptions) => void
+  /** Функция для добавления элемента в дерево данных */
+  pushDataTreeItem: (row: T, item: T | T[], options?: IPushDataTreeItemOptions) => void
   /** Функция для обновления данных в таблице */
   updateDataItem: (item: T, options: IUpdateDataItemOptions) => void
   /** Функция для удаления элемента из таблицы */

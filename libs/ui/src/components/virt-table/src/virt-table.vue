@@ -17,8 +17,9 @@ import { type Column, type Columns } from './column'
 import { COLUMN_MIN_WIDTH } from './constants'
 import {
   type IColumn,
-  type ICreateDataItemOptions,
   type IFindDataItemIndexOptions,
+  type IPushDataItemOptions,
+  type IPushDataTreeItemOptions,
   type IUpdateDataItemOptions,
   type IVirtTableExpose,
   type OnLoadDataType
@@ -26,7 +27,13 @@ import {
 import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
-import { getFormatData, getMetaData, getValueByPath, injectFormatMetaData } from './utils'
+import {
+  getFormatData,
+  getMetaData,
+  getValueByPath,
+  initMetaDataTree,
+  injectFormatMetaData
+} from './utils'
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
@@ -297,12 +304,7 @@ async function handleTreeCellClick(row: RowDataType) {
   const { loadingWrapper: loadingWrapperTree } = useLoading(0)
 
   const meta = getMetaData(row)
-  meta.tree = meta.tree ?? {
-    isLoading: false,
-    isOpen: false,
-    level: 0,
-    cache: []
-  }
+  meta.tree = meta.tree ?? initMetaDataTree<RowDataType>()
   const { tree: metaTree } = meta
 
   await loadingWrapperTree(async () => {
@@ -325,7 +327,7 @@ async function handleTreeCellClick(row: RowDataType) {
     if (_tree.isCacheData && metaTree.cache.length > 0) {
       const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
 
-      createDataItem(metaTree.cache, { index: index + 1, isCloneData: _tree.isCloneData })
+      pushDataItem(metaTree.cache, { index: index + 1, isCloneData: _tree.isCloneData })
       metaTree.isOpen = true
       return
     }
@@ -335,15 +337,10 @@ async function handleTreeCellClick(row: RowDataType) {
     const _newData = await _tree.onLoadData(row)
     for (const item of _newData) {
       const itemMeta = getMetaData(item)
-      itemMeta.tree = itemMeta.tree ?? {
-        isLoading: false,
-        isOpen: false,
-        level: currentLevel + 1,
-        cache: []
-      }
+      itemMeta.tree = itemMeta.tree ?? initMetaDataTree<RowDataType>({ level: currentLevel + 1 })
     }
     const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
-    createDataItem(_newData, { index: index + 1, isCloneData: _tree.isCloneData })
+    pushDataItem(_newData, { index: index + 1, isCloneData: _tree.isCloneData })
     metaTree.isOpen = true
   })()
 
@@ -374,6 +371,54 @@ async function toggleRowExpansion(index: number, expanded?: boolean) {
   await handleTreeCellClick(row)
 }
 
+function pushDataTreeItem(
+  row: RowDataType,
+  item: RowDataType | RowDataType[],
+  options: IPushDataTreeItemOptions = {}
+) {
+  const { isCloneData = true } = options
+
+  const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
+  const _item = isCloneData ? structuredClone(item) : item
+  const metaRow = getMetaData(row)
+  if (!metaRow.tree) metaRow.tree = initMetaDataTree<RowDataType>()
+
+  if (Array.isArray(_item)) {
+    throw new TypeError('Not implemented')
+  } else {
+    const metaItem = getMetaData(_item)
+    injectFormatMetaData(_item, columns)
+    metaItem.tree = initMetaDataTree<RowDataType>({
+      level: metaRow.tree.level + 1
+    })
+
+    // Если строка открыта
+    if (metaRow.tree.isOpen) {
+      const countItemLevel = countItemsAtLevel(index, metaRow.tree.level)
+      data.value.splice(index + countItemLevel + 1, 0, _item)
+    }
+
+    // Если строка закрыта
+    if (!metaRow.tree.isOpen) {
+      // И в ней уже есть дочерние элементы
+      if (_tree.isCacheData && metaRow.tree.cache.length > 0) {
+        metaRow.tree.cache.push(_item)
+      }
+
+      // И в ней нет дочерних элементов
+      if (!row[_tree.expandableKey]) {
+        ;(row as any)[_tree.expandableKey] = true
+
+        if (_tree.isCacheData) {
+          metaRow.tree.cache.push(_item)
+        }
+      }
+    }
+  }
+
+  virtualContainerProps.onScroll()
+}
+
 // ===================================
 // Работа с данными таблицы
 // ===================================
@@ -388,10 +433,7 @@ const findDataItemIndex = (value: any, options: IFindDataItemIndexOptions = {}) 
   return index
 }
 /** Добавление нового элемента в таблицу */
-const createDataItem = (
-  item: RowDataType | RowDataType[],
-  options: ICreateDataItemOptions = {}
-) => {
+const pushDataItem = (item: RowDataType | RowDataType[], options: IPushDataItemOptions = {}) => {
   const { index = 0, isCloneData = true } = options
 
   const _item = isCloneData ? structuredClone(item) : item
@@ -440,7 +482,8 @@ defineExpose<IVirtTableExpose<RowDataType>>({
   reloadData,
   data,
   findDataItemIndex,
-  createDataItem,
+  pushDataItem,
+  pushDataTreeItem,
   updateDataItem,
   deleteDataItem,
   deleteDataItems,
@@ -455,7 +498,8 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
   reloadData,
   data,
   findDataItemIndex,
-  createDataItem,
+  pushDataItem,
+  pushDataTreeItem,
   updateDataItem,
   deleteDataItem,
   deleteDataItems,

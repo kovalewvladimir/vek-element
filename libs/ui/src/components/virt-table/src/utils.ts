@@ -10,19 +10,22 @@ interface IMetaData<T> {
   format?: Record<string, any>
 
   /** Метаданные для древовидного отображения таблицы */
-  tree?: {
-    /** Состояние загрузки вложенных данных */
-    isLoading: boolean
-    /** Состояние открытия/закрытия вложенных данных */
-    isOpen: boolean
-    /** Уровень вложенности */
-    level: number
-    /** Кэшированные данные */
-    cache: T[]
-  }
+  tree?: ITreeMetaData<T>
 
   /** Состояние активности */
   isActive: boolean
+}
+
+/** Интерфейс для метаданных древовидной таблицы */
+interface ITreeMetaData<T> {
+  /** Состояние загрузки вложенных данных */
+  isLoading: boolean
+  /** Состояние открытия/закрытия вложенных данных */
+  isOpen: boolean
+  /** Уровень вложенности */
+  level: number
+  /** Кэшированные данные */
+  cache: T[]
 }
 
 /**
@@ -35,6 +38,19 @@ interface IMetaData<T> {
 export const getValueByPath = (obj: any, path: string) => {
   // eslint-disable-next-line unicorn/no-array-reduce
   return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+}
+
+/** Создает метаданные tree */
+export function initMetaDataTree<T>(init: Partial<ITreeMetaData<T>> = {}): ITreeMetaData<T> {
+  const copy = structuredClone(init)
+  const { isLoading = false, isOpen = false, level = 0, cache = [] } = copy
+
+  return {
+    isLoading,
+    isOpen,
+    level,
+    cache
+  }
 }
 
 /** Получает метаданные из объекта данных */
