@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Columns, type OnLoadDataType, VuContentWrap, VuVirtTable } from '@vek-element/ui'
+import { Columns, VuContentWrap, VuVirtTable } from '@vek-element/ui'
 import { asyncSleep, dateIsoToFrontendFormat } from '@vek-element/ui/utils'
 import { ElButton, ElButtonGroup, ElTag } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
@@ -60,7 +60,7 @@ const generateItem = (name: string = '') => ({
   }
 })
 
-const loadData: OnLoadDataType = async () => {
+const loadData = async () => {
   await asyncSleep(1000)
   return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem())
 }
@@ -69,9 +69,9 @@ const addDataItem = () => {
   tableRef?.value?.createDataItem(generateItem())
 }
 const updateDataItem = () => {
-  const item = tableRef?.value?.data[0]
+  const data = tableRef.value!.data
   const genItem = generateItem()
-  genItem.id = item.id
+  genItem.id = data[0].id
 
   tableRef?.value?.updateDataItem(genItem, { index: 0 })
 }
@@ -129,13 +129,16 @@ async function expandAll() {
     <vu-virt-table
       ref="table"
       height="100%"
+      row-unique-key="id"
       :columns="columns"
       :on-load-data="loadData"
       :tree="{
         enabled: true,
         onLoadData: async (row) => {
           await asyncSleep(1000)
-          return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem(row.id))
+          return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() =>
+            generateItem(String(row.id))
+          )
         }
       }"
       @change-active-row="

@@ -6,8 +6,8 @@ import { type Columns } from './column'
 import { type OnLoadDataType } from './types'
 import { injectFormatMetaData } from './utils'
 
-export const useVirtualData = (
-  onLoadData: OnLoadDataType,
+export const useVirtualData = <T>(
+  onLoadData: OnLoadDataType<T[]>,
   columns: Columns,
   sizePage: number,
   rowHeight: number,
@@ -19,7 +19,7 @@ export const useVirtualData = (
   const isAllDataLoaded = ref(false)
   const isLoadingError = ref(false)
 
-  const data: Ref<any[]> = ref([])
+  const data: Ref<T[]> = ref([])
   const currentPage = ref(0)
 
   const DEFAULT_OPTIONS = { reload: false } as const
@@ -31,7 +31,7 @@ export const useVirtualData = (
     const filters = columns.getFilters()
     currentPage.value = options.reload ? 1 : currentPage.value + 1
 
-    let loadedData: any[]
+    let loadedData: T[]
     try {
       loadedData = await onLoadData({
         page: currentPage.value,

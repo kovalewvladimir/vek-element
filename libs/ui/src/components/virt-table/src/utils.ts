@@ -1,9 +1,11 @@
 import { type Columns } from './column'
 
-const METADATA_KEY = '__meta'
+type MetaKeyType = string
+
+const METADATA_KEY = '__meta' as MetaKeyType
 
 /** Интерфейс для метаданных */
-interface IMetaData {
+interface IMetaData<T> {
   /** Обработанные данные. Используются для отображения в таблице */
   format?: Record<string, any>
 
@@ -16,7 +18,7 @@ interface IMetaData {
     /** Уровень вложенности */
     level: number
     /** Кэшированные данные */
-    cache: any[]
+    cache: T[]
   }
 
   /** Состояние активности */
@@ -36,12 +38,12 @@ export const getValueByPath = (obj: any, path: string) => {
 }
 
 /** Получает метаданные из объекта данных */
-export function getMetaData(data: any): IMetaData {
+export function getMetaData<T extends Record<MetaKeyType, IMetaData<T>>>(data: T): IMetaData<T> {
   if (data[METADATA_KEY] === undefined) {
-    const initMeta: IMetaData = {
+    const initMeta: IMetaData<T> = {
       isActive: false
     }
-    data[METADATA_KEY] = initMeta
+    ;(data as any)[METADATA_KEY] = initMeta
   }
   return data[METADATA_KEY]
 }

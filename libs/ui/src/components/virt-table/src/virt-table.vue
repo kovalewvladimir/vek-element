@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="K extends string, RowDataType extends Record<K, any>">
 import { useLoading } from '@vek-element/ui'
 import { ElEmpty, ElTooltip } from 'element-plus'
 import {
@@ -38,7 +38,7 @@ import virtTableTreeCell from './virt-table-tree-cell.vue'
 
 const {
   columns,
-  rowUniqueKey = 'id',
+  rowUniqueKey,
   tree = {
     enabled: false,
     onLoadData: () => Promise.resolve([])
@@ -53,18 +53,18 @@ const {
 } = defineProps<{
   /** Список колонок для отображения в таблице (обязательный параметр). */
   columns: Columns
-  /** Уникальный ключ для таблицы (по умолчанию 'id'). */
-  rowUniqueKey?: string
+  /** Уникальный ключ для таблицы */
+  rowUniqueKey: K
 
   tree?: {
     /** Включить древовидную таблицу */
     enabled: boolean
 
     /** Функция загрузки данных */
-    onLoadData: (row: any) => Promise<any[]>
+    onLoadData: (row: RowDataType) => Promise<RowDataType[]>
 
     /** Ключ для дерева (по умолчанию isExpandable) */
-    expandableKey?: string
+    expandableKey?: K
 
     /** Использовать кэшированные данные (по умолчанию true) */
     isCacheData?: boolean
@@ -76,7 +76,7 @@ const {
   }
 
   /** Функция, которая вызывается при загрузке данных (обязательный параметр). */
-  onLoadData: OnLoadDataType
+  onLoadData: OnLoadDataType<RowDataType[]>
 
   /** Высота таблицы (по умолчанию '300px'). */
   height?: string
@@ -97,7 +97,7 @@ const {
 // Устанавливаем значения по умолчанию для tree
 const _tree: Required<NonNullable<typeof tree>> = {
   ...tree,
-  expandableKey: tree.expandableKey ?? 'isExpandable',
+  expandableKey: tree.expandableKey ?? ('isExpandable' as K),
   isCacheData: tree.isCacheData ?? true,
   isCloneData: tree.isCloneData ?? false,
   levelIndent: tree.levelIndent ?? 20
@@ -209,7 +209,7 @@ const {
   virtualData,
   virtualContainerProps,
   virtualWrapperProps
-} = useVirtualData(
+} = useVirtualData<RowDataType>(
   onLoadData,
   columns,
   sizePage,
@@ -293,7 +293,7 @@ function countItemsAtLevel(startIndex: number, level: number) {
 }
 
 /** Обработчик клика по стрелке дерева */
-async function handleTreeCellClick(row: any) {
+async function handleTreeCellClick(row: RowDataType) {
   const { loadingWrapper: loadingWrapperTree } = useLoading(0)
 
   const meta = getMetaData(row)
@@ -388,7 +388,10 @@ const findDataItemIndex = (value: any, options: IFindDataItemIndexOptions = {}) 
   return index
 }
 /** Добавление нового элемента в таблицу */
-const createDataItem = (item: any, options: ICreateDataItemOptions = {}) => {
+const createDataItem = (
+  item: RowDataType | RowDataType[],
+  options: ICreateDataItemOptions = {}
+) => {
   const { index = 0, isCloneData = true } = options
 
   const _item = isCloneData ? structuredClone(item) : item
@@ -433,7 +436,7 @@ const deleteDataItems = (index: number, count: number) => {
 // Expose
 // ==================
 
-defineExpose<IVirtTableExpose>({
+defineExpose<IVirtTableExpose<RowDataType>>({
   reloadData,
   data,
   findDataItemIndex,
@@ -448,7 +451,7 @@ defineExpose<IVirtTableExpose>({
 // Provide
 // ==================
 
-provide<IVirtTableExpose>('virt-table-api', {
+provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
   reloadData,
   data,
   findDataItemIndex,

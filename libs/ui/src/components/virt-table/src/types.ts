@@ -15,7 +15,7 @@ export type FilterNumberType = FilterEquals | FilterCompare | FilterCompareEqual
 export type FilterDateType = 'eq' | 'before' | 'after' | 'between'
 export type FilterType = IFilterString | IFilterNumber | IFilterDate
 
-export type OnLoadDataType<T = any> = (params: IOnLoadDataParams) => Promise<T[]>
+export type OnLoadDataType<T> = (params: IOnLoadDataParams) => Promise<T>
 export interface IOnLoadDataParams {
   page: number
   size: number
@@ -97,21 +97,21 @@ export interface IUpdateDataItemOptions {
   isCloneData?: boolean
 }
 
-export interface IVirtTableExpose {
+export interface IVirtTableExpose<T> {
   /** Функция для перезагрузки данных */
   reloadData: () => Promise<void>
   /** Данные таблицы */
-  data: Ref<any[]>
+  data: Ref<T[]>
   /** Функция для поиска индекса элемента в таблице */
-  findDataItemIndex: (value: any) => number
+  findDataItemIndex: (value: T) => number
   /** Функция для создания нового элемента в таблице */
-  createDataItem: (item: any, options?: ICreateDataItemOptions) => void
+  createDataItem: (item: T | T[], options?: ICreateDataItemOptions) => void
   /** Функция для обновления данных в таблице */
-  updateDataItem: (item: any, options: IUpdateDataItemOptions) => void
+  updateDataItem: (item: T, options: IUpdateDataItemOptions) => void
   /** Функция для удаления элемента из таблицы */
-  deleteDataItem: (index: number) => any
+  deleteDataItem: (index: number) => T | null
   /** Функция для удаления нескольких элементов из таблицы */
-  deleteDataItems: (index: number, count: number) => any[]
+  deleteDataItems: (index: number, count: number) => T[]
 
   /** Переключение состояния раскрытия строки */
   toggleRowExpansion(index: number, expanded?: boolean): Promise<void>
