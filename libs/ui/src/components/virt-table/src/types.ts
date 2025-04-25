@@ -93,6 +93,8 @@ export interface IPushDataItemOptions {
 export interface IPushDataTreeItemOptions {
   /** Нужно ли клонировать данные? */
   isCloneData?: boolean
+  /** Нужно ли открывать элемент? */
+  isShouldOpen?: boolean
 }
 export interface IUpdateDataItemOptions {
   /** Идентификатор элемента */
@@ -111,7 +113,7 @@ export interface IVirtTableExpose<T> {
   /** Функция для добавления нового элемента в таблице */
   pushDataItem: (item: T | T[], options?: IPushDataItemOptions) => void
   /** Функция для добавления элемента в дерево данных */
-  pushDataTreeItem: (row: T, item: T | T[], options?: IPushDataTreeItemOptions) => void
+  pushDataTreeItem: (row: T, item: T | T[], options?: IPushDataTreeItemOptions) => Promise<void>
   /** Функция для обновления данных в таблице */
   updateDataItem: (item: T, options: IUpdateDataItemOptions) => void
   /** Функция для удаления элемента из таблицы */

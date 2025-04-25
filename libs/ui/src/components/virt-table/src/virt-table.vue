@@ -381,12 +381,12 @@ async function toggleRowExpansion(index: number, expanded?: boolean) {
 }
 
 /** Вставка элемента в конкретный узел древовидной таблицы */
-function pushDataTreeItem(
+async function pushDataTreeItem(
   row: RowDataType,
   item: RowDataType | RowDataType[],
   options: IPushDataTreeItemOptions = {}
 ) {
-  const { isCloneData = true } = options
+  const { isCloneData = true, isShouldOpen = true } = options
 
   const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
   const _item = isCloneData ? structuredClone(item) : item
@@ -422,6 +422,11 @@ function pushDataTreeItem(
         if (treeComputed.value.isCacheData) {
           metaRow.tree.cache.push(_item)
         }
+      }
+
+      // Открываем строку при необходимости
+      if (isShouldOpen) {
+        await toggleRowExpansion(index, true)
       }
     }
   }
