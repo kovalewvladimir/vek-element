@@ -177,7 +177,7 @@ onBeforeRouteLeave(() => {
 // ==================
 
 const emit = defineEmits<{
-  (e: 'changeActiveRow', row: any): void
+  (e: 'changeActiveRow', row: RowDataType): void
 }>()
 
 // ==================

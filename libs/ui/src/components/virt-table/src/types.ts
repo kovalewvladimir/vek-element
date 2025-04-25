@@ -107,7 +107,7 @@ export interface IVirtTableExpose<T> {
   /** Данные таблицы */
   data: Ref<T[]>
   /** Функция для поиска индекса элемента в таблице */
-  findDataItemIndex: (value: T) => number
+  findDataItemIndex: (value: any, options?: IFindDataItemIndexOptions) => number
   /** Функция для добавления нового элемента в таблице */
   pushDataItem: (item: T | T[], options?: IPushDataItemOptions) => void
   /** Функция для добавления элемента в дерево данных */
