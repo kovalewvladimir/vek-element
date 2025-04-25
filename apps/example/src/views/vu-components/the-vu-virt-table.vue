@@ -5,6 +5,12 @@ import { ElButton, ElButtonGroup, ElTag } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
 
 // ==================
+// Types
+// ==================
+
+type GeneratedItemType = ReturnType<typeof generateItem>
+
+// ==================
 // Constants
 // ==================
 
@@ -67,7 +73,7 @@ const loadData = async () => {
   return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem())
 }
 
-const loadChildren = async (row: ReturnType<typeof generateItem>) => {
+const loadChildren = async (row: GeneratedItemType) => {
   await asyncSleep(1000)
   return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem(String(row.id)))
 }
@@ -75,7 +81,7 @@ const loadChildren = async (row: ReturnType<typeof generateItem>) => {
 const addDataItem = () => {
   tableRef?.value?.pushDataItem(generateItem(), { index: 999_999_999 })
 }
-const addDataChildItem = (row: ReturnType<typeof generateItem>) => {
+const addDataChildItem = (row: GeneratedItemType) => {
   tableRef?.value?.pushDataTreeItem(row, generateItem(String(row.id)))
 }
 const updateDataItem = () => {
@@ -104,6 +110,10 @@ async function expandAll() {
 
 function treeEnabledChange() {
   treeEnabled.value = !treeEnabled.value
+}
+
+function changeActiveRow(row: GeneratedItemType) {
+  console.log('change-active-row', row)
 }
 </script>
 
@@ -158,11 +168,7 @@ function treeEnabledChange() {
         expandableKey: 'isExpandable',
         onLoadData: loadChildren
       }"
-      @change-active-row="
-        (row) => {
-          console.log('change-active-row', row)
-        }
-      "
+      @change-active-row="changeActiveRow"
     >
       <template #name1="{ row }">
         <el-button @click="() => addDataChildItem(row)">add children</el-button>
