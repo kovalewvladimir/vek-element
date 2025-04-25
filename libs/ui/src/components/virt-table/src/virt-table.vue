@@ -1,4 +1,12 @@
-<script setup lang="ts" generic="K extends string, RowDataType extends Record<K, any>">
+<script
+  setup
+  lang="ts"
+  generic="
+    K extends string,
+    T extends string,
+    RowDataType extends Record<K, any> & Partial<Record<T, any>>
+  "
+>
 import { useLoading } from '@vek-element/ui'
 import { ElEmpty, ElTooltip } from 'element-plus'
 import {
@@ -46,10 +54,7 @@ import virtTableTreeCell from './virt-table-tree-cell.vue'
 const {
   columns,
   rowUniqueKey,
-  tree = {
-    enabled: false,
-    onLoadData: () => Promise.resolve([])
-  },
+  tree,
   onLoadData,
   height = '300px',
   rowHeight = 28,
@@ -71,7 +76,7 @@ const {
     onLoadData: (row: RowDataType) => Promise<RowDataType[]>
 
     /** Ключ для дерева (по умолчанию isExpandable) */
-    expandableKey?: K
+    expandableKey: T
 
     /** Использовать кэшированные данные (по умолчанию true) */
     isCacheData?: boolean
@@ -102,13 +107,14 @@ const {
 }>()
 
 // Устанавливаем значения по умолчанию для tree
-const _tree: Required<NonNullable<typeof tree>> = {
-  ...tree,
-  expandableKey: tree.expandableKey ?? ('isExpandable' as K),
-  isCacheData: tree.isCacheData ?? true,
-  isCloneData: tree.isCloneData ?? false,
-  levelIndent: tree.levelIndent ?? 20
-}
+const treeComputed = computed<Required<NonNullable<typeof tree>>>(() => ({
+  enabled: tree?.enabled ?? false,
+  onLoadData: tree?.onLoadData ?? ((): Promise<RowDataType[]> => Promise.resolve([])),
+  expandableKey: tree?.expandableKey ?? ('isExpandable' as T),
+  isCacheData: tree?.isCacheData ?? true,
+  isCloneData: tree?.isCloneData ?? false,
+  levelIndent: tree?.levelIndent ?? 20
+}))
 
 // ==================
 // Validate
@@ -317,30 +323,33 @@ async function handleTreeCellClick(row: RowDataType) {
       const countItemDelete = countItemsAtLevel(index, currentLevel)
       const deleteData = deleteDataItems(index + 1, countItemDelete)
 
-      if (_tree.isCacheData) metaTree.cache = deleteData
+      if (treeComputed.value.isCacheData) metaTree.cache = deleteData
 
       metaTree.isOpen = false
       return
     }
 
     // Если элемент открыт, то проверяем кэшированные данные
-    if (_tree.isCacheData && metaTree.cache.length > 0) {
+    if (treeComputed.value.isCacheData && metaTree.cache.length > 0) {
       const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
 
-      pushDataItem(metaTree.cache, { index: index + 1, isCloneData: _tree.isCloneData })
+      pushDataItem(metaTree.cache, {
+        index: index + 1,
+        isCloneData: treeComputed.value.isCloneData
+      })
       metaTree.isOpen = true
       return
     }
 
     // Если элемент не открыт, то загружаем данные
     metaTree.isLoading = true
-    const _newData = await _tree.onLoadData(row)
+    const _newData = await treeComputed.value.onLoadData(row)
     for (const item of _newData) {
       const itemMeta = getMetaData(item)
       itemMeta.tree = itemMeta.tree ?? initMetaDataTree<RowDataType>({ level: currentLevel + 1 })
     }
     const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
-    pushDataItem(_newData, { index: index + 1, isCloneData: _tree.isCloneData })
+    pushDataItem(_newData, { index: index + 1, isCloneData: treeComputed.value.isCloneData })
     metaTree.isOpen = true
   })()
 
@@ -354,7 +363,7 @@ async function toggleRowExpansion(index: number, expanded?: boolean) {
 
   const meta = getMetaData(row)
 
-  if (!row[_tree.expandableKey]) return
+  if (!row[treeComputed.value.expandableKey]) return
 
   if (expanded === undefined) {
     await handleTreeCellClick(row)
@@ -371,6 +380,7 @@ async function toggleRowExpansion(index: number, expanded?: boolean) {
   await handleTreeCellClick(row)
 }
 
+/** Вставка элемента в конкретный узел древовидной таблицы */
 function pushDataTreeItem(
   row: RowDataType,
   item: RowDataType | RowDataType[],
@@ -401,15 +411,15 @@ function pushDataTreeItem(
     // Если строка закрыта
     if (!metaRow.tree.isOpen) {
       // И в ней уже есть дочерние элементы
-      if (_tree.isCacheData && metaRow.tree.cache.length > 0) {
+      if (treeComputed.value.isCacheData && metaRow.tree.cache.length > 0) {
         metaRow.tree.cache.push(_item)
       }
 
       // И в ней нет дочерних элементов
-      if (!row[_tree.expandableKey]) {
-        ;(row as any)[_tree.expandableKey] = true
+      if (!row[treeComputed.value.expandableKey]) {
+        ;(row as any)[treeComputed.value.expandableKey] = true
 
-        if (_tree.isCacheData) {
+        if (treeComputed.value.isCacheData) {
           metaRow.tree.cache.push(_item)
         }
       }
@@ -551,10 +561,10 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
           <virt-table-row :columns="computedVisibleColumns">
             <template #default="{ column, index }">
               <virt-table-tree-cell
-                v-if="_tree.enabled && index === 0"
+                v-if="treeComputed.enabled && index === 0"
                 :row="row"
-                :expandable-key="_tree.expandableKey"
-                :level-indent="_tree.levelIndent"
+                :expandable-key="treeComputed.expandableKey"
+                :level-indent="treeComputed.levelIndent"
                 @click="handleTreeCellClick(row)"
               />
 

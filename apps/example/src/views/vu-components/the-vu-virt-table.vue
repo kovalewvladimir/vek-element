@@ -16,6 +16,8 @@ const COUNT_GENERATE_ITEMS = 10
 
 const tableRef = useTemplateRef('table')
 
+const treeEnabled = ref(true)
+
 const columns = ref(
   new Columns(
     { prop: 'id', label: 'ID', type: 'number' },
@@ -65,8 +67,13 @@ const loadData = async () => {
   return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem())
 }
 
+const loadChildren = async (row: ReturnType<typeof generateItem>) => {
+  await asyncSleep(1000)
+  return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem(String(row.id)))
+}
+
 const addDataItem = () => {
-  tableRef?.value?.pushDataItem(generateItem())
+  tableRef?.value?.pushDataItem(generateItem(), { index: 999_999_999 })
 }
 const addDataChildItem = (row: ReturnType<typeof generateItem>) => {
   tableRef?.value?.pushDataTreeItem(row, generateItem(String(row.id)))
@@ -82,16 +89,21 @@ const deleteDataItem = () => {
   tableRef?.value?.deleteDataItem(0)
 }
 
+const EXPAND_COUNT = 1
 async function expandAll() {
   if (tableRef.value === null) throw new Error('tableRef is not defined')
 
-  for (let j = 1; j <= 4; j++) {
+  for (let j = 1; j <= EXPAND_COUNT; j++) {
     const tasks = []
     for (let i = 0; i < tableRef.value.data.length; i++) {
       tasks.push(tableRef.value.toggleRowExpansion(i, true))
     }
     await Promise.all(tasks)
   }
+}
+
+function treeEnabledChange() {
+  treeEnabled.value = !treeEnabled.value
 }
 </script>
 
@@ -125,7 +137,13 @@ async function expandAll() {
       <el-button
         type="info"
         @click="expandAll"
-        >Expand All</el-button
+        >Expand {{ EXPAND_COUNT }} level</el-button
+      >
+
+      <el-button
+        type="info"
+        @click="treeEnabledChange"
+        >Tree {{ treeEnabled ? 'Disable' : 'Enable' }}</el-button
       >
     </template>
 
@@ -136,13 +154,9 @@ async function expandAll() {
       :columns="columns"
       :on-load-data="loadData"
       :tree="{
-        enabled: true,
-        onLoadData: async (row) => {
-          await asyncSleep(1000)
-          return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() =>
-            generateItem(String(row.id))
-          )
-        }
+        enabled: treeEnabled,
+        expandableKey: 'isExpandable',
+        onLoadData: loadChildren
       }"
       @change-active-row="
         (row) => {
