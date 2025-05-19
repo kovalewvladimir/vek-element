@@ -1,11 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 console.log('Cleaning package.json...')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __dirname = import.meta.dirname
 
 if (process.argv.length !== 3) {
   throw new Error('Usage: node clean-package-json.js <path-to-package.json>')

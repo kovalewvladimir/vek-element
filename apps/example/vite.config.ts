@@ -1,5 +1,4 @@
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 import SvgIcons from '@vek-element/vite-svg'
 import Vue from '@vitejs/plugin-vue'
@@ -7,7 +6,7 @@ import UnoCSS from 'unocss/vite'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { defineConfig } from 'vite'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = import.meta.dirname
 
 export default defineConfig({
   server: {
