@@ -68,6 +68,7 @@ const {
   /** Уникальный ключ для таблицы */
   rowUniqueKey: K
 
+  // eslint-disable-next-line vue/require-default-prop
   tree?: {
     /** Включить древовидную таблицу */
     enabled: boolean

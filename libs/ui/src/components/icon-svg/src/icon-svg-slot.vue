@@ -15,11 +15,11 @@ const {
   /**
    * Цвет иконки
    */
-  color?: string
+  color?: string // eslint-disable-line vue/require-default-prop
   /**
    * Цвет иконки при наведении
    */
-  hoverColor?: string
+  hoverColor?: string // eslint-disable-line vue/require-default-prop
 }>()
 
 const isHoverColor = computed(() => hoverColor !== undefined)
