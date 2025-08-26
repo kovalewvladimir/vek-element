@@ -22,5 +22,5 @@
     }
   },
 
-  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.*", "uno.config.*"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "scripts/**/*.ts", "vite.config.*", "uno.config.*"]
 }
