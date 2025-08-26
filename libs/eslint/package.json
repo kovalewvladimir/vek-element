@@ -3,7 +3,7 @@
   "version": "0.0.8",
   "type": "module",
   "scripts": {
-    "prepack": "node ../../scripts/clean-package-json.js ../libs/eslint/package.json"
+    "prepack": "node ../../scripts/clean-package-json.ts ../libs/eslint/package.json"
   },
   "files": [
     "src"

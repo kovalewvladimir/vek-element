@@ -1,4 +1,4 @@
-FROM node:22
+FROM node:22.18
 
 # Пакет npm-check-updates позволяет проверять и обновлять зависимости пакетов npm.
 RUN npm install -g npm-check-updates

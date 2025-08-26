@@ -26,7 +26,7 @@
     }
   },
   "scripts": {
-    "prepack": "node ../../scripts/clean-package-json.js ../libs/ui/package.json"
+    "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui/package.json"
   },
   "dependencies": {
     "@imengyu/vue3-context-menu": "1.5.0",

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "module": "ESNext",
+
+    "esModuleInterop": true
+  },
+  "include": ["scripts/**/*.ts"],
+  "exclude": ["src/**/__tests__/*"]
+}

@@ -6,11 +6,11 @@ console.log('Cleaning package.json...')
 const __dirname = import.meta.dirname
 
 if (process.argv.length !== 3) {
-  throw new Error('Usage: node clean-package-json.js <path-to-package.json>')
+  throw new Error('Usage: node clean-package-json.ts <path-to-package.json>')
 }
 
 const packageJsonPath = path.resolve(__dirname, process.argv[2])
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath))
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString())
 
 const fieldsToRemove = [
   'devDependencies',
