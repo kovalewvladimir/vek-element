@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type IMenuItem, VuIconSvgDynamic } from '@vek-element/ui'
+import { type IMenuItem } from '@vek-element/ui'
+import { VuIconSvgDynamic } from '@vek-element/ui-components'
 import { ElMenuItem, ElSubMenu } from 'element-plus'
 import { useRouter } from 'vue-router'
 

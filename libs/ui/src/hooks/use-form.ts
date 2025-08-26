@@ -1,5 +1,6 @@
-import { useLoading, VuNotificationShow } from '@vek-element/ui'
+import { useLoading } from '@vek-element/ui'
 import { validateForm } from '@vek-element/ui/utils'
+import { VuNotificationShow } from '@vek-element/ui-components'
 import { type EventBusKey, useEventBus } from '@vueuse/core'
 import { type FormInstance } from 'element-plus'
 import { isEqual } from 'lodash-es'

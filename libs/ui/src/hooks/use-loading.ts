@@ -1,4 +1,4 @@
-import { VuNotificationShow } from '@vek-element/ui'
+import { VuNotificationShow } from '@vek-element/ui-components'
 import { ref } from 'vue'
 
 type ErrorClass = new (...args: any[]) => Error

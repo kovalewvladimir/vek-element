@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VuIconSvgDynamic } from '@vek-element/ui'
+import { VuIconSvgDynamic } from '@vek-element/ui-components'
 import { ElBreadcrumb, ElBreadcrumbItem } from 'element-plus'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'

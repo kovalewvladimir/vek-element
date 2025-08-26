@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useLayoutConfigStore, VuIconSvgDynamic } from '@vek-element/ui'
+import { useLayoutConfigStore } from '@vek-element/ui'
 import { isNull } from '@vek-element/ui/utils'
+import { VuIconSvgDynamic } from '@vek-element/ui-components'
 
 const { isText = true, size = 64 } = defineProps<{
   isText?: boolean

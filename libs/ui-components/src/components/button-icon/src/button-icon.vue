@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VuIconSvgDynamic } from '@vek-element/ui'
+import { VuIconSvgDynamic } from '@vek-element/ui-components'
 import { ElButton, ElTooltip } from 'element-plus'
 
 import { type VuButtonIconType } from './types'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VuIconSvgSlot } from '@vek-element/ui'
+import { VuIconSvgSlot } from '@vek-element/ui-components'
 import { computed } from 'vue'
 
 import { type Column } from './column'

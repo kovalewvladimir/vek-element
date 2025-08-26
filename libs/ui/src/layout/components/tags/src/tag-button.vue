@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import {
-  EpCloseIcon,
-  type ITagItem,
-  useNavigationStore,
-  VuIconSvgDynamic,
-  VuIconSvgSlot
-} from '@vek-element/ui'
+import { EpCloseIcon, type ITagItem, useNavigationStore } from '@vek-element/ui'
 import { trimEndPath } from '@vek-element/ui/utils'
+import { VuIconSvgDynamic, VuIconSvgSlot } from '@vek-element/ui-components'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 

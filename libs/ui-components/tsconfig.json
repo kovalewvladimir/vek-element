@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "outDir": "dist/types",
+    "declaration": true,
+
+    "baseUrl": "./",
+    "paths": {
+      "@vek-element/ui/utils": ["src/utils"],
+      "@vek-element/ui/layout": ["src/layout/components"]
+    }
+  },
+
+  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.*", "uno.config.*"]
+}

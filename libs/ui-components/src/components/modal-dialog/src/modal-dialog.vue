@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { EpCloseIcon, VuIconSvgSlot } from '@vek-element/ui'
+import { EpCloseIcon } from '@vek-element/ui'
+import { VuIconSvgSlot } from '@vek-element/ui-components'
 import { ElDialog } from 'element-plus'
 import { nextTick, ref } from 'vue'
 
