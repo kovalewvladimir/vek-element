@@ -29,7 +29,7 @@
     "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui/package.json && node ./scripts/update-ui-components-version.ts"
   },
   "dependencies": {
-    "@imengyu/vue3-context-menu": "1.5.2",
+    "@imengyu/vue3-context-menu": "1.4.5",
     "@vueuse/core": "13.8.0",
     "vue-router": "4.5.1",
     "@vek-element/ui-components": "file:../ui-components"
