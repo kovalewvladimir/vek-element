@@ -23,15 +23,9 @@ interface IInitialLayout {
 }
 
 class Logo {
-  private _title: string
-  private _logo: string | null
-  private _visible: boolean
-
-  constructor() {
-    this._title = 'DEMO'
-    this._logo = null
-    this._visible = true
-  }
+  private _title: string = 'DEMO'
+  private _logo: string | null = null
+  private _visible: boolean = true
 
   setLogo(logo: string | null) {
     this._logo = logo
@@ -61,11 +55,7 @@ class Logo {
 }
 
 class Menu {
-  private _collapse: boolean
-
-  constructor() {
-    this._collapse = false
-  }
+  private _collapse: boolean = false
 
   get collapse() {
     return this._collapse
