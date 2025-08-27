@@ -18,8 +18,10 @@
   "scripts": {
     "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui-components/package.json"
   },
+  "peerDependencies": {
+    "vue": "3.5.20"
+  },
   "dependencies": {
-    "element-plus": "2.9.10",
-    "vue": "3.5.14"
+    "element-plus": "2.11.1"
   }
 }
