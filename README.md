@@ -10,6 +10,12 @@ UI компоненты
 
 [Документация](libs/ui/README.md)
 
+### @vek-element/ui-components
+
+UI-компоненты для использования в проектах.
+
+[Документация](libs/ui-components/README.md)
+
 ### @vek-element/svg
 
 Vite плагин для работы с SVG
@@ -30,4 +36,5 @@ ESLint конфигурация
   - `/eslint` - ESLint конфигурация
   - `/plugins` - Плагины
   - `/ui` - UI компоненты
+  - `/ui-components` - UI-компоненты для использования в проектах
 - `/scripts` - Вспомогательные скрипты
