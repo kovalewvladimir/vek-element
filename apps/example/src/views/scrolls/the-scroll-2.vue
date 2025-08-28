@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VuContentWrap } from '@vek-element/ui-components'
+import { VuContentWrap } from '@vek-element/ui'
 import { ElCol, ElRow, ElTable, ElTableColumn } from 'element-plus'
 
 const tableData = Array.from({ length: 100 }, (_, index) => ({

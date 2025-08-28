@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { useLayoutConfigStore, useNavigationStore } from '@vek-element/ui'
+import {
+  useLayoutConfigStore,
+  useNavigationStore,
+  VuAutocompleteRemote,
+  VuIconSvgDynamic
+} from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
-import { VuAutocompleteRemote, VuIconSvgDynamic } from '@vek-element/ui-components'
 import { ElButton, ElCard, ElDatePicker, ElInput } from 'element-plus'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'

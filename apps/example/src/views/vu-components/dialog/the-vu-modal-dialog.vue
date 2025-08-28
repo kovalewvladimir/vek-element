@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useModalDialog } from '@vek-element/ui-components'
+import { useModalDialog } from '@vek-element/ui'
 import { ElButton, ElCard } from 'element-plus'
 import { getCurrentInstance } from 'vue'
 

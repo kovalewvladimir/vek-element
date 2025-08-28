@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VuContentWrap } from '@vek-element/ui-components'
+import { VuContentWrap } from '@vek-element/ui'
 import { ElButton } from 'element-plus'
 </script>
 

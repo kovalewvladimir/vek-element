@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Columns, VuVirtTable } from '@vek-element/ui'
+import { Columns, VuContentWrap, VuVirtTable } from '@vek-element/ui'
 import { asyncSleep, dateIsoToFrontendFormat } from '@vek-element/ui/utils'
-import { VuContentWrap } from '@vek-element/ui-components'
 import { ElButton, ElButtonGroup, ElTag } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
 

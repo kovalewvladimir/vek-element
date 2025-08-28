@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useLoading } from '@vek-element/ui'
+import { useLoading, VuModalDialog } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
-import { VuModalDialog } from '@vek-element/ui-components'
 import { ElButton, ElDatePicker } from 'element-plus'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
