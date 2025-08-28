@@ -113,7 +113,7 @@ export const useForm = <
 
   /** Создает новую запись, после успешного создания перенаправляет на предыдущую страницу */
   const create = loadingWrapper(async () => {
-    const { isValid } = await validateForm(formRef.value)
+    const { isValid } = await validateForm(formRef)
     if (!isValid) throw new Error('Ошибка валидации')
 
     const data = await createFunction(dataForm.value as C)
@@ -124,7 +124,7 @@ export const useForm = <
 
   /** Обновляет существующую запись и обновляет данные формы */
   const update = loadingWrapper(async (isBackNavigation: boolean = false) => {
-    const { isValid } = await validateForm(formRef.value)
+    const { isValid } = await validateForm(formRef)
     if (!isValid) throw new Error('Ошибка валидации')
     if (!dataUpdate.value) throw new Error('Нет данных для обновления')
 

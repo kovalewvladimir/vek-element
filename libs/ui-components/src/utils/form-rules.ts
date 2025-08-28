@@ -1,4 +1,5 @@
 import { type FormInstance } from 'element-plus'
+import { type Ref, type ShallowRef } from 'vue'
 
 type ValidateFormResult = { isValid: boolean; fields: any }
 
@@ -7,17 +8,21 @@ type ValidateFormResult = { isValid: boolean; fields: any }
  *
  * @param form - форма
  */
-export const validateForm = async (form: FormInstance | undefined): Promise<ValidateFormResult> => {
+export const validateForm = async (
+  form: Readonly<ShallowRef<FormInstance | null>> | Ref<FormInstance | undefined>
+): Promise<ValidateFormResult> => {
   const result: ValidateFormResult = {
     isValid: false,
     fields: null
   }
   if (form === undefined) return result
 
-  await form.validate((v, f) => {
-    result.isValid = v
-    result.fields = f
-  })
+  if (form.value) {
+    await form.value.validate((v, f) => {
+      result.isValid = v
+      result.fields = f
+    })
+  }
   return result
 }
 

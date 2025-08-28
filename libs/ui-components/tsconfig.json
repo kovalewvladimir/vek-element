@@ -17,8 +17,7 @@
 
     "baseUrl": "./",
     "paths": {
-      "@vek-element/ui/utils": ["src/utils"],
-      "@vek-element/ui/layout": ["src/layout/components"]
+      "@vek-element/ui-components/utils": ["src/utils"]
     }
   },
 

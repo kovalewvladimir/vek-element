@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
@@ -15,6 +15,7 @@
     "outDir": "dist/types",
     "declaration": true,
 
+    "rootDir": "./",
     "baseUrl": "./",
     "paths": {
       "@vek-element/ui/utils": ["src/utils"],
