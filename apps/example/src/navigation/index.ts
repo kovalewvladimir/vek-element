@@ -2,6 +2,7 @@ import { type INavigation } from '@vek-element/ui'
 
 import dashboardNavigation from './dashboard'
 import emptyNavigation from './empty'
+import formNavigation from './form'
 import loginNavigation from './login'
 import notFoundNavigation from './not-found'
 import paramsNavigation from './params'
@@ -16,6 +17,7 @@ const navigation: INavigation[] = [
 
   dashboardNavigation,
   vuComponentsNavigation,
+  formNavigation,
   scrollNavigation,
   rolesNavigation,
   paramsNavigation,
