@@ -18,6 +18,11 @@
       "types": "./src/utils/index.ts",
       "development": "./src/utils/index.ts",
       "import": "./src/utils/index.ts"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.ts",
+      "development": "./src/hooks/index.ts",
+      "import": "./src/hooks/index.ts"
     }
   },
   "scripts": {

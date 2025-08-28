@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLoading } from '@vek-element/ui'
+import { useLoading } from '@vek-element/ui-components/hooks'
 import {
   ElAutocomplete,
   ElSkeleton,
