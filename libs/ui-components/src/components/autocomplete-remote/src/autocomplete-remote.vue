@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import { useLoading } from '@vek-element/ui-components/hooks'
 import {
   ElAutocomplete,
@@ -6,7 +6,7 @@ import {
   ElSkeletonItem,
   useGlobalComponentSettings
 } from 'element-plus'
-import { computed, onMounted, ref, toValue, useTemplateRef } from 'vue'
+import { computed, onMounted, toValue, useTemplateRef } from 'vue'
 
 const {
   getLoadingOptions,
@@ -18,7 +18,7 @@ const {
   /**
    * TODO: Описание
    */
-  getLoadingOptions: () => Promise<{ data: ReadonlyArray<any> }>
+  getLoadingOptions: () => Promise<{ data: ReadonlyArray<T> }>
   /**
    * Ключ значения
    *
@@ -51,12 +51,12 @@ const { loading, loadingWrapper } = useLoading(0)
 const { size: globalSize } = useGlobalComponentSettings('autocomplete')
 
 const inputRef = useTemplateRef<InstanceType<typeof ElAutocomplete>>('inputRef')
-const options = ref<ReadonlyArray<any>>([])
+let options: ReadonlyArray<T> = []
 
 onMounted(
   loadingWrapper(async () => {
     const { data } = await getLoadingOptions()
-    options.value = data
+    options = data
   })
 )
 
@@ -66,14 +66,18 @@ const querySearch = (query: string, cb: any) => {
   if (query) {
     query = query.toLowerCase()
     let i = 0
-    for (const option of options.value) {
-      if (option[valueKey].toLowerCase().includes(query)) {
+    for (const option of options) {
+      if (
+        String(option[valueKey as keyof typeof option])
+          .toLowerCase()
+          .includes(query)
+      ) {
         result.push(option)
         if (++i === maxReturnComplete) break
       }
     }
   } else {
-    result.push(...options.value.slice(0, maxReturnComplete))
+    result.push(...options.slice(0, maxReturnComplete))
   }
 
   cb(result)
@@ -98,9 +102,15 @@ const skeletonSize = computed(() => {
 })
 
 const isValid = (): boolean => {
-  return options.value.some((option) => option[valueKey] === value.value)
+  return options.some((option) => String(option[valueKey as keyof typeof option]) === value.value)
 }
-defineExpose({ isValid })
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+const getOption = (): T | undefined => {
+  return options.find((option) => String(option[valueKey as keyof typeof option]) === value.value)
+}
+
+defineExpose({ isValid, getOption })
 </script>
 
 <template>

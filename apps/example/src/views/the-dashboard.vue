@@ -7,7 +7,7 @@ import {
 } from '@vek-element/ui'
 import { asyncSleep } from '@vek-element/ui/utils'
 import { ElButton, ElCard, ElDatePicker, ElInput } from 'element-plus'
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 
 const configLayout = useLayoutConfigStore()
@@ -15,6 +15,7 @@ const router = useRouter()
 const navigation = useNavigationStore()
 
 const autocompleteValue = ref<string>('')
+const autocompleteRef = useTemplateRef('autocompleteRef')
 
 const getOptions = async () => {
   await asyncSleep(3000)
@@ -25,6 +26,10 @@ const getOptions = async () => {
       { value: 'Test3', label: 'Test3' }
     ]
   }
+}
+
+const getOption = () => {
+  return autocompleteRef.value?.getOption()
 }
 
 const findName = ref<string>('SubMenu1-1')
@@ -40,9 +45,19 @@ const findName = ref<string>('SubMenu1-1')
       class="h-full"
     >
       <vu-autocomplete-remote
+        ref="autocompleteRef"
         v-model="autocompleteValue"
         :get-loading-options="getOptions"
       />
+      <el-button
+        type="primary"
+        @click="
+          () => {
+            console.log(getOption())
+          }
+        "
+        >getOption</el-button
+      >
 
       <vu-icon-svg-dynamic
         name="ep--close"
