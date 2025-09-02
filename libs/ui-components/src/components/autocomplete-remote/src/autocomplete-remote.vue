@@ -47,7 +47,7 @@ const {
 
 const value = defineModel<string>({ required: true })
 
-const { loading, loadingWrapper } = useLoading()
+const { loading, loadingWrapper } = useLoading(0)
 const { size: globalSize } = useGlobalComponentSettings('autocomplete')
 
 const inputRef = useTemplateRef<InstanceType<typeof ElAutocomplete>>('inputRef')
