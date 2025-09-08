@@ -67,3 +67,22 @@ export const dateIsoToFrontendFormat = (date: string) => {
   const [year, month, day] = datePart.split('-')
   return `${day}-${month}-${year}`
 }
+
+/**
+ * Преобразовать время из формата ISO в формат frontend
+ *
+ * Формат: YYYY-MM-DDTHH:MM:SS -> HH:MM:SS
+ *
+ * @param date
+ * @returns
+ */
+export const timeIsoToFrontendFormat = (date: string) => {
+  if (typeof date !== 'string') return date
+
+  const split = date.split('T')
+  if (split.length !== 2) return date
+
+  const [, timePart] = split
+  const [time] = timePart.split('.')
+  return time
+}
