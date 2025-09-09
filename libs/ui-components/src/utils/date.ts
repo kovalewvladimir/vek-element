@@ -86,3 +86,19 @@ export const timeIsoToFrontendFormat = (date: string) => {
   const [time] = timePart.split('.')
   return time
 }
+
+/**
+ * Преобразовать дату и время из формата ISO в формат frontend
+ *
+ * Формат: YYYY-MM-DDTHH:MM:SS -> DD-MM-YYYY HH:MM:SS
+ *
+ * @param date
+ * @returns
+ */
+export const datetimeIsoToFrontendFormat = (date: string) => {
+  const datePart = dateIsoToFrontendFormat(date)
+  const timePart = timeIsoToFrontendFormat(date)
+  if (typeof datePart !== 'string' || typeof timePart !== 'string') return date
+  if (datePart === date || timePart === date) return date
+  return `${datePart} ${timePart}`
+}
