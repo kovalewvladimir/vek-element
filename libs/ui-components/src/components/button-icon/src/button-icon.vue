@@ -7,6 +7,11 @@ import { type VuButtonIconType } from './types'
 const {
   icon,
   type = 'default',
+
+  text = false,
+  bg = false,
+  link = false,
+
   tooltip = '',
   tooltipShowAfter = 500
 } = defineProps<{
@@ -19,6 +24,24 @@ const {
    * По умолчанию: `default`
    * */
   type?: VuButtonIconType
+
+  /**
+   * Определяет, является ли кнопка текстовой
+   * По умолчанию: false
+   */
+  text?: boolean
+
+  /**
+   * Определяет, всегда ли включён фон для текстовой кнопки
+   * По умолчанию: false
+   */
+  bg?: boolean
+
+  /**
+   * Определяет, является ли кнопка ссылкой
+   * По умолчанию: false
+   */
+  link?: boolean
 
   /**
    * Текст подсказки
@@ -46,6 +69,9 @@ const {
     <el-button
       v-bind="$attrs"
       :type="type"
+      :text="text"
+      :bg="bg"
+      :link="link"
     >
       <template
         v-if="$slots.default"

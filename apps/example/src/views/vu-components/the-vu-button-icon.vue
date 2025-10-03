@@ -28,6 +28,39 @@ const types: VuButtonIconType[] = ['default', 'success', 'warning', 'info', 'pri
       />
     </div>
 
+    <el-divider content-position="left">Аттрибут text</el-divider>
+    <div
+      v-for="icon in icons"
+      :key="icon"
+      class="mb-10px"
+    >
+      <vu-button-icon
+        v-for="type in types"
+        :key="type"
+        text
+        :type="type"
+        :icon="icon"
+        :tooltip="`Type: ${type}, Icon: ${icon}`"
+      />
+    </div>
+
+    <el-divider content-position="left">Аттрибут text bg</el-divider>
+    <div
+      v-for="icon in icons"
+      :key="icon"
+      class="mb-10px"
+    >
+      <vu-button-icon
+        v-for="type in types"
+        :key="type"
+        text
+        bg
+        :type="type"
+        :icon="icon"
+        :tooltip="`Type: ${type}, Icon: ${icon}`"
+      />
+    </div>
+
     <el-divider content-position="left">Аттрибут link</el-divider>
     <div
       v-for="icon in icons"
