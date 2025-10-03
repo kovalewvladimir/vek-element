@@ -29,7 +29,7 @@
     "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui-components/package.json"
   },
   "peerDependencies": {
-    "vue": "3.5.20",
-    "element-plus": "2.11.1"
+    "vue": "3.5.22",
+    "element-plus": "2.11.4"
   }
 }
