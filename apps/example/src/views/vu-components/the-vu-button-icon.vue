@@ -102,5 +102,16 @@ const types: VuButtonIconType[] = ['default', 'success', 'warning', 'info', 'pri
         </div>
       </div>
     </div>
+
+    <el-divider content-position="left">Аттрибут icon-size</el-divider>
+
+    <vu-button-icon
+      v-for="size in [12, 16, 18, 20, 24, 28, 32, 36, 40]"
+      :key="size"
+      text
+      :type="types[0]"
+      :icon="icons[0]"
+      :icon-size="size"
+    />
   </vu-content-wrap>
 </template>

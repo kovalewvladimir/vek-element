@@ -6,8 +6,9 @@ import { type VuButtonIconType } from './types'
 
 const {
   icon,
-  type = 'default',
+  iconSize = 18,
 
+  type = 'default',
   text = false,
   bg = false,
   link = false,
@@ -17,6 +18,13 @@ const {
 } = defineProps<{
   /** Имя иконки */
   icon: string
+
+  /**
+   *  Размер иконки
+   *
+   * По умолчанию: `18`
+   */
+  iconSize?: number
 
   /**
    * Тип кнопки
@@ -82,7 +90,7 @@ const {
       <template #icon>
         <vu-icon-svg-dynamic
           :name="icon"
-          :size="18"
+          :size="iconSize"
         />
       </template>
     </el-button>
