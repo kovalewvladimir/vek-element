@@ -18,6 +18,8 @@
         "mikestead.dotenv",
         // необходим для разработки vue
         "vue.volar",
+        // для запуска тестов
+        "vitest.explorer",
 
         // для UnoCSS
         "antfu.unocss",
