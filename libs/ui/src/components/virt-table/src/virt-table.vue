@@ -47,6 +47,17 @@ import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
 import virtTableTreeCell from './virt-table-tree-cell.vue'
 
+type ColumnProp = Column['prop']
+
+defineSlots<{
+  /** Слот для кастомного рендера ячейки. */
+  [key: `${ColumnProp}`]: (props: { column: Column; row: RowDataType }) => any
+  /** Слот для кастомного рендера заголовка колонки. */
+  [key: `h-${string}`]: (props: { column: Column }) => any
+  /** Слот, который отображается перед ячейкой. */
+  [key: `${string}-before`]: (props: { column: Column; row: RowDataType }) => any
+}>()
+
 // ==================
 // Props
 // ==================
