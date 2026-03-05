@@ -4,10 +4,9 @@ import { type NavigationGuardWithThis } from 'vue-router'
 const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefined> => {
   const whiteList = new Set([loginPath])
 
-  return async (to, _from, next) => {
+  return async (to) => {
     // Белый лист
     if (whiteList.has(to.path)) {
-      next()
       return
     }
 
@@ -17,8 +16,7 @@ const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefi
       try {
         await userStore.loadUser()
       } catch {
-        next(`/login?redirect=${to.path}`)
-        return
+        return `/login?redirect=${to.path}`
       }
     }
 
@@ -30,11 +28,8 @@ const permissionBeforeEach = (loginPath: string): NavigationGuardWithThis<undefi
       }
       navigationStore.generateMenu(userStore.user.roles)
       // тк только что сгенерировали меню, то нужно повторно перейти на текущий роут
-      next({ ...to, replace: true })
-      return
+      return { ...to, replace: true }
     }
-
-    next()
   }
 }
 
