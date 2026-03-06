@@ -60,6 +60,7 @@ export const useVirtualData = <T>(
     // vueuse v14.1.0 изменили поведение canLoadMore, теперь он стал реактивным.
     // поэтому вызывать gerData с reload: true больше не нужно, достаточно сбросить флаги и данные,
     // и canLoadMore сама вызовет useInfiniteScroll->onLoadMore.
+    loading.value = true
     data.value = []
     currentPage.value = 0
     scrollTo(0)
