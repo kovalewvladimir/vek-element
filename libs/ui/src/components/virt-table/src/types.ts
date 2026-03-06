@@ -105,7 +105,7 @@ export interface IUpdateDataItemOptions {
 
 export interface IVirtTableExpose<T> {
   /** Функция для перезагрузки данных */
-  reloadData: () => Promise<void>
+  reloadData: () => void
   /** Данные таблицы */
   data: Ref<T[]>
   /** Функция для поиска индекса элемента в таблице */

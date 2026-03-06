@@ -22,14 +22,13 @@ export const useVirtualData = <T>(
   const data: Ref<T[]> = ref([])
   const currentPage = ref(0)
 
-  const DEFAULT_OPTIONS = { reload: false } as const
-  /** Загрузка/Обновление данных */
-  const getData = loadingWrapper(async (options: { reload: boolean } = DEFAULT_OPTIONS) => {
+  /** Загрузка данных */
+  const getData = loadingWrapper(async () => {
     if (isAllDataLoaded.value) return
 
     const sort = columns.getSort()
     const filters = columns.getFilters()
-    currentPage.value = options.reload ? 1 : currentPage.value + 1
+    currentPage.value = currentPage.value + 1
 
     let loadedData: T[]
     try {
@@ -51,20 +50,20 @@ export const useVirtualData = <T>(
       injectFormatMetaData(v, columns)
     }
 
-    if (options.reload) {
-      scrollTo(0)
-      data.value = loadedData
-    } else {
-      data.value.push(...loadedData)
-    }
+    data.value.push(...loadedData)
 
     // Bugfix: не отображаются данные, если они все помещаются в контейнер без scroll`а.
     // Что бы они отобразились нужно принудительно сделать перерендер
     if (currentPage.value === 1) virtualContainerProps.onScroll()
   })
-  const reloadData = async () => {
+  const reloadData = () => {
+    // vueuse v14.1.0 изменили поведение canLoadMore, теперь он стал реактивным.
+    // поэтому вызывать gerData с reload: true больше не нужно, достаточно сбросить флаги и данные,
+    // и canLoadMore сама вызовет useInfiniteScroll->onLoadMore.
+    data.value = []
+    currentPage.value = 0
+    scrollTo(0)
     isAllDataLoaded.value = false
-    await getData({ reload: true })
   }
 
   // Виртуальный список
@@ -79,16 +78,10 @@ export const useVirtualData = <T>(
   })
 
   // Загрузка новых данных при scroll`е
-  useInfiniteScroll(
-    virtualContainerProps.ref,
-    async () => {
-      await getData()
-    },
-    {
-      distance: infiniteScrollDistance,
-      canLoadMore: () => !isAllDataLoaded.value && !isLoadingError.value
-    }
-  )
+  useInfiniteScroll(virtualContainerProps.ref, getData, {
+    distance: infiniteScrollDistance,
+    canLoadMore: () => !isAllDataLoaded.value && !isLoadingError.value
+  })
 
   return {
     loading,
