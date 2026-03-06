@@ -22,11 +22,26 @@ const navigation: INavigation = {
       component: () => import('@/views/vu-components/dialog/the-vu-modal-dialog.vue')
     },
     {
-      name: 'TheVuVirtTable',
+      name: 'VuVirtTable',
       path: 'vu-virt-table',
       title: 'VuVirtTable',
       icon: 'el-icon-menu',
-      component: () => import('@/views/vu-components/the-vu-virt-table.vue')
+      children: [
+        {
+          name: 'TheVuVirtTable',
+          path: 'simple',
+          title: 'VuVirtTable',
+          icon: 'el-icon-menu',
+          component: () => import('@/views/vu-components/vu-virt-table/the-vu-virt-table.vue')
+        },
+        {
+          name: 'TheVuVirtTableTree',
+          path: 'tree',
+          title: 'VuVirtTableTree',
+          icon: 'el-icon-menu',
+          component: () => import('@/views/vu-components/vu-virt-table/the-vu-virt-table-tree.vue')
+        }
+      ]
     }
   ]
 }
