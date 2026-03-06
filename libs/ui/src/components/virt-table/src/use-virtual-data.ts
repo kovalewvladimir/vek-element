@@ -63,7 +63,7 @@ export const useVirtualData = <T>(
     loading.value = true
     data.value = []
     currentPage.value = 0
-    scrollTo(0)
+    scrollTo(1) // 1 иначе не сработает canLoadMore
     isAllDataLoaded.value = false
   }
 
