@@ -7,7 +7,7 @@
     RowDataType extends Record<K, any> & Partial<Record<T, any>>
   "
 >
-import { useLoading, useScrollPosition } from '@vek-element/ui'
+import { useLoading, useScrollPosition } from '@vek-element/ui-components/hooks'
 import { ElEmpty, ElTooltip } from 'element-plus'
 import {
   computed,
