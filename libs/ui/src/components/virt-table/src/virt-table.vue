@@ -7,7 +7,7 @@
     RowDataType extends Record<K, any> & Partial<Record<T, any>>
   "
 >
-import { useLoading } from '@vek-element/ui'
+import { useLoading, useScrollPosition } from '@vek-element/ui'
 import { ElEmpty, ElTooltip } from 'element-plus'
 import {
   computed,
@@ -32,7 +32,6 @@ import {
   type IVirtTableExpose,
   type OnLoadDataType
 } from './types'
-import { useScrollPosition } from './use-scroll-position'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
 import {

@@ -1,5 +1,4 @@
-import { useLoading } from '@vek-element/ui'
-import { useInfiniteScroll, useVirtualList } from '@vueuse/core'
+import { useInfiniteScroll, useLoading, useVirtualList } from '@vek-element/ui'
 import { type Ref, ref } from 'vue'
 
 import { type Columns } from './column'

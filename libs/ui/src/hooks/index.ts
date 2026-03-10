@@ -1,3 +1,6 @@
 export * from './use-can'
 export * from './use-form'
+export * from './use-infinite-scroll'
+export * from './use-scroll-position'
+export * from './use-virtual-list'
 export * from '@vek-element/ui-components/hooks'
