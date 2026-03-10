@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "target": "es2022",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "Bundler",
+
+    "noEmit": true,
+
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["tests/*"]
+    },
+    "types": ["node"]
+  },
+
+  "include": ["tests/**/*.ts", "tests/**/*.vue", "playwright.config.*"]
+}

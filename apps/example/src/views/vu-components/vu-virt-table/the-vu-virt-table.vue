@@ -9,6 +9,7 @@ import { ref, useTemplateRef } from 'vue'
 // ==================
 
 const COUNT_GENERATE_ITEMS = 100
+const MAX_LOAD_PAGES = 5
 
 // ==================
 // Variables
@@ -59,11 +60,15 @@ const generateItem = (name: string = '') => ({
   }
 })
 
+let loadPages = 0
 const loadData = async () => {
   console.log('loadData')
 
   await asyncSleep(1000)
-  return Array.from({ length: COUNT_GENERATE_ITEMS }).map(() => generateItem())
+
+  const loadLength = loadPages < MAX_LOAD_PAGES ? COUNT_GENERATE_ITEMS : COUNT_GENERATE_ITEMS / 10
+  loadPages++
+  return Array.from({ length: loadLength }).map(() => generateItem())
 }
 </script>
 

@@ -1,3 +1,8 @@
 #!/bin/sh
+set -e
 
-npm run lint && npm run type-check
+npm run lint 
+npm run type-check
+
+npm run test -w @vek-element/eslint-config
+npm run test -w vek-element-e2e

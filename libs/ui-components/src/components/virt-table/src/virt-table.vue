@@ -547,6 +547,7 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
     <div
       v-bind="virtualContainerProps"
       class="virt-table-body"
+      data-testid="virt-table-body"
     >
       <!-- Header -->
       <div class="header">
@@ -620,7 +621,10 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
       /></div>
     </div>
 
-    <div class="absolute bottom-[-8px] right-0 text-6px color-gray">
+    <div
+      class="absolute bottom-[-8px] right-0 text-6px color-gray"
+      data-testid="virt-table-stats"
+    >
       <span>Page: {{ currentPage }} | </span>
       <span>Size: {{ sizePage }} | </span>
       <span>isAllDataLoaded: {{ isAllDataLoaded }} | </span>
