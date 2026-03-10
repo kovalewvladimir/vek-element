@@ -5,6 +5,7 @@ import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { defineConfig } from 'vite'
+import VueDevTools from 'vite-plugin-vue-devtools'
 
 const __dirname = import.meta.dirname
 
@@ -17,6 +18,7 @@ export default defineConfig({
 
   plugins: [
     Vue(),
+    VueDevTools(),
     ElementPlus({
       include: ['**/*.vue', '**/*.ts'],
       exclude: [/node_modules\/(?!@vek-element\/ui)/, /[/\\]\.git[/\\]/, /[/\\]\.nuxt[/\\]/]
