@@ -1,31 +1,31 @@
-import { useLoading } from '@vek-element/ui'
+import { type EventBusKey, useEventBus } from '@vek-element/ui'
 import { validateForm } from '@vek-element/ui/utils'
 import { VuNotificationShow } from '@vek-element/ui-components'
-import { type EventBusKey, useEventBus } from '@vueuse/core'
+import { useLoading } from '@vek-element/ui-components/hooks'
 import { type FormInstance } from 'element-plus'
 import { isEqual } from 'lodash-es'
 import { computed, onMounted, type Ref, ref, watch } from 'vue'
 import { type NavigationFailure, useRoute } from 'vue-router'
 
 /** Функция для получения разницы между двумя объектами */
-const getObjectDifference = (obj1: any, obj2: any): any => {
-  const diffObj: any = {}
+function getObjectDifference<T>(source: T, updated: T): Partial<T> {
+  const diff: Partial<T> = {}
 
-  for (const key in obj1) {
-    if (!obj2.hasOwnProperty(key)) {
-      diffObj[key] = null
+  for (const key in source) {
+    if (!Object.prototype.hasOwnProperty.call(updated, key)) {
+      diff[key] = null as T[typeof key]
     }
   }
 
-  for (const key in obj2) {
-    if (obj1.hasOwnProperty(key)) {
-      if (!isEqual(obj1[key], obj2[key])) diffObj[key] = obj2[key]
+  for (const key in updated) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (!isEqual(source[key], updated[key])) diff[key] = updated[key]
     } else {
-      diffObj[key] = obj2[key]
+      diff[key] = updated[key]
     }
   }
 
-  return diffObj
+  return diff
 }
 
 /** Тип ключа события шины событий */
@@ -34,66 +34,53 @@ export type EventBusActionKeyType<T> = EventBusKey<{
   data: T
 }>
 
-/** Базовые параметры формы */
-interface FormConfig<T> {
-  /** Имя параметра маршрута. Нужен для получения идентификатора по которому нужно получить данные */
-  routeParamName: string
-
-  /** Функция для перехода на предыдущую страницу */
-  navigationToBack: () => Promise<NavigationFailure | void | undefined>
-
-  /** Ключ шины событий. Нужен для отправки событий в другие компоненты */
-  busKey: EventBusActionKeyType<T>
-}
-
-/** API функции для работы с данными */
-interface ApiActions<T, C, U, ID_T, ID_KEY extends string = 'id'> {
-  /** Поле идентификатора */
-  idField?: ID_KEY
-
-  /** Функция для получения данных */
-  getData: (id: ID_T | undefined) => Promise<T | C>
-
-  /** Функция для создания данных */
-  createFunction: (data: C) => Promise<T>
-
-  /** Функция для обновления данных */
-  updateFunction: (id: ID_T, data: U) => Promise<T>
-
-  /** Функция для удаления данных */
-  deleteFunction: (id: ID_T) => Promise<T>
-}
-
 /** Инициализация данных для формы */
 export const useForm = <
   T extends Record<ID_KEY, ID_T>,
-  C,
-  U,
   ID_T = string,
   ID_KEY extends string = 'id'
->(
-  { routeParamName, navigationToBack, busKey }: FormConfig<T>,
-  {
-    getData,
-    createFunction,
-    updateFunction,
-    deleteFunction,
-    idField = 'id' as ID_KEY
-  }: ApiActions<T, C, U, ID_T, ID_KEY>
-) => {
+>(options: {
+  config: {
+    /** Имя параметра маршрута. Нужен для получения идентификатора по которому нужно получить данные */
+    routeParamName: string
+
+    /** Функция для перехода на предыдущую страницу */
+    navigationToBack: () => Promise<NavigationFailure | void | undefined>
+
+    /** Ключ шины событий. Нужен для отправки событий в другие компоненты */
+    busKey: EventBusActionKeyType<T>
+  }
+  api: {
+    /** Поле идентификатора */
+    idField?: ID_KEY
+
+    /** Функция для получения данных */
+    get: (id: ID_T | undefined) => Promise<T>
+
+    /** Функция для создания данных */
+    create: (data: Omit<T, ID_KEY>) => Promise<T>
+
+    /** Функция для обновления данных */
+    update: (id: ID_T, data: Partial<T>) => Promise<T>
+
+    /** Функция для удаления данных */
+    delete: (id: ID_T) => Promise<T>
+  }
+}) => {
   //#region Данные
   const route = useRoute()
   const { loading, loadingWrapper } = useLoading()
-  const busEvent = useEventBus(busKey)
+  const busEvent = useEventBus(options.config.busKey)
 
-  const initialId = route.params[routeParamName] as ID_T
+  const initialId = route.params[options.config.routeParamName] as ID_T
 
   const formRef = ref<FormInstance>()
 
-  const dataSource: Ref<T | C | null> = ref(null)
-  const dataForm: Ref<T | C | null> = ref(null)
+  const dataSource: Ref<T | null> = ref(null)
+  const dataForm: Ref<T | Omit<T, ID_KEY> | null> = ref(null)
+  const dataUpdate: Ref<Partial<T> | null> = ref(null)
 
-  const dataUpdate: Ref<U | null> = ref(null)
+  const idField = options.api.idField || ('id' as ID_KEY)
   //#endregion
 
   //#region Computed
@@ -106,20 +93,22 @@ export const useForm = <
 
   //#region Методы
   /** Копирует данные в источник и форму */
-  const copyFormData = (data: T | C) => {
+  const copyFormData = (data: T) => {
     dataSource.value = structuredClone(data)
     dataForm.value = structuredClone(data)
   }
 
   /** Создает новую запись, после успешного создания перенаправляет на предыдущую страницу */
   const create = loadingWrapper(async () => {
+    if (!dataForm.value) throw new Error('Нет данных для создания')
+
     const { isValid } = await validateForm(formRef)
     if (!isValid) throw new Error('Ошибка валидации')
 
-    const data = await createFunction(dataForm.value as C)
+    const data = await options.api.create(dataForm.value)
     VuNotificationShow('Успешно', `Создан ${String(data[idField])}`)
     busEvent.emit({ status: 'create', data: data })
-    await navigationToBack()
+    await options.config.navigationToBack()
   })
 
   /** Обновляет существующую запись и обновляет данные формы */
@@ -128,37 +117,42 @@ export const useForm = <
     if (!isValid) throw new Error('Ошибка валидации')
     if (!dataUpdate.value) throw new Error('Нет данных для обновления')
 
-    const data = await updateFunction((dataForm.value as T)[idField], dataUpdate.value)
+    const data = await options.api.update((dataForm.value as T)[idField], dataUpdate.value)
     VuNotificationShow('Успешно', `Изменен ${String(data[idField])}`)
     copyFormData(data)
     busEvent.emit({ status: 'update', data: data })
-    if (isBackNavigation) await navigationToBack()
+    if (isBackNavigation) await options.config.navigationToBack()
   })
 
   /** Удаляет запись и перенаправляет на предыдущую страницу */
   const remove = loadingWrapper(async () => {
-    const data = await deleteFunction((dataForm.value as T)[idField])
+    const data = await options.api.delete((dataForm.value as T)[idField])
     VuNotificationShow('Успешно', `Удален ${String(data[idField])}`)
     busEvent.emit({ status: 'delete', data: data })
-    await navigationToBack()
+    await options.config.navigationToBack()
   })
+  //#endregion
+
+  //#region watch
+  // watch регистрируется синхронно в setup-контексте — Vue корректно остановит его при unmount
+  if (isUpdate.value) {
+    watch(
+      dataForm,
+      () => {
+        if (dataSource.value != null && dataForm.value != null) {
+          dataUpdate.value = getObjectDifference(dataSource.value, dataForm.value as T)
+        }
+      },
+      { deep: true }
+    )
+  }
   //#endregion
 
   //#region Жизненный цикл
   onMounted(
     loadingWrapper(async () => {
-      const data = await getData(initialId)
+      const data = await options.api.get(initialId)
       copyFormData(data)
-
-      if (isUpdate.value) {
-        watch(
-          dataForm,
-          () => {
-            dataUpdate.value = getObjectDifference(dataSource.value, dataForm.value)
-          },
-          { deep: true }
-        )
-      }
     })
   )
   //#endregion
