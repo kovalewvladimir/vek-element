@@ -52,12 +52,14 @@ const loadData = async () => {
   return Array.from({ length: loadLength }).map(() => generateItem())
 }
 
+// ==================
+// EventBus
+// ==================
 const busUserStatus = useEventBus(TABLE_SIMPLE_BUS_KEY)
+
 busUserStatus.on(({ status, data }) => {
-  if (!tableRef.value) return
-
   console.log('busUserStatus.on', status, data)
-
+  if (!tableRef.value) return
   switch (status) {
     case 'create': {
       tableRef.value.pushDataItem(data, { index: 0 })
@@ -65,12 +67,12 @@ busUserStatus.on(({ status, data }) => {
     }
     case 'update': {
       const index = tableRef.value.findDataItemIndex(data.id)
-      if (index !== undefined) tableRef.value.updateDataItem(data, { index })
+      tableRef.value.updateDataItem(data, { index })
       break
     }
     case 'delete': {
       const index = tableRef.value.findDataItemIndex(data.id)
-      if (index !== undefined) tableRef.value.deleteDataItem(index)
+      tableRef.value.deleteDataItem(index)
       break
     }
   }
