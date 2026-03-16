@@ -55,7 +55,7 @@ export const useForm = <
     idField?: ID_KEY
 
     /** Функция для получения данных */
-    get: (id: ID_T | undefined) => Promise<T>
+    get: (id: string | string[] | undefined) => Promise<T>
 
     /** Функция для создания данных */
     create: (data: Omit<T, ID_KEY>) => Promise<T>
@@ -72,7 +72,7 @@ export const useForm = <
   const { loading, loadingWrapper } = useLoading()
   const busEvent = useEventBus(options.config.busKey)
 
-  const initialId = route.params[options.config.routeParamName] as ID_T
+  const initialId = route.params[options.config.routeParamName]
 
   const formRef = ref<FormInstance>()
 

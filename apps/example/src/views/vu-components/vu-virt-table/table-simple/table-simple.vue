@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { Columns, VuContentWrap, VuVirtTable } from '@vek-element/ui'
+import { Columns, useEventBus, VuContentWrap, VuVirtTable } from '@vek-element/ui'
 import { asyncSleep, dateIsoToFrontendFormat } from '@vek-element/ui/utils'
 import { ElButton } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
+
+import { RouterLinkToTableSimpleCreate, RouterLinkToTableSimpleUpdate } from '@/navigation/links'
+
+import { generateItem } from './data'
+import { TABLE_SIMPLE_BUS_KEY } from './symbol'
 
 // ==================
 // Constants
@@ -18,7 +23,7 @@ const tableRef = useTemplateRef('table')
 
 const columns = ref(
   new Columns(
-    { prop: 'id', label: 'ID', type: 'number' },
+    { prop: 'id', label: 'ID', type: 'number', width: 50 },
     { prop: 'name', label: 'Name', type: 'string' },
     { prop: 'name1', label: 'Name1', type: 'string' },
     { prop: 'name2', label: 'Name2', type: 'string' },
@@ -36,30 +41,6 @@ const columns = ref(
 // Methods
 // ==================
 
-const getRandomDate = () => {
-  const start = new Date(2020, 0, 1).getTime()
-  const end = new Date()
-  return new Date(start + Math.random() * (end.getTime() - start)).toISOString()
-}
-
-let id = 0
-const generateItem = (name: string = '') => ({
-  id: id++,
-  isExpandable: Math.random() > 0.5,
-  name: `${name ? name + ' - ' : ''}Name ${Math.floor(Math.random() * 1000)}`,
-  name1: `Name ${Math.floor(Math.random() * 1000)}`,
-  name2: `Name ${Math.floor(Math.random() * 1000)}`,
-  name3: `Name ${Math.floor(Math.random() * 1000)}`,
-  name4: `Name ${Math.floor(Math.random() * 1000)}`,
-  name5: `Name ${Math.floor(Math.random() * 1000)}`,
-  name6: `Name ${Math.floor(Math.random() * 1000)}`,
-  name7: `Name ${Math.floor(Math.random() * 1000)}`,
-  dateCreate: getRandomDate(),
-  date: {
-    create: getRandomDate()
-  }
-})
-
 let loadPages = 0
 const loadData = async () => {
   console.log('loadData')
@@ -70,6 +51,30 @@ const loadData = async () => {
   loadPages++
   return Array.from({ length: loadLength }).map(() => generateItem())
 }
+
+const busUserStatus = useEventBus(TABLE_SIMPLE_BUS_KEY)
+busUserStatus.on(({ status, data }) => {
+  if (!tableRef.value) return
+
+  console.log('busUserStatus.on', status, data)
+
+  switch (status) {
+    case 'create': {
+      tableRef.value.pushDataItem(data, { index: 0 })
+      break
+    }
+    case 'update': {
+      const index = tableRef.value.findDataItemIndex(data.id)
+      if (index !== undefined) tableRef.value.updateDataItem(data, { index })
+      break
+    }
+    case 'delete': {
+      const index = tableRef.value.findDataItemIndex(data.id)
+      if (index !== undefined) tableRef.value.deleteDataItem(index)
+      break
+    }
+  }
+})
 </script>
 
 <template>
@@ -77,9 +82,12 @@ const loadData = async () => {
     <template #header>
       <el-button
         type="primary"
+        class="mr-10px"
         @click="tableRef?.reloadData()"
-        >Reload</el-button
+        >Обновить</el-button
       >
+
+      <router-link-to-table-simple-create />
     </template>
 
     <vu-virt-table
@@ -89,6 +97,9 @@ const loadData = async () => {
       :columns="columns"
       :on-load-data="loadData"
     >
+      <template #id="{ row }"
+        ><span><router-link-to-table-simple-update :id="row.id" /></span
+      ></template>
     </vu-virt-table>
   </vu-content-wrap>
 </template>

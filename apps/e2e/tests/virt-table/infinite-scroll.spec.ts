@@ -91,7 +91,7 @@ test.describe('VuVirtTable — infinite scroll', () => {
     await waitForCount(page, 200)
 
     // Нажимаем Reload
-    await page.getByRole('button', { name: 'Reload' }).click()
+    await page.getByRole('button', { name: 'Обновить' }).click()
 
     // После перезагрузки должна загрузиться первая страница
     await waitForCount(page, 100)

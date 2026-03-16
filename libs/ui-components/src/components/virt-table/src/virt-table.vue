@@ -44,7 +44,7 @@ import {
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
 import VirtTableRow from './virt-table-row.vue'
-import virtTableTreeCell from './virt-table-tree-cell.vue'
+import VirtTableTreeCell from './virt-table-tree-cell.vue'
 
 // ==================
 // Slots
@@ -68,6 +68,7 @@ defineSlots<{
 const {
   columns,
   rowUniqueKey,
+  dataSymbol,
   tree,
   onLoadData,
   height = '300px',
@@ -81,6 +82,8 @@ const {
   columns: Columns
   /** Уникальный ключ для таблицы */
   rowUniqueKey: K
+  /** Символ для идентификации данных таблицы через useVirtTableData */
+  dataSymbol?: symbol
 
   // eslint-disable-next-line vue/require-default-prop
   tree?: {
@@ -243,7 +246,8 @@ const {
   sizePage,
   rowHeight,
   virtualListOverscan,
-  infiniteScrollDistance
+  infiniteScrollDistance,
+  dataSymbol
 )
 
 // Scroll для vue-router

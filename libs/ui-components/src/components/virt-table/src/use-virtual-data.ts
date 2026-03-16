@@ -1,8 +1,9 @@
 import { useInfiniteScroll, useLoading, useVirtualList } from '@vek-element/ui-components/hooks'
-import { type Ref, ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 
 import { type Columns } from './column'
 import { type OnLoadDataType } from './types'
+import { useVirtTableData } from './use-virt-table-data'
 import { injectFormatMetaData } from './utils'
 
 export const useVirtualData = <T>(
@@ -11,14 +12,17 @@ export const useVirtualData = <T>(
   sizePage: number,
   rowHeight: number,
   virtualListOverscan: number,
-  infiniteScrollDistance: number
+  infiniteScrollDistance: number,
+  dataSymbol?: symbol
 ) => {
   const { loading, loadingWrapper } = useLoading()
+  const { createStore, destroyStore } = useVirtTableData<T>(dataSymbol)
 
   const isAllDataLoaded = ref(false)
   const isLoadingError = ref(false)
 
-  const data: Ref<T[]> = ref([])
+  const data = createStore()
+
   const currentPage = ref(0)
 
   /** Загрузка данных */
@@ -50,10 +54,6 @@ export const useVirtualData = <T>(
     }
 
     data.value.push(...loadedData)
-
-    // Bugfix: не отображаются данные, если они все помещаются в контейнер без scroll`а.
-    // Что бы они отобразились нужно принудительно сделать перерендер
-    if (currentPage.value === 1) virtualContainerProps.onScroll()
   })
   const reloadData = () => {
     // vueuse v14.1.0 изменили поведение canLoadMore, теперь он стал реактивным.
@@ -81,6 +81,10 @@ export const useVirtualData = <T>(
   useInfiniteScroll(virtualContainerProps.ref, getData, {
     distance: infiniteScrollDistance,
     canLoadMore: () => !isAllDataLoaded.value && !isLoadingError.value
+  })
+
+  onUnmounted(() => {
+    destroyStore()
   })
 
   return {

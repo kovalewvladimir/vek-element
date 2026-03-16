@@ -58,13 +58,34 @@ export function useVirtualList<T>(list: MaybeRef<T[]>, options: UseVirtualListOp
       .reduce((sum, _, i) => sum + (itemHeight as (i: number) => number)(i), 0)
   }
 
+  let elScrollTopCache = 0
+  let elClientHeightCache = 0
+  /**
+   * Кэш параметров контейнера.
+   * Сохраняет последние валидные `scrollTop` и `clientHeight`, чтобы при временном `clientHeight = 0`
+   * (например, когда элемент вне viewport) не занижать вычисляемый диапазон видимых элементов.
+   */
+  const getElData = () => {
+    const el = containerRef.value
+    if (!el) return { scrollTop: 0, clientHeight: 0 }
+
+    const r = el.getBoundingClientRect()
+    const isInViewport =
+      r.bottom > 0 && r.right > 0 && r.top < window.innerHeight && r.left < window.innerWidth
+
+    if (isInViewport) {
+      elScrollTopCache = el.scrollTop
+      elClientHeightCache = el.clientHeight
+    }
+    return { scrollTop: elScrollTopCache, clientHeight: elClientHeightCache }
+  }
+
   /** Пересчитать диапазон видимых элементов */
   const calculateRange = () => {
-    const el = containerRef.value
-    if (!el) return
+    const { scrollTop, clientHeight } = getElData()
     const items = unref(list)
-    const offset = getOffset(el.scrollTop)
-    const capacity = getViewCapacity(el.clientHeight)
+    const offset = getOffset(scrollTop)
+    const capacity = getViewCapacity(clientHeight)
     const from = Math.max(0, offset - overscan)
     const to = Math.min(items.length, offset + capacity + overscan)
     state.value = { start: from, end: to }
