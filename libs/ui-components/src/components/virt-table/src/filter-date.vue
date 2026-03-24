@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCapitalizedMonth } from '@vek-element/ui/utils'
+import { getCapitalizedMonth } from '@vek-element/ui-components/utils'
 import { ElButton, ElDatePicker, ElOption, ElOptionGroup, ElSelect } from 'element-plus'
 import { computed, type Ref, ref, unref } from 'vue'
 
