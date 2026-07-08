@@ -1,0 +1,153 @@
+name: Release
+
+# Ручной выпуск пакета в npm.
+#
+# GitHub → вкладка Actions → Release → Run workflow:
+#   - package: какой пакет публикуем
+#   - bump:    patch / minor / major
+#
+# Что делает:
+#   1. Прогоняет проверки (lint, type-check, тесты eslint-config) — они блокируют выпуск.
+#   2. Бампит версию выбранного пакета (без git-операций npm).
+#   3. Коммитит бамп + ставит тег вида "@vek-element/ui@0.0.86" и пушит их.
+#   4. Публикует пакет в npm через OIDC Trusted Publishing (без токена, с provenance).
+#   5. Создаёт GitHub Release с авто-changelog и .tgz-артефактом.
+#
+# ВАЖНО про @vek-element/ui: его prepack подтягивает ПОСЛЕДНЮЮ опубликованную
+# версию @vek-element/ui-components из реестра. Поэтому если меняли обе библиотеки —
+# сначала выпускаем ui-components, затем ui.
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Пакет для публикации
+        required: true
+        type: choice
+        options:
+          - ui
+          - ui-components
+          - svg
+          - eslint
+      bump:
+        description: Тип версии
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+# Не запускаем два релиза одновременно (иначе гонка за push в ветку).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push коммита с бампом версии и тега
+  id-token: write # OIDC Trusted Publishing в npm
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 — нужна вся история и все теги, чтобы найти
+          # предыдущий тег того же пакета для changelog в GitHub Release.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Совпадает с .devcontainer (node:22.18): нужен для type-stripping
+          # .ts-скриптов в prepack (clean-package-json.ts / update-ui-components-version.ts).
+          node-version: '22.18'
+          registry-url: https://registry.npmjs.org
+
+      - name: Update npm (OIDC Trusted Publishing требует npm >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Test eslint-config
+        run: npm run test -w @vek-element/eslint-config
+
+      - name: Resolve package name and dir
+        id: pkg
+        run: |
+          case "${{ inputs.package }}" in
+            ui)            NAME="@vek-element/ui";            DIR="libs/ui" ;;
+            ui-components) NAME="@vek-element/ui-components"; DIR="libs/ui-components" ;;
+            svg)           NAME="@vek-element/vite-svg";      DIR="libs/plugins/vite/svg" ;;
+            eslint)        NAME="@vek-element/eslint-config"; DIR="libs/eslint" ;;
+            *) echo "Unknown package: ${{ inputs.package }}" >&2; exit 1 ;;
+          esac
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "dir=$DIR"   >> "$GITHUB_OUTPUT"
+
+      - name: Bump version
+        id: bump
+        run: |
+          npm version ${{ inputs.bump }} \
+            -w '${{ steps.pkg.outputs.name }}' \
+            --no-git-tag-version
+          VERSION=$(node -p "require('./${{ steps.pkg.outputs.dir }}/package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=${{ steps.pkg.outputs.name }}@$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Commit, tag and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json '${{ steps.pkg.outputs.dir }}/package.json'
+          git commit -m "Release: ${{ steps.bump.outputs.tag }}"
+          git tag "${{ steps.bump.outputs.tag }}"
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin "${{ steps.bump.outputs.tag }}"
+
+      - name: Publish to npm
+        # Коммит с чистым package.json уже запушен ВЫШЕ. Здесь prepack мутирует
+        # рабочую копию (чистит поля, ui подставляет версию ui-components) — но это
+        # уже не коммитится, поэтому источник в git остаётся чистым.
+        run: npm publish -w '${{ steps.pkg.outputs.name }}' --access public --provenance
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG='${{ steps.bump.outputs.tag }}'
+          NAME='${{ steps.pkg.outputs.name }}'
+
+          # Предыдущий тег ЭТОГО же пакета (version-sort, исключая только что созданный).
+          # Нужен, чтобы changelog охватывал коммиты только этого пакета, а не соседних.
+          PREV_TAG=$(git tag --list "${NAME}@*" --sort=-v:refname | grep -vxF "$TAG" | head -n1)
+
+          # Тарболл-артефакт — тот же, что уехал в npm (prepack идемпотентен).
+          npm pack -w "$NAME" >/dev/null
+          ASSET=$(ls -t *.tgz 2>/dev/null | head -n1)
+
+          args=(--title "$TAG" --generate-notes)
+          [ -n "$PREV_TAG" ] && args+=(--notes-start-tag "$PREV_TAG")
+          [ -n "$ASSET" ] && args+=("$ASSET")
+
+          gh release create "$TAG" "${args[@]}"
+          echo "Release создан: $TAG (prev: ${PREV_TAG:-—}, asset: ${ASSET:-—})"
+
+      - name: Summary
+        run: |
+          {
+            echo "### ✅ Релиз \`${{ steps.bump.outputs.tag }}\`"
+            echo ""
+            echo "- npm: https://www.npmjs.com/package/${{ steps.pkg.outputs.name }}/v/${{ steps.bump.outputs.version }}"
+            echo "- GitHub Release: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.bump.outputs.tag }}"
+          } >> "$GITHUB_STEP_SUMMARY"
