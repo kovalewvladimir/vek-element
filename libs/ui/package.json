@@ -29,7 +29,11 @@
     "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui/package.json && node ./scripts/update-ui-components-version.ts"
   },
   "dependencies": {
-    "vue-router": "5.0.3",
     "@vek-element/ui-components": "file:../ui-components"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0",
+    "vue-router": "^5.0.0",
+    "element-plus": "^2.14.0"
   }
 }

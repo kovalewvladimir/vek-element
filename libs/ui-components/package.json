@@ -29,8 +29,8 @@
     "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui-components/package.json"
   },
   "peerDependencies": {
-    "vue": "3.5.30",
-    "element-plus": "2.13.5",
+    "vue": "^3.5.0",
+    "element-plus": "^2.14.0",
     "@imengyu/vue3-context-menu": "1.4.5"
   }
 }
