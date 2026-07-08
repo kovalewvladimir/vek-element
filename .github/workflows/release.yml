@@ -1,5 +1,9 @@
 name: Release
 
+# Заголовок конкретного запуска в списке Actions — из выбранных inputs.
+# Напр.: "Release: ui-components (patch)"
+run-name: 'Release: ${{ inputs.package }} (${{ inputs.bump }})'
+
 # Ручной выпуск пакета в npm.
 #
 # GitHub → вкладка Actions → Release → Run workflow:
