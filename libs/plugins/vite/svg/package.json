@@ -2,6 +2,11 @@
   "name": "@vek-element/vite-svg",
   "version": "0.0.2",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kovalewvladimir/vek-element.git",
+    "directory": "libs/plugins/vite/svg"
+  },
   "scripts": {
     "build": "vite build",
     "prepack": "npm run build && node ../../../../scripts/clean-package-json.ts ../libs/plugins/vite/svg/package.json"

@@ -2,6 +2,11 @@
   "name": "@vek-element/eslint-config",
   "version": "0.0.11",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kovalewvladimir/vek-element.git",
+    "directory": "libs/eslint"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

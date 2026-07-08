@@ -9,9 +9,10 @@ name: Release
 # Что делает:
 #   1. Прогоняет проверки (lint, type-check, тесты eslint-config) — они блокируют выпуск.
 #   2. Бампит версию выбранного пакета (без git-операций npm).
-#   3. Коммитит бамп + ставит тег вида "@vek-element/ui@0.0.86" и пушит их.
+#   3. Коммитит бамп + ставит тег локально ("@vek-element/ui@0.0.86").
 #   4. Публикует пакет в npm через OIDC Trusted Publishing (без токена, с provenance).
-#   5. Создаёт GitHub Release с авто-changelog и .tgz-артефактом.
+#   5. Пушит коммит и тег — только ПОСЛЕ успешной публикации (без «фантомных» версий).
+#   6. Создаёт GitHub Release с авто-changelog и .tgz-артефактом.
 #
 # ВАЖНО про @vek-element/ui: его prepack подтягивает ПОСЛЕДНЮЮ опубликованную
 # версию @vek-element/ui-components из реестра. Поэтому если меняли обе библиотеки —
@@ -105,7 +106,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=${{ steps.pkg.outputs.name }}@$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Commit, tag and push
+      - name: Commit and tag (локально)
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -115,14 +116,20 @@ jobs:
           # e2e (Playwright), браузеры которого на раннере не установлены.
           git commit --no-verify -m "Release: ${{ steps.bump.outputs.tag }}"
           git tag "${{ steps.bump.outputs.tag }}"
-          git push origin HEAD:${{ github.ref_name }}
-          git push origin "${{ steps.bump.outputs.tag }}"
 
       - name: Publish to npm
-        # Коммит с чистым package.json уже запушен ВЫШЕ. Здесь prepack мутирует
-        # рабочую копию (чистит поля, ui подставляет версию ui-components) — но это
-        # уже не коммитится, поэтому источник в git остаётся чистым.
+        # Публикуем ДО push. Здесь prepack мутирует рабочую копию (чистит поля,
+        # ui подставляет версию ui-components), но коммит с чистым package.json уже
+        # создан локально ВЫШЕ, а push (со следующего шага) не заберёт эти мутации.
         run: npm publish -w '${{ steps.pkg.outputs.name }}' --access public --provenance
+
+      - name: Push commit and tag
+        # Пушим ТОЛЬКО после успешной публикации — иначе в remote не появится
+        # ни коммита с бампом, ни тега (не будет «фантомной» версии впереди npm).
+        # git push отправляет коммит, а не рабочую копию, поэтому мутации prepack не уедут.
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin "${{ steps.bump.outputs.tag }}"
 
       - name: Create GitHub Release
         env:
