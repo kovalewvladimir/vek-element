@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="T">
 import { useLoading } from '@vek-element/ui-components/hooks'
 import {
+  type AutocompleteInstance,
   ElAutocomplete,
   ElSkeleton,
   ElSkeletonItem,
@@ -50,7 +51,7 @@ const value = defineModel<string>({ required: true })
 const { loading, loadingWrapper } = useLoading(0)
 const { size: globalSize } = useGlobalComponentSettings('autocomplete')
 
-const inputRef = useTemplateRef<InstanceType<typeof ElAutocomplete>>('inputRef')
+const inputRef = useTemplateRef<AutocompleteInstance>('inputRef')
 let options: ReadonlyArray<T> = []
 
 onMounted(
