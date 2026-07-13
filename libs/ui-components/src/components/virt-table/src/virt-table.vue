@@ -32,6 +32,7 @@ import {
   type IVirtTableExpose,
   type OnLoadDataType
 } from './types'
+import { useColumnResize } from './use-column-resize'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
 import {
@@ -266,6 +267,13 @@ const {
 const getCellValue = (row: any, column: IColumn) => {
   return column.formatter ? getFormatData(row, column.prop) : getValueByPath(row, column.prop)
 }
+
+// ===================================
+// Изменение ширины колонок
+// ===================================
+
+const tableRootRef = useTemplateRef<HTMLElement>('tableRootRef')
+const { isResizing, indicatorLeft, startResize } = useColumnResize(tableRootRef)
 
 // ===================================
 // Контекстное меню
@@ -543,9 +551,10 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
 
 <template>
   <div
+    ref="tableRootRef"
     v-loading="loading"
     v-bind="$attrs"
-    class="relative"
+    class="virt-table-root relative"
     :style="`height: ${height}`"
   >
     <div
@@ -557,8 +566,10 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
       <div class="header">
         <virt-table-row
           :columns="computedVisibleColumns"
+          is-header
           @click="onSortColumn"
           @contextmenu="onShowContextMenu"
+          @resize-start="startResize"
         >
           <template #default="{ column }">
             <slot
@@ -624,6 +635,13 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
         ><el-empty description="Нет данных"
       /></div>
     </div>
+
+    <!-- Линия-указатель при изменении ширины колонки -->
+    <div
+      v-show="isResizing"
+      class="resize-indicator"
+      :style="{ left: `${indicatorLeft}px` }"
+    ></div>
 
     <div
       class="absolute bottom-[-8px] right-0 text-6px color-gray"
@@ -705,6 +723,7 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
   }
 
   & .cell {
+    position: relative;
     flex: 1 1 0%;
     min-width: v-bind('columnMinWidthPx');
 
@@ -727,10 +746,41 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    & .resize-handle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 3;
+
+      width: 8px;
+      height: 100%;
+
+      cursor: col-resize;
+      user-select: none;
+    }
+
+    & .resize-handle:hover {
+      background: var(--el-color-primary-light-5);
+    }
   }
 
   .cell:last-child {
     border-right: none;
+  }
+}
+
+.virt-table-root {
+  & .resize-indicator {
+    position: absolute;
+    top: 0;
+    z-index: 10;
+
+    width: 2px;
+    height: 100%;
+
+    background: var(--el-color-primary);
+    pointer-events: none;
   }
 }
 </style>

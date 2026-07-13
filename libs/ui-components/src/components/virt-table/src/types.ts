@@ -66,6 +66,8 @@ export interface IColumn {
   label: string
   /** Ширина колонки */
   width?: number
+  /** Разрешить изменение ширины колонки перетаскиванием границы (по умолчанию true) */
+  resizable?: boolean
   /** Выравнивание текста */
   align?: AlignType
   /** Видимость колонки */

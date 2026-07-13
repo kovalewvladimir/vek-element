@@ -23,6 +23,7 @@ export class Column {
 
   readonly label: string
   readonly width: number
+  readonly resizable: boolean
   readonly align: AlignType
   readonly visible: boolean
   readonly showOverflowTooltip: boolean
@@ -45,6 +46,7 @@ export class Column {
 
     this.label = column.label
     this.width = column.width ?? COLUMN_AUTO_WIDTH
+    this.resizable = column.resizable ?? true
     this.align = column.align ?? 'left'
     this.visible = column.visible ?? true
     this.showOverflowTooltip = column.showOverflowTooltip ?? true

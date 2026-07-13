@@ -9,7 +9,7 @@ import { ElInputNumber } from 'element-plus'
 import { computed, type Ref, ref } from 'vue'
 
 import { type Column, type Columns } from './column'
-import { COLUMN_AUTO_WIDTH, COLUMN_MIN_WIDTH, FILTER_TYPE_LABEL } from './constants'
+import { COLUMN_AUTO_WIDTH, COLUMN_MAX_WIDTH, COLUMN_MIN_WIDTH, FILTER_TYPE_LABEL } from './constants'
 import BoolFilter from './filter-bool.vue'
 import DateFilter from './filter-date.vue'
 import NumberFilter from './filter-number.vue'
@@ -234,7 +234,7 @@ defineExpose({ onShowContextMenu })
             v-model="columnWidth"
             :disabled="isColumnAutoWidth"
             :min="COLUMN_MIN_WIDTH"
-            :max="1000"
+            :max="COLUMN_MAX_WIDTH"
             :step="5"
           />
         </template>
