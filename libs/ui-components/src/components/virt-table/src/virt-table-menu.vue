@@ -12,6 +12,7 @@ import { computed, type Ref, ref } from 'vue'
 
 import { type Column, type Columns } from './column'
 import { COLUMN_AUTO_WIDTH, COLUMN_MIN_WIDTH, FILTER_TYPE_LABEL } from './constants'
+import BoolFilter from './filter-bool.vue'
 import DateFilter from './filter-date.vue'
 import NumberFilter from './filter-number.vue'
 import StringFilter from './filter-string.vue'
@@ -155,6 +156,10 @@ defineExpose({ onShowContextMenu })
         <string-filter
           v-if="columnCurrent?.type === 'string' || columnCurrent?.type === 'string[]'"
           :column-type="columnCurrent?.type"
+          @create-filter="createFilter"
+        />
+        <bool-filter
+          v-if="columnCurrent?.type === 'bool'"
           @create-filter="createFilter"
         />
       </template>

@@ -33,7 +33,14 @@ const columns = ref(
     { prop: 'name6', label: 'Name6', type: 'string' },
     { prop: 'name7', label: 'Name7', type: 'string' },
     { prop: 'dateCreate', label: 'dateCreate', type: 'string', formatter: dateIsoToFrontendFormat },
-    { prop: 'date.create', label: 'date.create', type: 'date', formatter: dateIsoToFrontendFormat }
+    { prop: 'date.create', label: 'date.create', type: 'date', formatter: dateIsoToFrontendFormat },
+    {
+      prop: 'isExpandable',
+      label: 'isExpandable',
+      type: 'bool',
+      width: 100,
+      formatter: (value: boolean) => (value ? 'Да' : 'Нет')
+    }
   )
 )
 

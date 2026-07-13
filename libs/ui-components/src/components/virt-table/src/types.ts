@@ -2,7 +2,7 @@ import { type Ref } from 'vue'
 
 export type FormatterType = ((value: any) => string) | null
 export type AlignType = 'left' | 'right'
-export type ColumnType = 'string' | 'number' | 'date' | 'string[]'
+export type ColumnType = 'string' | 'number' | 'date' | 'string[]' | 'bool'
 export type SortType = 'ASC' | 'DESC' | null
 export type FilterLogicalOperator = 'and' | 'or'
 type FilterContains = 'contains' | 'notcontains'
@@ -13,7 +13,8 @@ type FilterEmpty = 'null' | 'notnull'
 export type FilterStringType = FilterContains | FilterEquals | FilterEmpty
 export type FilterNumberType = FilterEquals | FilterCompare | FilterCompareEquals | FilterEmpty
 export type FilterDateType = 'eq' | 'before' | 'after' | 'between'
-export type FilterType = IFilterString | IFilterNumber | IFilterDate
+export type FilterBoolType = FilterEquals | FilterEmpty
+export type FilterType = IFilterString | IFilterNumber | IFilterDate | IFilterBool
 
 export type OnLoadDataType<T> = (params: IOnLoadDataParams) => Promise<T>
 export interface IOnLoadDataParams {
@@ -41,6 +42,11 @@ export interface IFilterNumber {
 export interface IFilterDate {
   type: FilterDateType
   value: string | [string, string]
+}
+
+export interface IFilterBool {
+  type: FilterBoolType
+  value: boolean
 }
 
 export interface IFilters {
