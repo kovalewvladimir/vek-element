@@ -1,9 +1,13 @@
-FROM node:22.18
+FROM node:24
 
 # Пакет npm-check-updates позволяет проверять и обновлять зависимости пакетов npm.
 RUN npm install -g npm-check-updates
 # Пакет chokidar позволяет отслеживать изменения файлов в реальном времени.
 RUN npm install -g chokidar-cli
+
+# Установка браузеров для Playwright
+RUN npx playwright install-deps
+RUN npx playwright install
 
 # vite-plugin-checker editor
 ENV LAUNCH_EDITOR=code

@@ -67,12 +67,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          # Совпадает с .devcontainer (node:22.18): нужен для type-stripping
+          # Совпадает с .devcontainer (node:24): нужен для type-stripping
           # .ts-скриптов в prepack (clean-package-json.ts / update-ui-components-version.ts).
-          node-version: '22.18'
+          node-version: '24'
           registry-url: https://registry.npmjs.org
 
       - name: Update npm (OIDC Trusted Publishing требует npm >= 11.5.1)
+        # node 24 (последняя 24.x, >= 24.15.0) совместим с npm@latest — берём свежий.
         run: npm install -g npm@latest
 
       - name: Install dependencies
