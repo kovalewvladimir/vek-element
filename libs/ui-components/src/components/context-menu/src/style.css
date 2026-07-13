@@ -1,0 +1,177 @@
+/*
+ * Стили контекстного меню virt-table.
+ *
+ * Портированное подмножество стилей `@imengyu/vue3-context-menu`
+ * (MIT License, Copyright (c) 2021 梦欤,
+ *  https://github.com/imengyu/vue3-context-menu).
+ *
+ * Сохранены оригинальные имена классов (`mx-context-menu*`) и css-переменные
+ * (`--mx-menu-*`), чтобы пользовательские темы (например `.mx-context-menu.virt-table`)
+ * продолжали работать без изменений.
+ */
+
+:root {
+  --mx-menu-backgroud: #fff;
+  --mx-menu-hover-backgroud: #f1f1f1;
+  --mx-menu-active-backgroud: #dfdfdf;
+  --mx-menu-open-backgroud: #f1f1f1;
+  --mx-menu-open-hover-backgroud: #f1f1f1;
+  --mx-menu-divider: #f0f0f0;
+  --mx-menu-text: #2e2e2e;
+  --mx-menu-hover-text: #2e2e2e;
+  --mx-menu-active-text: #2e2e2e;
+  --mx-menu-open-text: #2e2e2e;
+  --mx-menu-open-hover-text: #2e2e2e;
+  --mx-menu-disabled-text: #c9c8c8;
+  --mx-menu-icon-size: 16px;
+  --mx-menu-shadow-color: rgba(0, 0, 0, 0.1);
+  --mx-menu-backgroud-radius: 10px;
+  --mx-menu-placeholder-width: 24px;
+}
+
+.mx-context-menu {
+  pointer-events: all;
+  display: inline-block;
+  overflow: visible;
+  position: absolute;
+  background-color: var(--mx-menu-backgroud);
+  border-radius: var(--mx-menu-backgroud-radius);
+  padding: 12px 0;
+  box-shadow: 0 10px 40px 10px var(--mx-menu-shadow-color);
+  opacity: 1;
+}
+
+.mx-context-menu-items {
+  position: relative;
+  overflow: visible;
+}
+
+.mx-context-menu-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  padding: 6px 15px;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--mx-menu-text);
+}
+
+.mx-context-menu-item .mx-right-arrow,
+.mx-context-menu-item .mx-checked-mark {
+  fill: var(--mx-menu-text);
+}
+
+.mx-context-menu-item:hover {
+  background-color: var(--mx-menu-hover-backgroud);
+  color: var(--mx-menu-hover-text);
+}
+
+.mx-context-menu-item:hover .mx-right-arrow,
+.mx-context-menu-item:hover .mx-checked-mark {
+  fill: var(--mx-menu-hover-text);
+}
+
+.mx-context-menu-item:active {
+  background-color: var(--mx-menu-active-backgroud);
+  color: var(--mx-menu-active-text);
+}
+
+.mx-context-menu-item.open {
+  background-color: var(--mx-menu-open-backgroud);
+  color: var(--mx-menu-open-text);
+}
+
+.mx-context-menu-item.open:hover {
+  background-color: var(--mx-menu-open-hover-backgroud);
+  color: var(--mx-menu-open-hover-text);
+}
+
+.mx-context-menu-item.open .mx-right-arrow,
+.mx-context-menu-item.open .mx-checked-mark {
+  fill: var(--mx-menu-open-text);
+}
+
+.mx-context-menu-item.disabled {
+  color: var(--mx-menu-disabled-text);
+  cursor: not-allowed;
+}
+
+.mx-context-menu-item.disabled:hover,
+.mx-context-menu-item.disabled:active {
+  background-color: transparent;
+}
+
+.mx-context-menu-item.disabled .mx-right-arrow,
+.mx-context-menu-item.disabled .mx-checked-mark {
+  fill: var(--mx-menu-disabled-text);
+}
+
+.mx-context-menu-item .mx-item-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 100%;
+}
+
+.mx-context-menu-item .mx-icon-placeholder {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: auto;
+  overflow: hidden;
+}
+
+.mx-context-menu-item .mx-icon-placeholder.preserve-width {
+  width: var(--mx-menu-placeholder-width);
+}
+
+.mx-context-menu-item .icon {
+  display: inline-block;
+  font-size: var(--mx-menu-icon-size);
+}
+
+.mx-context-menu-item .icon.svg {
+  width: var(--mx-menu-icon-size);
+  height: var(--mx-menu-icon-size);
+}
+
+.mx-context-menu-item .label {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-inline-end: 16px;
+}
+
+.mx-context-menu-item-wrapper {
+  position: relative;
+}
+
+.mx-context-menu-item-sperator {
+  display: block;
+  padding: 5px 0;
+  background-color: var(--mx-menu-backgroud);
+}
+
+.mx-context-menu-item-sperator:after {
+  display: block;
+  content: '';
+  background-color: var(--mx-menu-divider);
+  height: 1px;
+}
+
+.mx-right-arrow {
+  width: 14px;
+  height: 14px;
+}
+
+.mx-checked-mark {
+  width: var(--mx-menu-icon-size);
+  height: var(--mx-menu-icon-size);
+}

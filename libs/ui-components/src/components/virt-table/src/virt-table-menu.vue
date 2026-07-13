@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
-
 import {
-  ContextMenu,
-  ContextMenuGroup,
-  ContextMenuItem,
-  ContextMenuSeparator
-} from '@imengyu/vue3-context-menu'
+  VuContextMenu,
+  VuContextMenuGroup,
+  VuContextMenuItem,
+  VuContextMenuSeparator
+} from '@vek-element/ui-components'
 import { ElInputNumber } from 'element-plus'
 import { computed, type Ref, ref } from 'vue'
 
@@ -118,26 +116,26 @@ defineExpose({ onShowContextMenu })
 </script>
 
 <template>
-  <context-menu
+  <vu-context-menu
     v-model:show="contextMenuVisible"
     :options="contextMenuOptions"
   >
-    <context-menu-item
+    <vu-context-menu-item
       label="Сортировать"
       @click="setSort('ASC')"
     >
       <template #icon><svg-sort-up /></template>
-    </context-menu-item>
-    <context-menu-item
+    </vu-context-menu-item>
+    <vu-context-menu-item
       label="Сортировать"
       @click="setSort('DESC')"
     >
       <template #icon><svg-sort-down /></template>
-    </context-menu-item>
+    </vu-context-menu-item>
 
-    <context-menu-separator />
+    <vu-context-menu-separator />
 
-    <context-menu-item
+    <vu-context-menu-item
       label="Фильтры недоступны"
       custom-class="no-hover"
       :click-close="false"
@@ -163,35 +161,35 @@ defineExpose({ onShowContextMenu })
           @create-filter="createFilter"
         />
       </template>
-    </context-menu-item>
+    </vu-context-menu-item>
 
     <template
       v-for="column of columns"
       :key="column.prop"
     >
       <template v-if="column.filters.length > 0">
-        <context-menu-separator />
-        <context-menu-group
+        <vu-context-menu-separator />
+        <vu-context-menu-group
           :click-close="false"
           :label="column.label"
         >
           <template #icon><svg-column /></template>
 
-          <context-menu-item
+          <vu-context-menu-item
             label="И"
             :click-close="false"
             :checked="column.operator === 'and'"
             @click="changeFilterOperator(column, 'and')"
           />
-          <context-menu-item
+          <vu-context-menu-item
             label="ИЛИ"
             :click-close="false"
             :checked="column.operator === 'or'"
             @click="changeFilterOperator(column, 'or')"
           />
-        </context-menu-group>
+        </vu-context-menu-group>
       </template>
-      <context-menu-item
+      <vu-context-menu-item
         v-for="(filter, f_index) of column.filters"
         :key="column.prop + f_index"
         :label="`${FILTER_TYPE_LABEL[filter.type]}: ${filter.value}`"
@@ -199,32 +197,32 @@ defineExpose({ onShowContextMenu })
         @click="deleteFilter(column, filter)"
       >
         <template #icon><svg-close /></template>
-      </context-menu-item>
+      </vu-context-menu-item>
     </template>
 
-    <context-menu-separator />
+    <vu-context-menu-separator />
 
-    <context-menu-item
+    <vu-context-menu-item
       label="Сбросить фильтры"
       :click-close="false"
       @click="resetFilter"
     >
       <template #icon><svg-filter-clear /></template>
-    </context-menu-item>
+    </vu-context-menu-item>
 
-    <context-menu-separator />
+    <vu-context-menu-separator />
 
-    <context-menu-group label="Настройки">
+    <vu-context-menu-group label="Настройки">
       <template #icon><svg-column-options /></template>
 
-      <context-menu-item
+      <vu-context-menu-item
         :label="`Автоширина ${isColumnAutoWidth ? '- ВЫКЛ' : '- ВКЛ'}`"
         :click-close="false"
         @click="onAutoWidth"
       >
         <template #icon><svg-auto-fit-window /></template>
-      </context-menu-item>
-      <context-menu-item
+      </vu-context-menu-item>
+      <vu-context-menu-item
         :click-close="false"
         :disabled="isColumnAutoWidth"
         custom-class="no-hover"
@@ -240,29 +238,29 @@ defineExpose({ onShowContextMenu })
             :step="5"
           />
         </template>
-      </context-menu-item>
+      </vu-context-menu-item>
 
-      <context-menu-separator />
+      <vu-context-menu-separator />
 
-      <context-menu-group label="Столбцы">
+      <vu-context-menu-group label="Столбцы">
         <template #icon><svg-column-edit /></template>
 
-        <context-menu-item
+        <vu-context-menu-item
           label="Скрыть"
           @click="onHideCurrent"
         >
           <template #icon><svg-hide /></template>
-        </context-menu-item>
-        <context-menu-item
+        </vu-context-menu-item>
+        <vu-context-menu-item
           label="Показать все"
           @click="onVisibleAll"
         >
           <template #icon><svg-view /></template>
-        </context-menu-item>
+        </vu-context-menu-item>
 
-        <context-menu-separator />
+        <vu-context-menu-separator />
 
-        <context-menu-item
+        <vu-context-menu-item
           v-for="(column, index) of columns"
           :key="index"
           :label="column.label"
@@ -271,10 +269,10 @@ defineExpose({ onShowContextMenu })
           ><template #icon
             ><svg-view v-if="column.visible" /><svg-hide v-if="!column.visible"
           /></template>
-        </context-menu-item>
-      </context-menu-group>
-    </context-menu-group>
-  </context-menu>
+        </vu-context-menu-item>
+      </vu-context-menu-group>
+    </vu-context-menu-group>
+  </vu-context-menu>
 </template>
 
 <style>

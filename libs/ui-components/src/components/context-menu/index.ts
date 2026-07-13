@@ -1,0 +1,5 @@
+export { type ContextMenuOptions } from './src/context'
+export { default as VuContextMenu } from './src/context-menu.vue'
+export { default as VuContextMenuGroup } from './src/context-menu-group.vue'
+export { default as VuContextMenuItem } from './src/context-menu-item.vue'
+export { default as VuContextMenuSeparator } from './src/context-menu-separator.vue'
