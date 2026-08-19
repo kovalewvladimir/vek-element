@@ -1,19 +1,51 @@
 <script setup lang="ts">
-import { getCapitalizedMonth } from '@vek-element/ui-components/utils'
+import { dateToBackendFormat, getCapitalizedMonth } from '@vek-element/ui-components/utils'
 import { ElButton, ElDatePicker, ElOption, ElOptionGroup, ElSelect } from 'element-plus'
 import { computed, type Ref, ref, unref } from 'vue'
 
 import { FILTER_TYPE_LABEL } from './constants'
 import { type FilterDateType, type IFilterDate } from './types'
 
-const currentDate = new Date()
-const currentMouth = currentDate.getMonth()
+/** Количество последних месяцев в списке быстрых фильтров */
+const MONTHS_COUNT = 6
+
+interface IMonthOption {
+  /** Значение опции el-select */
+  value: string
+  /** Название месяца */
+  label: string
+  /** Первый день месяца в формате YYYY-MM-DD */
+  start: string
+  /** Последний день месяца в формате YYYY-MM-DD */
+  end: string
+}
 
 const emit = defineEmits<{
   (e: 'createFilter', filter: IFilterDate, closeMenu: boolean): void
 }>()
 
+/** Последние MONTHS_COUNT месяцев (включая текущий) с учётом перехода через год */
+const monthOptions: IMonthOption[] = (() => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth()
+
+  return Array.from({ length: MONTHS_COUNT }, (_, index) => {
+    const start = new Date(year, month - index, 1)
+    const end = new Date(year, month - index + 1, 0)
+
+    return {
+      value: `month:${start.getFullYear()}-${start.getMonth() + 1}`,
+      label: getCapitalizedMonth(start.getMonth() + 1),
+      start: dateToBackendFormat(start),
+      end: dateToBackendFormat(end)
+    }
+  })
+})()
+
 const type = ref<FilterDateType>('eq')
+/** Значение el-select: тип фильтра или быстрый фильтр по месяцу */
+const selectValue = ref<string>(unref(type))
 const value = ref('')
 const valueRange: Ref<string | [string, string]> = ref('')
 
@@ -22,11 +54,20 @@ const isValueRange = computed(() => {
   return true
 })
 
-const changeType = () => {
+const changeType = (selected: string) => {
   value.value = ''
   valueRange.value = ''
 
-  throw new Error('Not implemented')
+  const month = monthOptions.find((m) => m.value === selected)
+
+  // Быстрый фильтр по месяцу применяется сразу, тип фильтра при этом не меняется
+  if (month) {
+    selectValue.value = unref(type)
+    emit('createFilter', { type: 'between', value: [month.start, month.end] }, true)
+    return
+  }
+
+  type.value = selected as FilterDateType
 }
 
 const createFilter = (closeMenu: boolean) => {
@@ -44,7 +85,7 @@ const createFilter = (closeMenu: boolean) => {
 <template>
   <div class="flex flex-col w210px">
     <el-select
-      v-model="type"
+      v-model="selectValue"
       class="mb5px"
       :teleported="false"
       @change="changeType"
@@ -71,10 +112,10 @@ const createFilter = (closeMenu: boolean) => {
       </el-option-group>
       <el-option-group>
         <el-option
-          v-for="month in 6"
-          :key="month"
-          :value="currentMouth - month + 1"
-          :label="getCapitalizedMonth(currentMouth - month + 1 + 1)"
+          v-for="month in monthOptions"
+          :key="month.value"
+          :value="month.value"
+          :label="month.label"
         />
       </el-option-group>
     </el-select>
@@ -82,7 +123,7 @@ const createFilter = (closeMenu: boolean) => {
     <el-date-picker
       v-if="isValueRange"
       v-model="valueRange"
-      style="width: 190px"
+      style="width: 100%"
       format="DD-MM-YYYY"
       value-format="YYYY-MM-DD"
       class="mb5px"
