@@ -9,6 +9,7 @@ export type TableSimpleItem = {
   name5: string
   name6: string
   name7: string
+  amount: number
   dateCreate: string
   date: {
     create: string
@@ -33,6 +34,7 @@ export const generateItem = (name: string = ''): TableSimpleItem => ({
   name5: `Name ${Math.floor(Math.random() * 1000)}`,
   name6: `Name ${Math.floor(Math.random() * 1000)}`,
   name7: `Name ${Math.floor(Math.random() * 1000)}`,
+  amount: Math.round(Math.random() * 100_000) / 100,
   dateCreate: getRandomDate(),
   date: {
     create: getRandomDate()

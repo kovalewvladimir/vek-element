@@ -23,11 +23,18 @@ const COUNT_GENERATE_ITEMS = 10
 const tableRef = useTemplateRef('table')
 
 const treeEnabled = ref(true)
+const summaryIncludeTreeChildren = ref(true)
 
 const columns = ref(
   new Columns(
     { prop: 'id', label: 'ID', type: 'number' },
-    { prop: 'name', label: 'Name', type: 'string' },
+    {
+      prop: 'name',
+      label: 'Name',
+      type: 'string',
+      // Дочерние строки дерева в расчёт не попадают (summary.includeTreeChildren = false)
+      summary: ({ rows }) => `Строк: ${rows.length}`
+    },
     { prop: 'name1', label: 'Name1', type: 'string' },
     { prop: 'name2', label: 'Name2', type: 'string' },
     { prop: 'name3', label: 'Name3', type: 'string' },
@@ -112,6 +119,10 @@ function treeEnabledChange() {
   treeEnabled.value = !treeEnabled.value
 }
 
+function summaryIncludeTreeChildrenChange() {
+  summaryIncludeTreeChildren.value = !summaryIncludeTreeChildren.value
+}
+
 function changeActiveRow(row: GeneratedItemType) {
   console.log('change-active-row', row)
 }
@@ -155,6 +166,12 @@ function changeActiveRow(row: GeneratedItemType) {
         @click="treeEnabledChange"
         >Tree {{ treeEnabled ? 'Disable' : 'Enable' }}</el-button
       >
+
+      <el-button
+        type="info"
+        @click="summaryIncludeTreeChildrenChange"
+        >includeTreeChildren {{ summaryIncludeTreeChildren ? 'Disable' : 'Enable' }}</el-button
+      >
     </template>
 
     <vu-virt-table
@@ -168,6 +185,7 @@ function changeActiveRow(row: GeneratedItemType) {
         expandableKey: 'isExpandable',
         onLoadData: loadChildren
       }"
+      :summary="{ enabled: true, includeTreeChildren: summaryIncludeTreeChildren }"
       @change-active-row="changeActiveRow"
     >
       <template #name1="{ row }">

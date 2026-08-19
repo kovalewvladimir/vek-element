@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { Columns, useEventBus, VuContentWrap, VuVirtTable } from '@vek-element/ui'
+import {
+  Columns,
+  type ISummaryLoadParams,
+  useEventBus,
+  VuContentWrap,
+  VuVirtTable
+} from '@vek-element/ui'
 import { asyncSleep, dateIsoToFrontendFormat } from '@vek-element/ui/utils'
 import { ElButton } from 'element-plus'
 import { ref, useTemplateRef } from 'vue'
@@ -21,10 +27,22 @@ const MAX_LOAD_PAGES = 5
 // ==================
 const tableRef = useTemplateRef('table')
 
+const summaryEnabled = ref(false)
+const summaryLabelEnabled = ref(true)
+
 const columns = ref(
   new Columns(
     { prop: 'id', label: 'ID', type: 'number', width: 50 },
-    { prop: 'name', label: 'Name', type: 'string' },
+    {
+      prop: 'name',
+      label: 'Name',
+      type: 'string',
+      // Итог считается на клиенте — по уже загруженным строкам
+      summary: ({ rows }) => {
+        console.log('summary')
+        return `Строк: ${rows.length}`
+      }
+    },
     { prop: 'name1', label: 'Name1', type: 'string' },
     { prop: 'name2', label: 'Name2', type: 'string' },
     { prop: 'name3', label: 'Name3', type: 'string' },
@@ -40,6 +58,24 @@ const columns = ref(
       type: 'bool',
       width: 100,
       formatter: (value: boolean) => (value ? 'Да' : 'Нет')
+    },
+    {
+      prop: 'amount',
+      label: 'Сумма',
+      type: 'number',
+      width: 120,
+      align: 'right',
+      formatter: (value: number) => value.toFixed(2),
+      summaryFormatter: (value: number) => `${value.toFixed(2)} ₽`,
+      // Пока загружены не все страницы — показываем итог с сервера,
+      // когда данные загружены полностью — считаем на клиенте
+      summary: ({ rows, serverData, isAllDataLoaded }) => {
+        if (!isAllDataLoaded) return serverData?.amount ?? null
+
+        let total = 0
+        for (const row of rows) total += row.amount
+        return total
+      }
     }
   )
 )
@@ -57,6 +93,23 @@ const loadData = async () => {
   const loadLength = loadPages < MAX_LOAD_PAGES ? COUNT_GENERATE_ITEMS : COUNT_GENERATE_ITEMS / 10
   loadPages++
   return Array.from({ length: loadLength }).map(() => generateItem())
+}
+
+/** Заглушка: в реальном приложении итоги считает бэкенд с учётом сортировки и фильтров */
+const loadSummary = async ({ sort, filters }: ISummaryLoadParams) => {
+  console.log('loadSummary', sort, filters)
+
+  await asyncSleep(500)
+
+  return { amount: 123_456.78 }
+}
+
+function summaryEnabledChange() {
+  summaryEnabled.value = !summaryEnabled.value
+}
+
+function summaryLabelEnabledChange() {
+  summaryLabelEnabled.value = !summaryLabelEnabled.value
 }
 
 // ==================
@@ -96,6 +149,20 @@ busUserStatus.on(({ status, data }) => {
         >Обновить</el-button
       >
 
+      <el-button
+        type="info"
+        class="mr-10px"
+        @click="summaryEnabledChange"
+        >ИТОГО {{ summaryEnabled ? 'Disable' : 'Enable' }}</el-button
+      >
+
+      <el-button
+        type="info"
+        class="mr-10px"
+        @click="summaryLabelEnabledChange"
+        >Подпись ИТОГО {{ summaryLabelEnabled ? 'Disable' : 'Enable' }}</el-button
+      >
+
       <router-link-to-table-simple-create />
     </template>
 
@@ -105,6 +172,11 @@ busUserStatus.on(({ status, data }) => {
       row-unique-key="id"
       :columns="columns"
       :on-load-data="loadData"
+      :summary="{
+        enabled: summaryEnabled,
+        showLabel: summaryLabelEnabled,
+        onLoad: loadSummary
+      }"
     >
       <template #id="{ row }"
         ><span><router-link-to-table-simple-update :id="row.id" /></span

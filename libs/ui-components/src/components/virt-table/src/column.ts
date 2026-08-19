@@ -8,7 +8,8 @@ import {
   type IColumn,
   type IColumnSort,
   type IFilters,
-  type SortType
+  type SortType,
+  type SummaryType
 } from './types'
 
 export class Column {
@@ -29,6 +30,9 @@ export class Column {
   readonly showOverflowTooltip: boolean
 
   readonly formatter: FormatterType
+
+  readonly summary: SummaryType
+  readonly summaryFormatter: FormatterType
 
   readonly menu: boolean
   readonly sort: SortType
@@ -52,6 +56,9 @@ export class Column {
     this.showOverflowTooltip = column.showOverflowTooltip ?? true
 
     this.formatter = column.formatter ?? null
+
+    this.summary = column.summary ?? null
+    this.summaryFormatter = column.summaryFormatter ?? null
 
     this.menu = column.menu ?? true
     this.sort = column.sort ?? null

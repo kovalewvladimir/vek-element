@@ -13,11 +13,13 @@ import {
   computed,
   isReactive,
   onActivated,
+  onMounted,
   provide,
   unref,
   useSlots,
   useTemplateRef,
-  warn
+  warn,
+  watch
 } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
@@ -28,11 +30,14 @@ import {
   type IFindDataItemIndexOptions,
   type IPushDataItemOptions,
   type IPushDataTreeItemOptions,
+  type ISummaryResolved,
   type IUpdateDataItemOptions,
   type IVirtTableExpose,
-  type OnLoadDataType
+  type OnLoadDataType,
+  type OnLoadSummaryType
 } from './types'
 import { useColumnResize } from './use-column-resize'
+import { useSummary } from './use-summary'
 import { useTooltip } from './use-tooltip'
 import { useVirtualData } from './use-virtual-data'
 import {
@@ -60,6 +65,9 @@ defineSlots<{
   [key: `h-${ColumnProp}`]: (props: { column: Column }) => unknown
   /** Слот, который отображается перед ячейкой. */
   [key: `${ColumnProp}-before`]: (props: { column: Column; row: RowDataType }) => unknown
+  /** Слот для кастомного рендера ячейки строки ИТОГО. */
+  // `value` опционален, иначе тип слота не совместим с общим строковым индексом слотов колонок
+  [key: `f-${ColumnProp}`]: (props: { column: Column; value?: any }) => unknown
 }>()
 
 // ==================
@@ -71,6 +79,7 @@ const {
   rowUniqueKey,
   dataSymbol,
   tree,
+  summary,
   onLoadData,
   height = '300px',
   rowHeight = 28,
@@ -106,6 +115,24 @@ const {
     levelIndent?: number
   }
 
+  // eslint-disable-next-line vue/require-default-prop
+  summary?: {
+    /** Включить строку ИТОГО */
+    enabled: boolean
+
+    /** Показывать подпись в первой видимой колонке (по умолчанию true) */
+    showLabel?: boolean
+
+    /** Подпись в первой видимой колонке (по умолчанию 'ИТОГО') */
+    label?: string
+
+    /** Функция загрузки итогов с сервера. Вызывается при монтировании и при reloadData */
+    onLoad?: OnLoadSummaryType
+
+    /** Учитывать дочерние строки дерева при расчёте (по умолчанию false) */
+    includeTreeChildren?: boolean
+  }
+
   /** Функция, которая вызывается при загрузке данных (обязательный параметр). */
   onLoadData: OnLoadDataType<RowDataType[]>
 
@@ -133,6 +160,15 @@ const treeComputed = computed<Required<NonNullable<typeof tree>>>(() => ({
   isCacheData: tree?.isCacheData ?? true,
   isCloneData: tree?.isCloneData ?? false,
   levelIndent: tree?.levelIndent ?? 20
+}))
+
+// Устанавливаем значения по умолчанию для summary
+const summaryComputed = computed<ISummaryResolved>(() => ({
+  enabled: summary?.enabled ?? false,
+  showLabel: summary?.showLabel ?? true,
+  label: summary?.label ?? 'ИТОГО',
+  onLoad: summary?.onLoad ?? null,
+  includeTreeChildren: summary?.includeTreeChildren ?? false
 }))
 
 // ==================
@@ -163,6 +199,10 @@ function validateSlots() {
     // слоты before
     if (column.slot) {
       validColumnSlots.add(`${column.slot}-before`)
+    }
+    // слоты строки ИТОГО
+    if (column.slot) {
+      validColumnSlots.add(`f-${column.slot}`)
     }
   }
 
@@ -205,6 +245,7 @@ const emit = defineEmits<{
 
 const rowHeightPx = computed(() => `${rowHeight}px`)
 const headerHeightPx = computed(() => `${rowHeight + 6}px`)
+const footerHeightPx = computed(() => (summaryComputed.value.enabled ? `${rowHeight}px` : '0px'))
 const columnMinWidthPx = computed(() => `${COLUMN_MIN_WIDTH}px`)
 
 /** Фильтрация видимых колонок */
@@ -251,6 +292,32 @@ const {
   dataSymbol
 )
 
+// Строка ИТОГО
+const { summaryValues, setSummary, loadSummary } = useSummary<RowDataType>(
+  columns,
+  data,
+  isAllDataLoaded,
+  summaryComputed
+)
+
+/** Перезагрузка данных таблицы вместе с итогами */
+const reloadDataAndSummary = () => {
+  reloadData()
+  void loadSummary()
+}
+
+onMounted(() => {
+  void loadSummary()
+})
+
+// Строку ИТОГО могли включить уже после монтирования — серверные итоги ещё не загружены
+watch(
+  () => summaryComputed.value.enabled,
+  (enabled) => {
+    if (enabled) void loadSummary()
+  }
+)
+
 // Scroll для vue-router
 const { saveScrollPosition, restoreScrollPosition } = useScrollPosition(virtualContainerProps.ref)
 
@@ -267,6 +334,24 @@ const {
 const getCellValue = (row: any, column: IColumn) => {
   return column.formatter ? getFormatData(row, column.prop) : getValueByPath(row, column.prop)
 }
+
+/** Получение значения ячейки строки ИТОГО */
+const getSummaryCellValue = (column: Column) => {
+  const value = summaryValues.value[column.prop]
+  if (value === null || value === undefined) return ''
+
+  const formatter = column.summaryFormatter ?? column.formatter
+  return formatter ? formatter(value) : value
+}
+
+/** Колонка, в которой выводится подпись ИТОГО (первая видимая, если у неё нет своего значения) */
+const summaryLabelProp = computed<string | null>(() => {
+  if (!summaryComputed.value.showLabel) return null
+
+  const [first] = computedVisibleColumns.value
+  if (!first) return null
+  return summaryValues.value[first.prop] === undefined ? first.prop : null
+})
 
 // ===================================
 // Изменение ширины колонок
@@ -291,7 +376,7 @@ function onSortColumn(_e: MouseEvent, column: Column) {
   if (column.menu) {
     const sort = column.sort
     columns.setSort(column, sort === 'ASC' ? 'DESC' : 'ASC')
-    void reloadData()
+    reloadDataAndSummary()
   }
 }
 
@@ -520,8 +605,8 @@ const deleteDataItems = (index: number, count: number) => {
 // Expose
 // ==================
 
-defineExpose<IVirtTableExpose<RowDataType>>({
-  reloadData,
+const virtTableApi: IVirtTableExpose<RowDataType> = {
+  reloadData: reloadDataAndSummary,
   data,
   findDataItemIndex,
   pushDataItem,
@@ -529,24 +614,18 @@ defineExpose<IVirtTableExpose<RowDataType>>({
   updateDataItem,
   deleteDataItem,
   deleteDataItems,
-  toggleRowExpansion
-})
+  toggleRowExpansion,
+  setSummary,
+  reloadSummary: loadSummary
+}
+
+defineExpose<IVirtTableExpose<RowDataType>>(virtTableApi)
 
 // ==================
 // Provide
 // ==================
 
-provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
-  reloadData,
-  data,
-  findDataItemIndex,
-  pushDataItem,
-  pushDataTreeItem,
-  updateDataItem,
-  deleteDataItem,
-  deleteDataItems,
-  toggleRowExpansion
-})
+provide<IVirtTableExpose<RowDataType>>('virt-table-api', virtTableApi)
 </script>
 
 <template>
@@ -634,6 +713,35 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
         class="empty"
         ><el-empty description="Нет данных"
       /></div>
+
+      <!-- Summary -->
+      <div
+        v-if="summaryComputed.enabled"
+        class="footer"
+        data-testid="virt-table-footer"
+      >
+        <virt-table-row :columns="computedVisibleColumns">
+          <template #default="{ column }">
+            <div
+              class="text"
+              :class="{ 'text-right w-full': column.align === 'right' }"
+              @mouseenter="handleCellMouseEnter($event, column)"
+              @mouseleave="handleCellMouseLeave($event, column)"
+            >
+              <slot
+                :name="`f-${column.slot}`"
+                :column="column"
+                :value="summaryValues[column.prop]"
+                >{{
+                  column.prop === summaryLabelProp
+                    ? summaryComputed.label
+                    : getSummaryCellValue(column)
+                }}</slot
+              >
+            </div>
+          </template>
+        </virt-table-row>
+      </div>
     </div>
 
     <!-- Линия-указатель при изменении ширины колонки -->
@@ -666,8 +774,8 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
   <virt-table-menu
     ref="virtTableMenuRef"
     :columns="columns"
-    @change-sort="reloadData"
-    @change-filter="reloadData"
+    @change-sort="reloadDataAndSummary"
+    @change-filter="reloadDataAndSummary"
   />
 </template>
 
@@ -692,7 +800,7 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
     justify-content: center;
     align-items: center;
 
-    height: calc(100% - v-bind('headerHeightPx'));
+    height: calc(100% - v-bind('headerHeightPx') - v-bind('footerHeightPx'));
     font-size: 24px;
     overflow: hidden;
   }
@@ -720,6 +828,22 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', {
 
   & .row.active .cell {
     background-color: var(--el-fill-color-light);
+  }
+
+  & .footer {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+
+    font-weight: 600;
+
+    & .cell {
+      background: var(--table-header-bg-color);
+
+      border-top: var(--table-border);
+      border-bottom: none;
+    }
   }
 
   & .cell {

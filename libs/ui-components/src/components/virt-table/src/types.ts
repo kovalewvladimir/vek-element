@@ -29,6 +29,47 @@ export interface IColumnSort {
   sort: SortType
 }
 
+/** Параметры функции расчёта итога по колонке */
+export interface ISummaryParams<T = any> {
+  /** Строки, участвующие в расчёте (по умолчанию только верхний уровень дерева) */
+  rows: T[]
+  /** Колонка, для которой считается итог */
+  column: IColumn
+  /** Итоги, полученные через `summary.onLoad` или `setSummary`. `null` — если их нет */
+  serverData: Record<string, any> | null
+  /** Загружены ли все страницы данных */
+  isAllDataLoaded: boolean
+}
+
+export type SummaryType = ((params: ISummaryParams) => any) | null
+
+/** Параметры загрузки итогов с сервера */
+export interface ISummaryLoadParams {
+  sort?: IColumnSort
+  filters?: IFilters[]
+}
+
+export type OnLoadSummaryType = (params: ISummaryLoadParams) => Promise<Record<string, any>>
+
+/** Настройки строки ИТОГО */
+export interface ISummary {
+  /** Включить строку ИТОГО */
+  enabled: boolean
+  /** Показывать подпись в первой видимой колонке (по умолчанию true) */
+  showLabel?: boolean
+  /** Подпись в первой видимой колонке (по умолчанию 'ИТОГО') */
+  label?: string
+  /** Функция загрузки итогов с сервера */
+  onLoad?: OnLoadSummaryType
+  /** Учитывать дочерние строки дерева при расчёте (по умолчанию false) */
+  includeTreeChildren?: boolean
+}
+
+/** Настройки строки ИТОГО с заполненными значениями по умолчанию */
+export interface ISummaryResolved extends Required<Omit<ISummary, 'onLoad'>> {
+  onLoad: OnLoadSummaryType | null
+}
+
 export interface IFilterString {
   type: FilterStringType
   value: string
@@ -77,6 +118,11 @@ export interface IColumn {
 
   /** Форматтер */
   formatter?: FormatterType
+
+  /** Функция расчёта итога по колонке для строки ИТОГО */
+  summary?: SummaryType
+  /** Форматтер значения в строке ИТОГО (по умолчанию — `formatter` колонки) */
+  summaryFormatter?: FormatterType
 
   /** Показывать меню */
   menu?: boolean
@@ -131,4 +177,9 @@ export interface IVirtTableExpose<T> {
 
   /** Переключение состояния раскрытия строки */
   toggleRowExpansion(index: number, expanded?: boolean): Promise<void>
+
+  /** Установка итогов строки ИТОГО вручную (`null` — сброс) */
+  setSummary: (data: Record<string, any> | null) => void
+  /** Перезагрузка итогов строки ИТОГО через `summary.onLoad` */
+  reloadSummary: () => Promise<void>
 }
