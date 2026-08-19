@@ -10,12 +10,14 @@ import { COLUMN_MAX_WIDTH, COLUMN_MIN_WIDTH } from './constants'
  * Во время перетаскивания отображается вертикальная линия-указатель (indicatorLeft).
  *
  * @param rootRef Ссылка на корневой элемент таблицы (для расчёта позиции указателя)
+ * @param indicatorRef Ссылка на элемент линии-указателя
  */
-export function useColumnResize(rootRef: Ref<HTMLElement | null>) {
+export function useColumnResize(
+  rootRef: Ref<HTMLElement | null>,
+  indicatorRef: Ref<HTMLElement | null>
+) {
   /** Идёт ли перетаскивание границы в данный момент */
   const isResizing = ref(false)
-  /** Позиция вертикальной линии-указателя относительно корневого элемента таблицы (px) */
-  const indicatorLeft = ref(0)
 
   let column: Column | null = null
   let startX = 0
@@ -23,15 +25,27 @@ export function useColumnResize(rootRef: Ref<HTMLElement | null>) {
   let cellLeft = 0
   let pendingWidth = 0
 
+  /**
+   * Позиция линии пишется напрямую в DOM.
+   *
+   * Через реактивный ref каждое движение мыши перерисовывало бы всё тело таблицы:
+   * значение читалось бы в той же render-функции, что и список строк.
+   */
+  const applyIndicator = (left: number): void => {
+    const el = indicatorRef.value
+    if (el) el.style.transform = `translateX(${left}px)`
+  }
+
   const onMouseMove = (e: MouseEvent): void => {
     const delta = e.clientX - startX
     pendingWidth = Math.min(Math.max(startWidth + delta, COLUMN_MIN_WIDTH), COLUMN_MAX_WIDTH)
-    indicatorLeft.value = cellLeft + pendingWidth
+    applyIndicator(cellLeft + pendingWidth)
   }
 
   const stop = (): void => {
     isResizing.value = false
     column = null
+    if (indicatorRef.value) indicatorRef.value.style.willChange = ''
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('mouseup', onMouseUp)
     document.body.style.cursor = ''
@@ -68,7 +82,9 @@ export function useColumnResize(rootRef: Ref<HTMLElement | null>) {
     startWidth = cellRect.width
     cellLeft = cellRect.left - rootRect.left
     pendingWidth = startWidth
-    indicatorLeft.value = cellLeft + startWidth
+    // Позиционируем до показа, иначе линия мигнёт из позиции прошлого перетаскивания
+    applyIndicator(cellLeft + startWidth)
+    if (indicatorRef.value) indicatorRef.value.style.willChange = 'transform'
 
     isResizing.value = true
     document.body.style.cursor = 'col-resize'
@@ -82,5 +98,5 @@ export function useColumnResize(rootRef: Ref<HTMLElement | null>) {
     globalThis.removeEventListener('click', suppressClick, true)
   })
 
-  return { isResizing, indicatorLeft, startResize }
+  return { isResizing, startResize }
 }

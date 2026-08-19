@@ -25,6 +25,7 @@ export default defineConfig({
       // Библиотека, которую мы хотим использовать в качестве внешней зависимости
       external: [
         'vue',
+        'vue-router',
 
         // Element Plus
         'element-plus',

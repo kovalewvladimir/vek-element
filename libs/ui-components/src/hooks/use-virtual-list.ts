@@ -80,20 +80,44 @@ export function useVirtualList<T>(list: MaybeRef<T[]>, options: UseVirtualListOp
     return { scrollTop: elScrollTopCache, clientHeight: elClientHeightCache }
   }
 
-  /** Пересчитать диапазон видимых элементов */
-  const calculateRange = () => {
+  let prevStart = -1
+  let prevEnd = -1
+
+  /**
+   * Пересчитать диапазон видимых элементов.
+   *
+   * @param force Пересобрать безусловно, даже если диапазон не изменился.
+   *   Обязателен для реактивного пересчёта и мутаций данных: без него ранний выход прервёт
+   *   сбор зависимостей watchEffect, и список перестанет обновляться при изменении массива
+   *   в пределах прежнего диапазона.
+   */
+  const calculateRange = (force = false) => {
+    // Читаем всё до раннего выхода, иначе watchEffect потеряет зависимости
     const { scrollTop, clientHeight } = getElData()
     const items = unref(list)
     const offset = getOffset(scrollTop)
     const capacity = getViewCapacity(clientHeight)
     const from = Math.max(0, offset - overscan)
     const to = Math.min(items.length, offset + capacity + overscan)
+
+    // Скролл в пределах высоты строки не сдвигает окно — пересобирать нечего.
+    // state и currentList это shallowRef: новый объект/массив триггерит рендер всего тела таблицы
+    if (!force && from === prevStart && to === prevEnd && currentList.value.length === to - from)
+      return
+
+    prevStart = from
+    prevEnd = to
+
     state.value = { start: from, end: to }
-    currentList.value = items.slice(from, to).map((data, i) => ({ data, index: from + i }))
+
+    currentList.value = Array.from({ length: to - from }, (_, i) => ({
+      data: items[from + i],
+      index: from + i
+    }))
   }
 
   // Пересчёт при изменении списка или контейнера
-  watchEffect(calculateRange)
+  watchEffect(() => calculateRange(true))
 
   const totalHeight = computed<number>(() => {
     const items = unref(list)
@@ -113,16 +137,25 @@ export function useVirtualList<T>(list: MaybeRef<T[]>, options: UseVirtualListOp
 
   const onScroll = () => calculateRange()
 
+  /**
+   * Принудительно пересобрать видимый диапазон после мутации данных.
+   *
+   * Не класть в containerProps: они разворачиваются через v-bind, и лишний ключ
+   * улетит в DOM как атрибут.
+   */
+  const invalidate = () => calculateRange(true)
+
   const scrollTo = (index: number) => {
     if (containerRef.value) {
       containerRef.value.scrollTop = getDistanceTop(index)
-      calculateRange()
+      calculateRange(true)
     }
   }
 
   return {
     list: currentList as Ref<UseVirtualListItem<T>[]>,
     scrollTo,
+    invalidate,
     containerProps: {
       ref: containerRef,
       onScroll,

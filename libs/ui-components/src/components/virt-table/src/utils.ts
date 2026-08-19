@@ -64,6 +64,16 @@ export function getMetaData<T extends Record<MetaKeyType, IMetaData<T>>>(data: T
   return data[METADATA_KEY]
 }
 
+/**
+ * Проверяет состояние активности строки.
+ *
+ * В отличие от getMetaData ничего не создаёт и не разворачивает Proxy — для чтения
+ * в циклах по всем данным.
+ */
+export function isMetaActive(data: any): boolean {
+  return data?.[METADATA_KEY]?.isActive === true
+}
+
 /** Возвращает уровень вложенности строки в дереве (0 — верхний уровень) */
 export function getTreeLevel(data: any): number {
   return data?.[METADATA_KEY]?.tree?.level ?? 0

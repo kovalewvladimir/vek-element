@@ -15,6 +15,8 @@ import {
   onActivated,
   onMounted,
   provide,
+  ref,
+  toRaw,
   unref,
   useSlots,
   useTemplateRef,
@@ -43,9 +45,11 @@ import { useVirtualData } from './use-virtual-data'
 import {
   getFormatData,
   getMetaData,
+  getTreeLevel,
   getValueByPath,
   initMetaDataTree,
-  injectFormatMetaData
+  injectFormatMetaData,
+  isMetaActive
 } from './utils'
 import VirtTableHeaderCell from './virt-table-header-cell.vue'
 import VirtTableMenu from './virt-table-menu.vue'
@@ -280,6 +284,7 @@ const {
   reloadData,
   currentPage,
   virtualData,
+  invalidateVirtualData,
   virtualContainerProps,
   virtualWrapperProps
 } = useVirtualData<RowDataType>(
@@ -292,17 +297,27 @@ const {
   dataSymbol
 )
 
+/**
+ * В данные таблицы попадали дочерние строки дерева.
+ *
+ * Пока флаг не поднят, строка ИТОГО может считать по всему массиву без фильтрации по уровню.
+ * Схлопывание узлов флаг не сбрасывает: это лишь вернёт фильтрацию, результат от неё не зависит.
+ */
+const hasNestedRows = ref(false)
+
 // Строка ИТОГО
 const { summaryValues, setSummary, loadSummary } = useSummary<RowDataType>(
   columns,
   data,
   isAllDataLoaded,
-  summaryComputed
+  summaryComputed,
+  hasNestedRows
 )
 
 /** Перезагрузка данных таблицы вместе с итогами */
 const reloadDataAndSummary = () => {
   reloadData()
+  hasNestedRows.value = false
   void loadSummary()
 }
 
@@ -358,7 +373,8 @@ const summaryLabelProp = computed<string | null>(() => {
 // ===================================
 
 const tableRootRef = useTemplateRef<HTMLElement>('tableRootRef')
-const { isResizing, indicatorLeft, startResize } = useColumnResize(tableRootRef)
+const resizeIndicatorRef = useTemplateRef<HTMLElement>('resizeIndicatorRef')
+const { isResizing, startResize } = useColumnResize(tableRootRef, resizeIndicatorRef)
 
 // ===================================
 // Контекстное меню
@@ -389,9 +405,12 @@ function handleRowClick(row: any) {
   const meta = getMetaData(row)
   if (meta.isActive) return
 
-  for (const _data of data.value) {
-    const _meta = getMetaData(_data)
-    _meta.isActive = false
+  // Ищем по сырым строкам, а сбрасываем флаг через прокси:
+  // запись в сырой объект не разбудит рендер и подсветка не снимется
+  const rows = toRaw(data.value)
+  // eslint-disable-next-line unicorn/no-for-loop -- rows.entries() втрое медленнее на 100k строк
+  for (let i = 0; i < rows.length; i++) {
+    if (isMetaActive(rows[i])) getMetaData(data.value[i]).isActive = false
   }
 
   meta.isActive = true
@@ -405,13 +424,12 @@ function handleRowClick(row: any) {
 
 /** Поиск количества элементов на уровне */
 function countItemsAtLevel(startIndex: number, level: number) {
-  const _data = unref(data)
+  // Только чтение — сырые строки дешевле, getTreeLevel в отличие от getMetaData ничего не создаёт
+  const rows = toRaw(unref(data))
 
   let count = 0
-  for (let i = startIndex + 1; i < _data.length; i++) {
-    const meta = getMetaData(data.value[i])
-    const dataLevel = meta?.tree?.level ?? 0
-    if (dataLevel <= level) break
+  for (let i = startIndex + 1; i < rows.length; i++) {
+    if (getTreeLevel(rows[i]) <= level) break
     count++
   }
   return count
@@ -449,6 +467,7 @@ async function handleTreeCellClick(row: RowDataType) {
         index: index + 1,
         isCloneData: treeComputed.value.isCloneData
       })
+      if (metaTree.cache.length > 0) hasNestedRows.value = true
       metaTree.isOpen = true
       return
     }
@@ -462,6 +481,7 @@ async function handleTreeCellClick(row: RowDataType) {
     }
     const index = findDataItemIndex(row[rowUniqueKey], { throwIfNotFound: true })
     pushDataItem(_newData, { index: index + 1, isCloneData: treeComputed.value.isCloneData })
+    if (_newData.length > 0) hasNestedRows.value = true
     metaTree.isOpen = true
   })()
 
@@ -518,6 +538,7 @@ async function pushDataTreeItem(
     if (metaRow.tree.isOpen) {
       const countItemLevel = countItemsAtLevel(index, metaRow.tree.level)
       data.value.splice(index + countItemLevel + 1, 0, _item)
+      hasNestedRows.value = true
     }
 
     // Если строка закрыта
@@ -543,7 +564,7 @@ async function pushDataTreeItem(
     }
   }
 
-  virtualContainerProps.onScroll()
+  invalidateVirtualData()
 }
 
 // ===================================
@@ -553,7 +574,10 @@ async function pushDataTreeItem(
 /** Поиск индекса элемента в таблице */
 const findDataItemIndex = (value: any, options: IFindDataItemIndexOptions = {}) => {
   const { throwIfNotFound = false } = options
-  const index = data.value.findIndex((i) => i[rowUniqueKey] === value)
+  // Зависимость от длины нужна, если метод вызывают внутри вычисляемого свойства:
+  // поиск идёт по сырому массиву и сам ничего не трекает
+  void data.value.length
+  const index = toRaw(data.value).findIndex((i) => i[rowUniqueKey] === value)
   if (index === -1 && throwIfNotFound) {
     throw new Error(`Item not found.`)
   }
@@ -573,7 +597,7 @@ const pushDataItem = (item: RowDataType | RowDataType[], options: IPushDataItemO
     data.value.splice(index, 0, _item)
   }
 
-  virtualContainerProps.onScroll()
+  invalidateVirtualData()
 }
 /** Изменение данных в таблице */
 const updateDataItem = (item: any, options: IUpdateDataItemOptions) => {
@@ -585,19 +609,19 @@ const updateDataItem = (item: any, options: IUpdateDataItemOptions) => {
   injectFormatMetaData(_item, columns)
   data.value.splice(index, 1, _item)
 
-  virtualContainerProps.onScroll()
+  invalidateVirtualData()
 }
 /** Удаление элемента из таблицы */
 const deleteDataItem = (index: number) => {
   const deleteData = data.value.splice(index, 1)
-  virtualContainerProps.onScroll()
+  invalidateVirtualData()
   if (deleteData.length === 0) return null
   return deleteData[0]
 }
 /** Удаление нескольких элементов из таблицы */
 const deleteDataItems = (index: number, count: number) => {
   const deleteData = data.value.splice(index, count)
-  virtualContainerProps.onScroll()
+  invalidateVirtualData()
   return deleteData
 }
 
@@ -673,6 +697,7 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', virtTableApi)
         <div
           v-for="{ data: row } in virtualData"
           :key="row[rowUniqueKey]"
+          v-memo="[row, getMetaData(row).isActive, computedVisibleColumns]"
           class="row"
           :class="{ active: getMetaData(row).isActive }"
           @click="handleRowClick(row)"
@@ -751,8 +776,8 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', virtTableApi)
     <!-- Линия-указатель при изменении ширины колонки -->
     <div
       v-show="isResizing"
+      ref="resizeIndicatorRef"
       class="resize-indicator"
-      :style="{ left: `${indicatorLeft}px` }"
     ></div>
 
     <div
@@ -902,6 +927,8 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', virtTableApi)
   & .resize-indicator {
     position: absolute;
     top: 0;
+    /* Позиция задаётся через transform из useColumnResize */
+    left: 0;
     z-index: 10;
 
     width: 2px;

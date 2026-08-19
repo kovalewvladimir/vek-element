@@ -77,6 +77,13 @@ const navigation: INavigation = {
           title: 'Table Tree',
           icon: 'el-icon-menu',
           component: () => import('@/views/vu-components/vu-virt-table/table-tree.vue')
+        },
+        {
+          name: 'TablePerf',
+          path: 'perf',
+          title: 'Table Perf',
+          icon: 'el-icon-menu',
+          component: () => import('@/views/vu-components/vu-virt-table/table-perf.vue')
         }
       ]
     }

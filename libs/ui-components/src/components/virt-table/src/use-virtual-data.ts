@@ -70,6 +70,7 @@ export const useVirtualData = <T>(
   const {
     list: virtualData,
     scrollTo,
+    invalidate: invalidateVirtualData,
     containerProps: virtualContainerProps,
     wrapperProps: virtualWrapperProps
   } = useVirtualList(data, {
@@ -94,6 +95,7 @@ export const useVirtualData = <T>(
     reloadData,
     currentPage,
     virtualData,
+    invalidateVirtualData,
     virtualContainerProps,
     virtualWrapperProps
   }
