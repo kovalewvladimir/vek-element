@@ -7,6 +7,14 @@ import { SvgFilter, SvgFilterAscending, SvgFilterDescending, SvgSortDown, SvgSor
 
 const { column } = defineProps<{ column: Column }>()
 
+// Заголовок обрезается многоточием так же, как ячейки данных, поэтому ему нужна
+// та же всплывающая подсказка. Компонент с фрагментом в корне не пробрасывает
+// нативные слушатели сам — эмитим события наружу
+const emit = defineEmits<{
+  (e: 'mouseenter', event: MouseEvent, column: Column): void
+  (e: 'mouseleave', event: MouseEvent, column: Column): void
+}>()
+
 const icon = computed<string | null>(() => {
   const isFilter = column.filters.length > 0
   const isASC = column.sort === 'ASC'
@@ -27,6 +35,8 @@ const icon = computed<string | null>(() => {
     <div
       class="text grow-1"
       :class="{ 'c-blue': icon, 'cursor-pointer': column.menu }"
+      @mouseenter="emit('mouseenter', $event, column)"
+      @mouseleave="emit('mouseleave', $event, column)"
       >{{ column.label }}</div
     >
     <div>

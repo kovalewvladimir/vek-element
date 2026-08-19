@@ -655,7 +655,11 @@ provide<IVirtTableExpose<RowDataType>>('virt-table-api', virtTableApi)
               :name="`h-${column.prop}`"
               :column="column"
             >
-              <virt-table-header-cell :column="column" />
+              <virt-table-header-cell
+                :column="column"
+                @mouseenter="handleCellMouseEnter"
+                @mouseleave="handleCellMouseLeave"
+              />
             </slot>
           </template>
         </virt-table-row>
