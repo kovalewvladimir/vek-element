@@ -32,6 +32,16 @@ const navigationStore = useNavigationStore()
   --el-menu-bg-color: var(--menu-bg-color);
 }
 
+/** Обрезка слишком длинного заголовка многоточием */
+:deep(.el-menu-item > span),
+:deep(.el-sub-menu__title > span) {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /** Первый уровень меню */
 :deep(.el-menu-item:hover),
 :deep(.el-sub-menu__title:hover) {

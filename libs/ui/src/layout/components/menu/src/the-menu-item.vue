@@ -25,7 +25,7 @@ const menuItemClk = async () => {
             v-if="menuItem.icon"
             :name="menuItem.icon"
           />
-          <span>{{ menuItem.title }}</span>
+          <span :title="menuItem.title">{{ menuItem.title }}</span>
         </template>
         <the-menu-item
           v-for="(item, index) in menuItem.children"
@@ -44,7 +44,7 @@ const menuItemClk = async () => {
           v-if="menuItem.icon"
           :name="menuItem.icon"
         />
-        <span>{{ menuItem.title }}</span>
+        <span :title="menuItem.title">{{ menuItem.title }}</span>
       </el-menu-item>
     </template>
   </template>

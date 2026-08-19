@@ -4,6 +4,7 @@ import dashboardNavigation from './dashboard'
 import emptyNavigation from './empty'
 import formNavigation from './form'
 import loginNavigation from './login'
+import longTitleNavigation from './long-title'
 import notFoundNavigation from './not-found'
 import paramsNavigation from './params'
 import rolesNavigation from './roles'
@@ -22,6 +23,7 @@ const navigation: INavigation[] = [
   rolesNavigation,
   paramsNavigation,
   subMenuNavigation,
+  longTitleNavigation,
 
   emptyNavigation
 ]
