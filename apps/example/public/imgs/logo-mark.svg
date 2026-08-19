@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="vek-mark" x1="130" y1="802.5" x2="894" y2="221.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#409EFF" />
+      <stop offset="1" stop-color="#A6D2FF" />
+    </linearGradient>
+  </defs>
+  <path d="M177.9 256.8L326 256.8L520.1 599.8L627.1 421.3L758.5 421.3L551 767.2L466.9 767.2Z" fill="url(#vek-mark)" stroke="url(#vek-mark)" stroke-width="35.3" stroke-linejoin="round" />
+  <path d="M689.7 256.8L845.2 256.8L827.8 285.7L672.4 285.7Z" fill="url(#vek-mark)" stroke="url(#vek-mark)" stroke-width="35.3" stroke-linejoin="round" />
+  <path d="M647.2 337.1L802.6 337.1L785.3 365.9L629.9 365.9Z" fill="url(#vek-mark)" stroke="url(#vek-mark)" stroke-width="35.3" stroke-linejoin="round" />
+</svg>
