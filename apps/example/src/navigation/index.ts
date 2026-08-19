@@ -7,6 +7,7 @@ import loginNavigation from './login'
 import longTitleNavigation from './long-title'
 import notFoundNavigation from './not-found'
 import paramsNavigation from './params'
+import playgroundNavigation from './playground'
 import rolesNavigation from './roles'
 import scrollNavigation from './scroll'
 import subMenuNavigation from './sub-menu'
@@ -18,6 +19,7 @@ const navigation: INavigation[] = [
 
   dashboardNavigation,
   vuComponentsNavigation,
+  playgroundNavigation,
   formNavigation,
   scrollNavigation,
   rolesNavigation,

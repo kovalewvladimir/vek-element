@@ -15,6 +15,20 @@ const navigation: INavigation = {
       component: () => import('@/views/vu-components/the-vu-button-icon.vue')
     },
     {
+      name: 'TheVuAutocompleteRemote',
+      path: 'vu-autocomplete-remote',
+      title: 'VuAutocompleteRemote',
+      icon: 'el-icon-menu',
+      component: () => import('@/views/vu-components/the-vu-autocomplete-remote.vue')
+    },
+    {
+      name: 'TheVuIconSvgDynamic',
+      path: 'vu-icon-svg-dynamic',
+      title: 'VuIconSvgDynamic',
+      icon: 'el-icon-menu',
+      component: () => import('@/views/vu-components/the-vu-icon-svg-dynamic.vue')
+    },
+    {
       name: 'TheVuModalDialog',
       path: 'vu-modal-dialog',
       title: 'VuModalDialog',

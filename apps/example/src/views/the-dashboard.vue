@@ -1,106 +1,14 @@
 <script setup lang="ts">
-import {
-  useLayoutConfigStore,
-  useNavigationStore,
-  VuAutocompleteRemote,
-  VuIconSvgDynamic
-} from '@vek-element/ui'
-import { asyncSleep } from '@vek-element/ui/utils'
-import { ElButton, ElCard, ElDatePicker, ElInput } from 'element-plus'
-import { ref, useTemplateRef } from 'vue'
-import { useRouter } from 'vue-router'
-
-const configLayout = useLayoutConfigStore()
-const router = useRouter()
-const navigation = useNavigationStore()
-
-const autocompleteValue = ref<string>('')
-const autocompleteRef = useTemplateRef('autocompleteRef')
-
-const getOptions = async () => {
-  await asyncSleep(3000)
-  return {
-    data: [
-      { value: 'Test1', label: 'Test1' },
-      { value: 'Test2', label: 'Test2' },
-      { value: 'Test3', label: 'Test3' }
-    ]
-  }
-}
-
-const getOption = () => {
-  return autocompleteRef.value?.getOption()
-}
-
-const findName = ref<string>('SubMenu1-1')
+import { VuContentWrap } from '@vek-element/ui'
 </script>
 
 <template>
-  <el-card
-    class="w-full h-full"
-    header="Компоненты"
-  >
-    <el-card
-      header="vu-autocomplete-remote"
-      class="h-full"
-    >
-      <vu-autocomplete-remote
-        ref="autocompleteRef"
-        v-model="autocompleteValue"
-        :get-loading-options="getOptions"
-      />
-      <el-button
-        type="primary"
-        @click="
-          () => {
-            console.log(getOption())
-          }
-        "
-        >getOption</el-button
-      >
+  <vu-content-wrap>
+    <template #header>
+      <h2>Главная</h2>
+    </template>
 
-      <vu-icon-svg-dynamic
-        name="ep--close"
-        hover-color="green"
-        color="red"
-      />
-
-      <div>
-        <el-button
-          type="primary"
-          @click="() => router.push('/not-found/not-found')"
-          >not-found</el-button
-        >
-        <el-button
-          type="primary"
-          @click="() => router.push('/login')"
-          >login</el-button
-        >
-      </div>
-
-      <div class="mt-10px">
-        <el-input v-model="findName" />
-        <el-button
-          type="primary"
-          @click="console.log(navigation.getFullPathByName(findName))"
-          >getFullPathByName</el-button
-        >
-        <el-button
-          type="primary"
-          @click="navigation.navigateToItem(findName)"
-          >navigateToItem</el-button
-        >
-      </div>
-    </el-card>
-
-    <el-card>
-      <el-button @click="configLayout.menu.setCollapse(!configLayout.menu.collapse)"
-        >collapse - {{ configLayout.menu.collapse }}</el-button
-      >
-    </el-card>
-
-    <el-card>
-      <el-date-picker />
-    </el-card>
-  </el-card>
+    <p>Демонстрационное приложение библиотеки @vek-element/ui.</p>
+    <p>Примеры компонентов доступны в разделе меню «Components», песочница — в разделе «Playground».</p>
+  </vu-content-wrap>
 </template>
