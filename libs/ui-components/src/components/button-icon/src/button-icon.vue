@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { VuIconSvgDynamic } from '@vek-element/ui-components'
-import { ElButton, ElTooltip } from 'element-plus'
+import { ElTooltip } from 'element-plus'
 
-import { type VuButtonIconType } from './types'
+import ButtonIconBase from './button-icon-base.vue'
+import { type IVuButtonIconProps } from './types'
 
 defineOptions({ inheritAttrs: false })
 
@@ -18,76 +18,25 @@ const {
 
   tooltip = '',
   tooltipShowAfter = 500
-} = defineProps<{
-  /** Имя иконки */
-  icon: string
-
-  /**
-   *  Размер иконки
-   *
-   * По умолчанию: `18`
-   */
-  iconSize?: number
-
-  /**
-   * Тип кнопки
-   *
-   * По умолчанию: `default`
-   * */
-  type?: VuButtonIconType
-
-  /**
-   * Определяет, является ли кнопка текстовой
-   * По умолчанию: false
-   */
-  text?: boolean
-
-  /**
-   * Определяет, всегда ли включён фон для текстовой кнопки
-   * По умолчанию: false
-   */
-  bg?: boolean
-
-  /**
-   * Определяет, является ли кнопка ссылкой
-   * По умолчанию: false
-   */
-  link?: boolean
-
-  /**
-   * Определяет, заблокирована ли кнопка
-   *
-   * Подсказка `tooltip` продолжает работать в заблокированном состоянии
-   *
-   * По умолчанию: false
-   */
-  disabled?: boolean
-
-  /**
-   * Текст подсказки
-   *
-   * По умолчанию: `''`
-   * */
-  tooltip?: string
-
-  /**
-   * Время перед показом подсказки ms
-   *
-   * По умолчанию: `500` ms
-   * */
-  tooltipShowAfter?: number
-}>()
+} = defineProps<IVuButtonIconProps>()
 </script>
 
 <template>
+  <!--
+    Без подсказки компонент рендерит один корневой элемент (el-button),
+    поэтому его можно передавать в #reference у el-popconfirm и других попперов.
+    el-tooltip рендерит фрагмент и такой сценарий ломает
+  -->
   <el-tooltip
-    :disabled="tooltip === ''"
+    v-if="tooltip !== ''"
     :show-after="tooltipShowAfter"
     :content="tooltip"
     placement="top"
   >
-    <el-button
+    <button-icon-base
       v-bind="$attrs"
+      :icon="icon"
+      :icon-size="iconSize"
       :type="type"
       :text="text"
       :bg="bg"
@@ -100,12 +49,25 @@ const {
       >
         <slot />
       </template>
-      <template #icon>
-        <vu-icon-svg-dynamic
-          :name="icon"
-          :size="iconSize"
-        />
-      </template>
-    </el-button>
+    </button-icon-base>
   </el-tooltip>
+
+  <button-icon-base
+    v-else
+    v-bind="$attrs"
+    :icon="icon"
+    :icon-size="iconSize"
+    :type="type"
+    :text="text"
+    :bg="bg"
+    :link="link"
+    :disabled="disabled"
+  >
+    <template
+      v-if="$slots.default"
+      #default
+    >
+      <slot />
+    </template>
+  </button-icon-base>
 </template>

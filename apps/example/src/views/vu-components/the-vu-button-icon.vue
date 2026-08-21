@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { VuButtonIcon, type VuButtonIconType, VuContentWrap } from '@vek-element/ui'
-import { ElDivider } from 'element-plus'
+import { ElDivider, ElMessage, ElPopconfirm } from 'element-plus'
 
 const icons: string[] = ['el-icon-menu', 'el-logo', 'ep--close']
 
 const types: VuButtonIconType[] = ['default', 'success', 'warning', 'info', 'primary', 'danger']
+
+const onConfirm = () => ElMessage.success('Подтверждено')
 </script>
 
 <template>
@@ -118,6 +120,43 @@ const types: VuButtonIconType[] = ['default', 'success', 'warning', 'info', 'pri
         :icon="icon"
         :tooltip="`Кнопка заблокирована. Type: ${type}`"
       />
+    </div>
+
+    <el-divider content-position="left">В el-popconfirm (без tooltip)</el-divider>
+
+    <div class="mb-10px flex items-center gap-10px">
+      <el-popconfirm
+        title="Удалить запись?"
+        confirm-button-text="Удалить"
+        cancel-button-text="Отмена"
+        @confirm="onConfirm"
+      >
+        <template #reference>
+          <vu-button-icon
+            data-testid="popconfirm-icon"
+            type="danger"
+            text
+            bg
+            :icon="icons[2]"
+          />
+        </template>
+      </el-popconfirm>
+
+      <el-popconfirm
+        title="Удалить запись?"
+        confirm-button-text="Удалить"
+        cancel-button-text="Отмена"
+        @confirm="onConfirm"
+      >
+        <template #reference>
+          <vu-button-icon
+            data-testid="popconfirm-text"
+            type="danger"
+            :icon="icons[2]"
+            >Удалить</vu-button-icon
+          >
+        </template>
+      </el-popconfirm>
     </div>
 
     <el-divider content-position="left">Аттрибут icon-size</el-divider>
