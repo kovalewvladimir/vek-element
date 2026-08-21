@@ -18,9 +18,9 @@ createUI({
   },
   plugins: [ElLoading],
   layout: {
-    title: 'TEST123',
-    logo: '/imgs/logo.png',
-    defaultAvatar: '/imgs/default_rabbit.gif'
+    title: 'Vek Element',
+    logo: `${import.meta.env.BASE_URL}imgs/logo.png`,
+    defaultAvatar: `${import.meta.env.BASE_URL}imgs/default_rabbit.gif`
   },
   auth: auth,
   navigation: navigation

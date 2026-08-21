@@ -1,0 +1,72 @@
+name: Deploy example to GitHub Pages
+
+# Публикация demo-приложения (apps/example) на GitHub Pages:
+# https://kovalewvladimir.github.io/vek-element/
+#
+# Запускается автоматически при push в master (если менялись example,
+# библиотеки или сам workflow) и вручную через Actions → Run workflow.
+#
+# ВАЖНО (разовая настройка): GitHub → Settings → Pages → Build and deployment
+# → Source: "GitHub Actions". Без этого шаг deploy падает.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - apps/example/**
+      - libs/**
+      - package.json
+      - package-lock.json
+      - .github/workflows/deploy-pages.yml
+  workflow_dispatch:
+
+# Пейджес-деплой один на репозиторий: новый push отменяет ещё не законченный,
+# но уже начатый деплой не рвём (cancel-in-progress: false).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write # публикация артефакта на Pages
+  id-token: write # OIDC-токен, которым actions/deploy-pages подтверждает деплой
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Совпадает с .devcontainer (node:24).
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build example
+        # BASE_PATH — подпуть Pages для project-сайта: /<repo>/.
+        # Он попадает в vite `base` и дальше в import.meta.env.BASE_URL
+        # (ассеты, vue-router history, ссылки на public/imgs).
+        run: npm run build:example
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/example/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

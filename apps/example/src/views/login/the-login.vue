@@ -12,6 +12,8 @@ const auth = useAuthStore()
 
 const { loading, loadingWrapper } = useLoading()
 
+const base = import.meta.env.BASE_URL
+
 const loginClk = loadingWrapper(async () => {
   auth.login()
 
@@ -34,7 +36,7 @@ const loginClkFail = loadingWrapper(async () => {
 
     <el-link
       class="mb-10px mt-10px"
-      href="/params/original"
+      :href="`${base}params/original`"
       >el-link params/original</el-link
     >
 

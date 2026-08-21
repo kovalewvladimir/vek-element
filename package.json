@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "npm run build -w=@vek-element/vite-svg && npm run dev -w=vek-element-example",
     "preview": "npm run preview -w=vek-element-example",
+    "build:example": "npm run build -w=@vek-element/vite-svg && npm run build -w=vek-element-example",
     "version:ui": "npm version patch -w=@vek-element/ui",
     "version:ui-components": "npm version patch -w=@vek-element/ui-components",
     "version:svg": "npm version patch -w=@vek-element/vite-svg",

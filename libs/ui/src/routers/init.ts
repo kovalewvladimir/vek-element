@@ -102,7 +102,7 @@ const getNotFound = (navigation: INavigation[], basePath: string = '/'): RouteRe
       path: '/:pathMatch(.*)*',
       component: {
         name: 'NotFound',
-        render: () => [h('h1', 'Not found'), h('a', { href: '/' }, 'Home')]
+        render: () => [h('h1', 'Not found'), h('a', { href: import.meta.env.BASE_URL }, 'Home')]
       },
       // @ts-expect-error Нужен для изменения заголовка страницы
       meta: {
@@ -117,7 +117,9 @@ const initializeRouter = (navigation: INavigation[]): Router => {
   const loginRouter = getLoginRouter(navigation)
 
   const router = createRouter({
-    history: createWebHistory(),
+    // BASE_URL — подпуть, из которого отдаётся приложение (Vite `base`).
+    // Нужен, когда сайт живёт не в корне домена (например, GitHub Pages).
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [rootRouter, loginRouter]
   })
   router.beforeEach(permissionBeforeEach(loginRouter.path))
