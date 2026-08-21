@@ -103,6 +103,23 @@ const types: VuButtonIconType[] = ['default', 'success', 'warning', 'info', 'pri
       </div>
     </div>
 
+    <el-divider content-position="left">Аттрибут disabled</el-divider>
+
+    <div
+      v-for="icon in icons"
+      :key="icon"
+      class="mb-10px"
+    >
+      <vu-button-icon
+        v-for="type in types"
+        :key="type"
+        disabled
+        :type="type"
+        :icon="icon"
+        :tooltip="`Кнопка заблокирована. Type: ${type}`"
+      />
+    </div>
+
     <el-divider content-position="left">Аттрибут icon-size</el-divider>
 
     <vu-button-icon

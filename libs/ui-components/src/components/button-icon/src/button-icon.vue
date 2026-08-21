@@ -4,6 +4,8 @@ import { ElButton, ElTooltip } from 'element-plus'
 
 import { type VuButtonIconType } from './types'
 
+defineOptions({ inheritAttrs: false })
+
 const {
   icon,
   iconSize = 18,
@@ -12,6 +14,7 @@ const {
   text = false,
   bg = false,
   link = false,
+  disabled = false,
 
   tooltip = '',
   tooltipShowAfter = 500
@@ -52,6 +55,15 @@ const {
   link?: boolean
 
   /**
+   * Определяет, заблокирована ли кнопка
+   *
+   * Подсказка `tooltip` продолжает работать в заблокированном состоянии
+   *
+   * По умолчанию: false
+   */
+  disabled?: boolean
+
+  /**
    * Текст подсказки
    *
    * По умолчанию: `''`
@@ -80,6 +92,7 @@ const {
       :text="text"
       :bg="bg"
       :link="link"
+      :disabled="disabled"
     >
       <template
         v-if="$slots.default"
