@@ -413,7 +413,7 @@ const clearResults = () => {
           :max="500000"
           :step="10000"
           controls-position="right"
-          class="w-150px"
+          class="!w-150px"
         />
 
         <span>sizePage</span>
@@ -423,7 +423,7 @@ const clearResults = () => {
           :max="10000"
           :step="100"
           controls-position="right"
-          class="w-130px"
+          class="!w-130px"
         />
 
         <span>ИТОГО</span>

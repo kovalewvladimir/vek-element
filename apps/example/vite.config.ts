@@ -10,6 +10,12 @@ import VueDevTools from 'vite-plugin-vue-devtools'
 
 const __dirname = import.meta.dirname
 
+/** Версия @vek-element/ui — показывается на главной странице демо */
+const uiVersion: string = JSON.parse(
+  // eslint-disable-next-line unicorn/prefer-json-parse-buffer -- типы Node не принимают Buffer
+  fs.readFileSync(path.resolve(__dirname, '../../libs/ui/package.json'), 'utf8')
+).version
+
 /**
  * GitHub Pages отдаёт сайт из подпути (https://<user>.github.io/<repo>/),
  * поэтому в CI прокидываем BASE_PATH=/vek-element/. Локально остаётся '/'.
@@ -38,6 +44,10 @@ const spaFallback = (): Plugin => {
 
 export default defineConfig({
   base,
+
+  define: {
+    __UI_VERSION__: JSON.stringify(uiVersion)
+  },
 
   server: {
     host: '0.0.0.0',

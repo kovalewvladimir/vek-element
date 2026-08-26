@@ -4,6 +4,18 @@
 
 Опубликовано на GitHub Pages: <https://kovalewvladimir.github.io/vek-element/>
 
+## Разделы меню
+
+| Раздел | Что показывает |
+| --- | --- |
+| Components | Компоненты `@vek-element/ui-components` — по странице на компонент |
+| Hooks | Хуки `@vek-element/ui/hooks` |
+| Utils | Утилиты `@vek-element/ui/utils` |
+| Layout | Поведение layout и роутера: параметризованные пути и кэш, прокрутка, вложенное меню, длинные заголовки, много пунктов |
+| Playground | Песочница: `useLayoutConfigStore`, `useNavigationStore` |
+
+Навигация описана в [src/navigation](src/navigation) — по файлу на раздел; страницы лежат в [src/views](src/views) в папках с теми же именами.
+
 ## Локальный запуск
 
 ```bash

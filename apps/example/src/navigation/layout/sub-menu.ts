@@ -1,31 +1,31 @@
-import { type INavigation, VuLayout } from '@vek-element/ui'
+import { type INavigation } from '@vek-element/ui'
 
+/** Вложенность пунктов меню */
 const navigation: INavigation = {
   name: 'SubMenu',
-  path: '/sub-menu',
+  path: 'sub-menu',
   title: 'Sub Menu',
-  icon: 'el-icon-menu',
-  component: VuLayout,
+  icon: 'ep--expand',
   children: [
     {
       name: 'SubMenu1',
       path: '1',
       title: 'Sub Menu 1',
-      icon: 'el-icon-menu',
+      icon: 'ep--expand',
       children: [
         {
           name: 'SubMenu1-1',
           path: '1',
           title: 'Sub Menu 1-1',
-          icon: 'el-icon-menu',
-          component: () => import('@/views/sub-menu/sub-menu-1-1.vue')
+          icon: 'ep--document',
+          component: () => import('@/views/layout/sub-menu/sub-menu-1-1.vue')
         },
         {
           name: 'SubMenu1-2',
           path: '2',
           title: 'Sub Menu 1-2',
-          icon: 'el-icon-menu',
-          component: () => import('@/views/sub-menu/sub-menu-1-2.vue')
+          icon: 'ep--document',
+          component: () => import('@/views/layout/sub-menu/sub-menu-1-2.vue')
         }
       ]
     }

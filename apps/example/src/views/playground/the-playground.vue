@@ -35,7 +35,7 @@ const findName = ref<string>('SubMenu1-1')
     <div class="flex items-center gap-10px">
       <el-input
         v-model="findName"
-        class="w-240px"
+        class="!w-240px"
       />
       <el-button
         type="primary"

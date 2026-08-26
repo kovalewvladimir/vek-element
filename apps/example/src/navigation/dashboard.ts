@@ -13,7 +13,7 @@ const navigation: INavigation = {
       name: 'the-dashboard',
       path: '',
       title: 'Главная',
-      icon: 'el-icon-menu',
+      icon: 'ep--house',
       affix: true,
       cache: false,
       breadcrumb: false,

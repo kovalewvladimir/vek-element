@@ -1,6 +1,7 @@
-import { type Ref, unref } from 'vue'
+import { type ShallowRef, unref } from 'vue'
 
-export const useScrollPosition = (containerPropsRef: Ref<HTMLElement | null>) => {
+// Readonly<ShallowRef<...>> принимает и обычный ref, и результат useTemplateRef
+export const useScrollPosition = (containerPropsRef: Readonly<ShallowRef<HTMLElement | null>>) => {
   let scX = 0
   let scY = 0
 

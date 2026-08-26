@@ -1,4 +1,4 @@
-import { type Ref, watchEffect } from 'vue'
+import { type ShallowRef, watchEffect } from 'vue'
 
 interface UseInfiniteScrollOptions {
   /** Расстояние в пикселях до края, при котором запускается загрузка (по умолчанию 0) */
@@ -22,7 +22,8 @@ interface UseInfiniteScrollOptions {
  *   запускается проверка (аналог поведения VueUse v14.1.0+)
  */
 export function useInfiniteScroll(
-  el: Ref<HTMLElement | null>,
+  // Readonly<ShallowRef<...>> принимает и обычный ref, и результат useTemplateRef
+  el: Readonly<ShallowRef<HTMLElement | null>>,
   onLoadMore: () => void | Promise<void>,
   options: UseInfiniteScrollOptions = {}
 ) {

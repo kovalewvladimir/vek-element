@@ -36,15 +36,15 @@ const loginClkFail = loadingWrapper(async () => {
 
     <el-link
       class="mb-10px mt-10px"
-      :href="`${base}params/original`"
-      >el-link params/original</el-link
+      :href="`${base}layout/params/original`"
+      >el-link layout/params/original</el-link
     >
 
     <el-button
       link
       class="mb-10px"
-      @click="() => router.push('params/original')"
-      >el-button params/original</el-button
+      @click="() => router.push('/layout/params/original')"
+      >el-button layout/params/original</el-button
     >
 
     <el-button

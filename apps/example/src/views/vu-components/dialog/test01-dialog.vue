@@ -63,7 +63,10 @@ defineExpose({ open })
 </script>
 
 <template>
-  <vu-modal-dialog ref="dialog">
+  <vu-modal-dialog
+    ref="dialog"
+    dialog-title="Test 01 (аттрибут dialog-title)"
+  >
     <template #default>
       <h1>{{ title }}</h1>
       <h2>{{ inputData }}</h2>

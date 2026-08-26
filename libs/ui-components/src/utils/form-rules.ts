@@ -37,7 +37,7 @@ export const simpleRules = {
   requiredChange: { required: true, message: 'Не может быть пустым', trigger: 'change' },
 
   /** Больше нуля. Триггер: изменение поля */
-  aboveZero: { type: 'number', min: 0.000_000_1, message: 'Больше 0', trigger: 'blur' },
+  aboveZero: { type: 'number' as const, min: 0.000_000_1, message: 'Больше 0', trigger: 'blur' },
 
   /** Контракт. Триггер: изменение поля */
   contract: {
