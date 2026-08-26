@@ -1,10 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { VekElementPlus } from '@vek-element/ui/vite'
 import SvgIcons from '@vek-element/vite-svg'
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
-import ElementPlus from 'unplugin-element-plus/vite'
 import { defineConfig, type Plugin } from 'vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
 
@@ -48,10 +48,7 @@ export default defineConfig({
   plugins: [
     Vue(),
     VueDevTools(),
-    ElementPlus({
-      include: ['**/*.vue', '**/*.ts'],
-      exclude: [/node_modules\/(?!@vek-element\/ui)/, /[/\\]\.git[/\\]/, /[/\\]\.nuxt[/\\]/]
-    }),
+    ...VekElementPlus(),
     UnoCSS(),
     SvgIcons({
       iconDirs: [path.resolve(__dirname, './src/assets/svgs')],

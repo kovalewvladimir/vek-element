@@ -13,10 +13,17 @@ run-name: 'Release: ${{ inputs.package }} (${{ inputs.bump }})'
 # Что делает:
 #   1. Прогоняет проверки (lint, type-check, тесты eslint-config) — они блокируют выпуск.
 #   2. Бампит версию выбранного пакета (без git-операций npm).
-#   3. Коммитит бамп + ставит тег локально ("@vek-element/ui@0.0.86").
-#   4. Публикует пакет в npm через OIDC Trusted Publishing (без токена, с provenance).
-#   5. Пушит коммит и тег — только ПОСЛЕ успешной публикации (без «фантомных» версий).
-#   6. Создаёт GitHub Release с авто-changelog и .tgz-артефактом.
+#   3. Закрывает секцию "## Unreleased" в CHANGELOG.md пакета номером версии и датой.
+#   4. Коммитит бамп + CHANGELOG и ставит тег локально ("@vek-element/ui@0.0.86").
+#   5. Публикует пакет в npm через OIDC Trusted Publishing (без токена, с provenance).
+#   6. Пушит коммит и тег — только ПОСЛЕ успешной публикации (без «фантомных» версий).
+#   7. Создаёт GitHub Release (описание — из CHANGELOG) с .tgz-артефактом.
+#
+# ВАЖНО про CHANGELOG: номера версий в нём руками не пишутся. Всё, что накопилось,
+# складывается в секцию "## Unreleased" обычными коммитами, а версию и дату
+# проставляет шаг "Update CHANGELOG" уже здесь — он же отдаёт текст секции
+# в описание GitHub Release. Если у пакета нет CHANGELOG.md или секция пустая,
+# шаг молча пропускается и ноты генерируются из коммитов, как раньше.
 #
 # ВАЖНО про @vek-element/ui: его prepack подтягивает ПОСЛЕДНЮЮ опубликованную
 # версию @vek-element/ui-components из реестра. Поэтому если меняли обе библиотеки —
@@ -111,11 +118,27 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=${{ steps.pkg.outputs.name }}@$VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Update CHANGELOG
+        id: changelog
+        # Переименовывает "## Unreleased" в "## <версия> — <дата>" и складывает тело
+        # секции в файл под ноты релиза. Нет файла / нет секции / секция пустая —
+        # скрипт выходит с кодом 0 и файл нот не создаёт: ниже это проверяется по -f.
+        run: |
+          NOTES="$RUNNER_TEMP/release-notes.md"
+          node ./scripts/release-changelog.ts \
+            '${{ steps.pkg.outputs.dir }}/CHANGELOG.md' \
+            '${{ steps.bump.outputs.version }}' \
+            "$NOTES"
+          echo "notes=$NOTES" >> "$GITHUB_OUTPUT"
+
       - name: Commit and tag (локально)
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package-lock.json '${{ steps.pkg.outputs.dir }}/package.json'
+          # CHANGELOG.md есть не у каждого пакета — добавляем, только если файл существует.
+          CHANGELOG='${{ steps.pkg.outputs.dir }}/CHANGELOG.md'
+          if [ -f "$CHANGELOG" ]; then git add "$CHANGELOG"; fi
           # --no-verify: не запускаем Husky pre-commit хук. Нужные проверки (lint,
           # type-check, тесты) уже прогнаны отдельными шагами выше, а хук ещё тянет
           # e2e (Playwright), браузеры которого на раннере не установлены.
@@ -151,12 +174,30 @@ jobs:
           npm pack -w "$NAME" >/dev/null
           ASSET=$(ls -t *.tgz 2>/dev/null | head -n1)
 
-          args=(--title "$TAG" --generate-notes)
-          [ -n "$PREV_TAG" ] && args+=(--notes-start-tag "$PREV_TAG")
+          args=(--title "$TAG")
+
+          # Описание релиза: секция CHANGELOG, если шаг "Update CHANGELOG" её отдал,
+          # иначе — авто-ноты по коммитам между тегами пакета (как было раньше).
+          NOTES='${{ steps.changelog.outputs.notes }}'
+          if [ -f "$NOTES" ]; then
+            SOURCE=CHANGELOG
+            if [ -n "$PREV_TAG" ]; then
+              {
+                echo ""
+                echo "**Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/$PREV_TAG...$TAG"
+              } >> "$NOTES"
+            fi
+            args+=(--notes-file "$NOTES")
+          else
+            SOURCE=commits
+            args+=(--generate-notes)
+            [ -n "$PREV_TAG" ] && args+=(--notes-start-tag "$PREV_TAG")
+          fi
+
           [ -n "$ASSET" ] && args+=("$ASSET")
 
           gh release create "$TAG" "${args[@]}"
-          echo "Release создан: $TAG (prev: ${PREV_TAG:-—}, asset: ${ASSET:-—})"
+          echo "Release создан: $TAG (prev: ${PREV_TAG:-—}, asset: ${ASSET:-—}, notes: $SOURCE)"
 
       - name: Summary
         run: |

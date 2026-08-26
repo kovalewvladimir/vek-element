@@ -8,7 +8,8 @@
     "directory": "libs/ui-components"
   },
   "files": [
-    "src"
+    "src",
+    "CHANGELOG.md"
   ],
   "main": "./src/components/index.ts",
   "module": "./src/components/index.ts",

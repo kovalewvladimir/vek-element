@@ -8,7 +8,9 @@
     "directory": "libs/ui"
   },
   "files": [
-    "src"
+    "src",
+    "dist",
+    "CHANGELOG.md"
   ],
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -28,13 +30,19 @@
       "types": "./src/utils/index.ts",
       "development": "./src/utils/index.ts",
       "import": "./src/utils/index.ts"
+    },
+    "./vite": {
+      "types": "./src/vite/index.ts",
+      "import": "./dist/vite/index.js"
     }
   },
   "scripts": {
-    "prepack": "node ../../scripts/clean-package-json.ts ../libs/ui/package.json && node ./scripts/update-ui-components-version.ts"
+    "build": "vite build --config vite.config.plugin.ts",
+    "prepack": "npm run build && node ../../scripts/clean-package-json.ts ../libs/ui/package.json && node ./scripts/update-ui-components-version.ts"
   },
   "dependencies": {
-    "@vek-element/ui-components": "file:../ui-components"
+    "@vek-element/ui-components": "file:../ui-components",
+    "unplugin-element-plus": "^0.11.2"
   },
   "peerDependencies": {
     "vue": "^3.5.0",

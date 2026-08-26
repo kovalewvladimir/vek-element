@@ -13,7 +13,8 @@
   },
   "files": [
     "src",
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

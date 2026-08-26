@@ -13,7 +13,8 @@
     "prepack": "node ../../scripts/clean-package-json.ts ../libs/eslint/package.json"
   },
   "files": [
-    "src"
+    "src",
+    "CHANGELOG.md"
   ],
   "main": "./src/index.js",
   "module": "./src/index.js",
