@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-08-26
+
 ### Новое
 
 - Подпуть **`@vek-element/ui/vite`** — build-time точка входа с фабрикой плагинов `VekElementPlus`.
