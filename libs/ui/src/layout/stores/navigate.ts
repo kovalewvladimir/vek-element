@@ -367,9 +367,7 @@ class NavigationStore {
     name: string,
     defaultTo: string = '/'
   ): Promise<NavigationFailure | void | undefined> {
-    const fullPath = this.getFullPathByName(name)
-    if (!fullPath) return await this._router.push(defaultTo)
-    return await this._router.push(fullPath)
+    return await this._router.push(this.getFullPathByName(name) ?? defaultTo)
   }
 
   /** Базовый роутер */

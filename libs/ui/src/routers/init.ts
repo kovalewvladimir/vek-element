@@ -4,6 +4,8 @@ import { h } from 'vue'
 import { createRouter, createWebHistory, type Router, type RouteRecordRaw } from 'vue-router'
 
 import { permissionBeforeEach } from './hooks'
+import { registerNavigationProgress } from './navigation-progress'
+import { viewTransitionBeforeResolve } from './view-transition'
 
 const findNavigation = (
   navigationItems: INavigation[],
@@ -122,7 +124,11 @@ const initializeRouter = (navigation: INavigation[]): Router => {
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [rootRouter, loginRouter]
   })
+  registerNavigationProgress(router)
   router.beforeEach(permissionBeforeEach(loginRouter.path))
+
+  // Анимация перехода — последним гвардом, когда всё остальное уже отработало
+  router.beforeResolve(viewTransitionBeforeResolve(router))
 
   return router
 }

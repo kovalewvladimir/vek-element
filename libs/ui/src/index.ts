@@ -1,6 +1,7 @@
 import './styles/var.css'
 import './styles/reset.css'
 import './styles/index.css'
+import './styles/view-transition.css'
 
 export * from './create'
 export * from './hooks'

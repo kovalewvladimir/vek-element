@@ -5,6 +5,7 @@ import {
   TheCollapse,
   TheLogo,
   TheMenu,
+  TheNavigationProgress,
   TheTags,
   UserInfo
 } from '@vek-element/ui/layout'
@@ -17,6 +18,7 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
 
 <template>
   <div class="layoutContainer">
+    <the-navigation-progress />
     <div class="logo">
       <the-logo />
     </div>
@@ -48,6 +50,9 @@ const widthLeft = computed(() => (config.menu.collapse ? '65px' : '200px'))
   min-width: 800px;
 
   height: 100vh;
+
+  /* Точка отсчёта для the-navigation-progress */
+  position: relative;
 
   display: grid;
   grid-template-columns: v-bind(widthLeft) 1fr;

@@ -5,6 +5,7 @@ import longTitleNavigation from './long-title'
 import paramsNavigation from './params'
 import scrollNavigation from './scroll'
 import subMenuNavigation from './sub-menu'
+import viewTransitionNavigation from './view-transition'
 
 /**
  * Демонстрация layout и роутера: параметризованные пути, прокрутка,
@@ -20,6 +21,7 @@ const navigation: INavigation = {
     paramsNavigation,
     scrollNavigation,
     subMenuNavigation,
+    viewTransitionNavigation,
     longTitleNavigation,
     emptyNavigation
   ]

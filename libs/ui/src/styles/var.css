@@ -13,4 +13,9 @@
 
   --submenu-bg-color: #0f2438;
   --submenu-hover-bg-color: #14304a;
+
+  /*
+   * Переход между страницами (View Transitions API)
+   */
+  --view-transition-duration: 150ms;
 }

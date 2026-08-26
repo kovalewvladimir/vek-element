@@ -1,3 +1,4 @@
+import { isUndefined } from '@vek-element/ui/utils'
 import { type Reactive, reactive } from 'vue'
 
 interface IInitialLayout {
@@ -20,6 +21,13 @@ interface IInitialLayout {
    * Любой формат изображения
    * */
   defaultAvatar: string
+
+  /**
+   * Анимация перехода между страницами (View Transitions API)
+   *
+   * @default true
+   */
+  viewTransition?: boolean
 }
 
 class Logo {
@@ -65,13 +73,26 @@ class Menu {
   }
 }
 
+class ViewTransition {
+  private _enabled: boolean = true
+
+  get enabled() {
+    return this._enabled
+  }
+  setEnabled(enabled: boolean) {
+    this._enabled = enabled
+  }
+}
+
 class LayoutConfigStore {
   private readonly _logo: Reactive<Logo>
   private readonly _menu: Reactive<Menu>
+  private readonly _viewTransition: Reactive<ViewTransition>
 
   constructor() {
     this._logo = reactive(new Logo())
     this._menu = reactive(new Menu())
+    this._viewTransition = reactive(new ViewTransition())
   }
 
   get logo() {
@@ -80,6 +101,9 @@ class LayoutConfigStore {
   get menu() {
     return this._menu
   }
+  get viewTransition() {
+    return this._viewTransition
+  }
 }
 
 const layoutConfigStore = new LayoutConfigStore()
@@ -87,6 +111,8 @@ const layoutConfigStore = new LayoutConfigStore()
 const initializeLayoutConfigStore = (layout: IInitialLayout) => {
   if (layout?.title) layoutConfigStore.logo.setTitle(layout?.title)
   if (layout?.logo) layoutConfigStore.logo.setLogo(layout?.logo)
+  if (!isUndefined(layout?.viewTransition))
+    layoutConfigStore.viewTransition.setEnabled(layout.viewTransition)
   document.title = layoutConfigStore.logo.title
 }
 

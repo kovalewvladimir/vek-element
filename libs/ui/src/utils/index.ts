@@ -1,4 +1,5 @@
 export * from './is'
 export * from './random'
 export * from './url'
+export * from './view-transition'
 export * from '@vek-element/ui-components/utils'

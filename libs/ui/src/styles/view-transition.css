@@ -1,0 +1,32 @@
+/**
+ * Анимация перехода между страницами — View Transitions API
+ *
+ * Запускается из `useViewTransition` / `startViewTransition` (@vek-element/ui)
+ * или пропом `view-transition` у `<router-link>`.
+ *
+ * Анимацию рисует браузер: снимок страницы «до», снимок «после», кросс-фейд
+ * между ними. Своих `@keyframes` не заводим — UA-анимация уже кросс-фейд,
+ * задаём ей только длительность.
+ *
+ * Снимается страница целиком (`view-transition-name: root` из UA-стилей):
+ * контент, меню, теги и хлебные крошки должны меняться одновременно. Если
+ * снимать только контент, layout переключается мгновенно, а контент отстаёт —
+ * выглядит как «промигивание» старой страницы.
+ *
+ * `*` покрывает и root, и любые элементы, которым потребитель задал свой
+ * `view-transition-name`, — все части перехода идут в одном темпе.
+ */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: var(--view-transition-duration, 150ms);
+}
+
+/* Пользователь просил уменьшить анимации — переключаем страницу мгновенно */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms;
+  }
+}
