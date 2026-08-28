@@ -1,0 +1,59 @@
+name: Checks
+
+# Полный набор проверок репозитория: lint, type-check, unit-тесты и e2e.
+#
+# Запускается на каждый push в master и на каждый pull request. Это основная
+# гарантия качества: локальные husky-хуки специально лёгкие (pre-commit гоняет
+# eslint только по staged-файлам, pre-push — lint + type-check + unit-тесты),
+# а долгие e2e живут только здесь.
+#
+# Те же четыре шага (кроме e2e) дублирует release.yml — там они блокируют выпуск.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# Новый push в ту же ветку отменяет предыдущий, ещё не законченный прогон:
+# проверять устаревший коммит смысла нет.
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Совпадает с .devcontainer (node:24).
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Test eslint-config
+        run: npm run test -w @vek-element/eslint-config
+
+      # Ставим только chromium — единственный проект в playwright.config.ts.
+      # --with-deps подтягивает системные библиотеки, которых нет в ubuntu-latest.
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Test e2e
+        # webServer в playwright.config.ts сам поднимает `npm run dev` (сборка
+        # vite-svg + ui, затем dev-сервер example на :8999) и гасит его после.
+        run: npm run test -w vek-element-e2e

@@ -1,8 +1,13 @@
 #!/bin/sh
 set -e
 
-npm run lint 
-npm run type-check
-
-npm run test -w @vek-element/eslint-config
-npm run test -w vek-element-e2e
+# Быстрая проверка (~4 с): eslint --fix только по staged-файлам вместо
+# `eslint .` по всему репозиторию. Автофиксы (сортировка импортов и т.п.)
+# сразу возвращаются в индекс, невправляемая ошибка отменяет коммит.
+#
+# Форматирование (prettier) сюда не входит — как и в `npm run lint`:
+# @vek-element/eslint-config подключает eslint-config-prettier, который
+# только гасит конфликтующие правила. Форматирует format-on-save в редакторе.
+#
+# Полный набор проверок — в pre-push и в CI (.github/workflows/checks.yml).
+npx lint-staged

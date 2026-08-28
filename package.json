@@ -25,11 +25,15 @@
     "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{js,ts,mts,tsx,vue}": "eslint --fix --no-warn-ignored"
+  },
   "devDependencies": {
     "@types/node": "24.13.3",
     "@vek-element/eslint-config": "file:./libs/eslint",
     "@vitejs/plugin-vue": "6.0.4",
     "husky": "9.1.7",
+    "lint-staged": "17.4.1",
     "typescript": "5.9.3",
     "unocss": "66.6.6",
     "unplugin-element-plus": "0.11.2",

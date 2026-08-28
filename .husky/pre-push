@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+# Полная проверка репозитория перед отправкой в remote (~25 с).
+#
+# E2E сюда намеренно НЕ входят: они поднимают dev-сервер и стоят ещё ~50 с.
+# Их гоняет CI (.github/workflows/checks.yml) на каждый push и pull request.
+# Нужно прогнать локально — `npm run test -w vek-element-e2e`.
+
+npm run lint
+npm run type-check
+
+npm run test -w @vek-element/eslint-config
