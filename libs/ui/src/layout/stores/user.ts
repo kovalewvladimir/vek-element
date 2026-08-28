@@ -12,8 +12,11 @@ interface IAuth {
    * Выход из системы
    *
    * Нужно реализовать метод, который заставит метод getUser вернуть ошибку
+   *
+   * Может быть асинхронным: с cookie-авторизацией сессию гасит бэкенд, и
+   * до ответа сервера getUser ещё вернёт пользователя
    * */
-  logout: () => void
+  logout: () => void | Promise<void>
 }
 
 interface IUserInfo {
@@ -66,8 +69,8 @@ class UserStore {
   }
 
   /** Метод для сброса пользователя */
-  resetUser = (): void => {
-    this._auth.logout()
+  resetUser = async (): Promise<void> => {
+    await this._auth.logout()
     this._user = null
   }
 }

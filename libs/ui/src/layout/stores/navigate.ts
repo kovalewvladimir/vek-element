@@ -26,7 +26,12 @@ import {
   unref,
   watch
 } from 'vue'
-import { type NavigationFailure, type Router, type RouteRecordRaw } from 'vue-router'
+import {
+  type NavigationFailure,
+  type Router,
+  type RouteRecordRaw,
+  START_LOCATION
+} from 'vue-router'
 
 import { type Roles } from './user'
 
@@ -432,6 +437,45 @@ class NavigationStore {
   clearMenu = () => {
     this._menu.active = ''
     this._menu.items = []
+  }
+
+  /**
+   * Возврат навигации в состояние «пользователь не авторизован»
+   *
+   * Чистит меню, вкладки и ролевые роуты и уводит на форму входа. Это половина
+   * выхода из системы, которая касается навигации; целиком выход — logout(),
+   * он же гасит сессию пользователя
+   *
+   * @param redirect - дать форме входа адрес возврата: /login?redirect=<текущий fullPath>
+   * @returns true — увёл на логин;
+   *          false — первый переход ещё идёт, трогать навигацию нельзя
+   */
+  resetToLogin = async (redirect: boolean = false): Promise<boolean> => {
+    const currentRoute = this._router.currentRoute.value
+
+    // Первый переход ещё идёт: меню и вкладки пусты, а clearRoutes() вырвал бы
+    // из-под навигации root, на который она уже разрешилась. На логин в этой
+    // ветке уводит permissionBeforeEach, и redirect у него точнее — адрес,
+    // который открывал пользователь, а не стартовый /
+    if (currentRoute === START_LOCATION) return false
+
+    this.clearMenu()
+    this.clearTags()
+
+    // Ролевые роуты ушедшего пользователя больше не нужны, а логин без явного
+    // addRoute не вернётся: clearRoutes() выносит и его
+    this._router.clearRoutes()
+    this._router.addRoute(this._routerBase.login)
+
+    const loginPath = this._routerBase.login.path
+    const isRedirect = redirect && currentRoute.path !== loginPath
+
+    // Формат тот же, что строит permissionBeforeEach: его разбирает форма входа
+    await this._router.push(
+      isRedirect ? { path: loginPath, query: { redirect: currentRoute.fullPath } } : loginPath
+    )
+
+    return true
   }
 }
 

@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { useNavigationStore, useUserStore } from '@vek-element/ui'
+import { logout, useUserStore } from '@vek-element/ui'
 import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
-const { user, defaultAvatar, resetUser } = useUserStore()
-const { clearMenu, clearTags, routerBase } = useNavigationStore()
+const { user, defaultAvatar } = useUserStore()
 
 const handleCommand = (command: string) => {
   switch (command) {
@@ -24,16 +21,8 @@ const handleCommand = (command: string) => {
 }
 
 const loginOut = () => {
-  // TODO: сбросить keep-alive в root-layout или layout
-
-  resetUser()
-  clearMenu()
-  clearTags()
-
-  router.clearRoutes()
-  router.addRoute(routerBase.login)
-
-  void router.push(routerBase.login.path)
+  // Без redirect: пользователь вышел сам, возвращать его после входа некуда
+  void logout()
 }
 const userSettings = () => {
   throw new Error('Not implemented')
